@@ -1,0 +1,14 @@
+Compare C3_always.h  
+Compare C3_atomize.h  
+Compare C3_codeTimer.h  
+Compare C3_commander.h  
+Differences c3_errors.h 
+Compare C3_gstring.h  
+Differences c3_preProcessor.h 
+Compare C3_string.h  
+Compare C3_timeFncs.h  
+Compare C3_types.h  
+Compare hStructures.h  
+Differences opName.h 
+Compare samParams.h  
+Compare samVersion.h  
