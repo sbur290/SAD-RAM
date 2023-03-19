@@ -1,0 +1,91 @@
+//SAM microcode version 13, Mar, 2023
+#include <stdHeaders.sam>
+
+  //$environment compile only;                                      //for test purposes
+    $environment xilinx simulation;                                //for test purposes
+    $shocode;                                                       //
+
+#define SAFE_REG0      false                                                    //
+#define KEY_SIZE       8                                                        //user defined
+#define TARGET_BUS_SZ  8                                                        //hardware defined
+#define UTIL_ROW       0                                                        //row used for misc controls
+#define CONFIG_ROW     0                                                        //
+#define hINDX_ESIZE   16 //bytes                                                //
+#define hBOOK_ESIZE   24 //bytes                                                //
+#define BRAM_ROWS     32                                                        //
+//allocation of various control variables; these reside in bram[0]              //
+allocate [0] = 
+    {uint64_t ROWS_FREE,    //0                                                 //bit vector of unused rows
+              hBOOK_LOC,    //1                                                 //
+              hBOOK_SIZE;   //2                                                 //
+    };
+//------ All calls should go thru this jump table.
+jmpTable:    goto(long) start;                                                  //+0
+mitosis:     goto(long) _mitosis;                                               //+2
+AllocateRow: goto(long)_AllocateRow;                                            //+4
+FreeRow:     goto(long)_FreeRow;                                                //+6
+
+start:                                                                          //
+    //First order of business is to set the configuration in each group/cell.   //
+    //Software has loaded the proper configuration information into mem[0].     //
+    //Set current row to zero and call cfg(cell) and cfg(group).                //
+    $curRow = CONFIG_ROW;                                                       //[0] contains configuration vector
+    cfg(cell);                                                                  //configure cells
+    cfg(group);                                                                 //configure groups
+    //set allocation vector == 1 indicating all rows (except row[0] are free)   //
+    ROWS_FREE = (1 << BRAM_ROWS) - 2;                                           //define allocation vector: 
+                                                                                // '-2' removes row[0], ie the working row
+//Bram[0] is now free for general use. Build initial hBOOK entry in mem[0]      //
+buildInitialBook:                                                               //
+$bug = 3;
+    call AllocateRow; hBOOK_LOC = $1; push $1;                                  //
+    call AllocateRow; $7        = $1;                                           //location of first page
+    //prepare a hBOOK entry at $1 with zero entries and marked as the last hBOOK//
+    pop $1; $curRow = $1;                                                       //pop row of hBOOK
+    $1 = 2; [$1].p1             = $7;                                           //$1 = handle of hBOOK
+            [$1].p2             = 0;                                            //
+            [$1].count          = 0;                                            //
+            [$1].total          = 0;                                            //
+            [$1].stop           = 1;                                            //
+    $curRow = $7; [31:0] = 0; [$7].stop = 1;                                    //clear out page
+    $curRow = $1; $bug_page;                                                    //
+                                                                                //
+idleLup:while (!qrdy) {}                                                        //wait for incoming key
+    $curRow = 24;          //$bug_INDX;                                         //set bug level, user bit, and dump current row
+    scin(indx) "7CB42901"; //$bug_INDX;                                         //ok inserted at 0x40
+    scin(indx) "7AC20124";   $bug_INDX;                                         //ok inserted at 0x20
+    scin(indx) "7B4401CF";   $bug_INDX;                                         //ok inserted at 0x40; row 24 is now full
+    scin(indx) "7A619125";   $bug_INDX;                                         //Should report samStatus=Full and not do the insert
+    if (full)                                                                   //
+       {print "Insert $0 failed\n";                                             //
+        PUSHALL;                                                                //
+        call mitosis;                          ttt                                 //
+        POPALL;                                                                 //
+        scin(indx);                                                             //repeat the operation
+print "Stop loop\n"; stop;
+       }                                                                        //
+    $curRow = 24;
+    goto idleLup;                                                               //
+
+_mitosis: print "Start mitosis\n"; ret;
+
+//--------------------------------------------------------------------
+//Allocate row. Free rows are managed in a bit vector: 1 = unused row
+//Return $1 = row number of unused row. !c if no rows found.
+_AllocateRow:                                                                   //
+   push $0, $2, $3;                                                             //
+   forz($1=1, $2=1, $3=ROWS_FREE, SHR $3; $1 < BRAM_ROWS; $1++)                 //scan for available row
+       {SHL $2,1; SHR $3,1;                                                     //
+        if (c) {$0 = ROWS_FREE; XOR $0, $2; ROWS_FREE = $0; break;}             //save allocation vector
+       }                                                                        //
+   pop $3, $2, $0;                                                              //
+   ret;                                                                         //
+
+_FreeRow:       
+   push $0, $1; $0 = 1; SHL $0, $1;
+   $1 = ROWS_FREE; OR $0, $1; ROWS_FREE = $0; 
+   pop $1, $0; 
+   ret;
+
+//end of file...
+ 

@@ -1,0 +1,31 @@
+//include file stdHeaders.sam
+
+#define true       1                                     //
+#define false      0                                     //
+
+#define ROW_AND_WORD(row, word) (((row) << 8) + (word))
+
+#define PUSHALL PUSH $0, $1, $2, $3, $4, $5, $6, $7
+#define POPALL  POP  $7, $6, $5, $4, $3, $2, $1, $0
+
+//Wrap value of #define in quotes("), eg #define X 995, Q(X) == "995"
+#define Q(a) Q1(a)
+#define Q1(a) #a
+
+#define printf print                                     //old programmers never die, they just pull out printf
+
+#define CLC PUSH $0; $0 = 0; SHR $0,1;  POP $0;
+#define STC PUSH $0; $0 = 1; SHR $0,1;  POP $0;
+#define CLZ PUSH $0; $0 = 1; OR  $0,$0; POP $0;
+#define STZ PUSH $0;        XOR  $0,$0; POP $0;
+
+  //$environment FPGA;                                   //
+  //$environment hardware;                               //
+    $environment Xilinx simulation;                      //
+  //$environment compile only;                           //
+  //$environment software emulation;                     //
+
+// '$shocode = true' outputs intermediate op-codes as they are compiled
+    $shocode = false;                                    //
+//saves reg0/1 when co-opted for arithmetic operations   //
+    $safeReg0= true;                                     //

@@ -1,0 +1,150 @@
+//Test of basic opcodes. 
+//All arithmetics, all memory references, and condition codes
+#include <stdHeaders.sam>
+
+#define FREE_ROW   25     //unused row
+#define bug 2
+
+    $shocode = false;                                                           //
+jmpTable:                                                                       //
+    goto(long)start;                                                            //
+stringTable:                                                                    //
+    $string "So what am i? chopped liver\n\n";                                  //early to make sure it is msg#0
+start:                                                                          //
+    $bug;//    = bug;                                                              //
+    $curRow = 5;                                                                //
+    $curRow = 0;                                                                //
+    cfg(cell);                                                                  //[0] contains configuration vector
+    cfg(group);                                                                 //
+                                                                                //
+    print "---- Test Literals ----\n";                                          //
+    [0] = 0x0;                                                                  //
+    [1] = 0x11;                                                                 //
+    [2] = 0x222;                                                                //
+    [3] = 0x3333;                                                               //
+    [4] = 0x44444;                                                              //
+    [5] = 0x555555;                                                             //
+    [6] = 0x6666666;                                                            //
+    [7] = 0x77777777;                                                           //
+    [8] = 0x888888888;                                                          //
+    [9] = 0x9999999999;                                                         //
+    [10]= 0xAAAAAAAAAAA;                                                        //
+    [11]= 0xBBBBBBBBBBBB;                                                       //
+    [12]= 0xCCCCCCCCCCCCC;                                                      //
+    [13]= 0xDDDDDDDDDDDDDD;                                                     //
+    [14]= 0xEEEEEEEEEEEEEEE;                                                    //
+    [15]= 0xFFFFFFFFFFFFFFFF;                                                   //
+    $BUG_RAW;                                                                   //
+                                                                                //
+    $curRow = 25;                                                               //first unused page
+    call wr;                                                                    //
+    print "Exit from basic tests.\n";
+    stop;                                                                       //
+lup:goto lup;                                                                   //
+wr: $0         = 0x12345678;                                                    //
+    print "\n---- Random operators ----\n";                                     //
+    $5         = 0xE0;                                                          //
+    dec $5; $4 = 0x123;                                                         //
+    and $4,$5;                                                                  //
+    and $4, 5;                                                                  //
+    $expect "12345678,0x1,0xdf"; $actual "$0,0x$4,0x$5";                        //
+    [0]     = $0;                                                               //
+    [25]    = $0;                                                               //
+    [25:31] = $0;                                                               //
+    [25@1:31]= 0;                                                               //clear entire row (almost)
+    [9:10]  = 0x8765432112345678;                                               //generate literal in accum (reg $0) and write to curRow
+    $5      = 3*(2**4-15);                                                      //
+    print "3*(2**4-15) = 0x$5\n";                                               //
+    [30:31] = $5;                                                               //ie., [30] = $5, [31] = $6
+    $0 = [25];                                                                  //
+    $0 = [25:31];                                                               //
+    $3 = [25@27:31];                                                            //ie $3 thru 7
+    $bug_raw;                                                                   //
+    NOOP; NOOP; NOOP;                                                           //
+    print "\n---- Basic Arithmetic Tests ----\n";                               //
+    $0:$4 = 500; $7:$6 = $5; $expect "$5,$5";$actual "$6,$7";                   //
+    $7:$0 = 0;                                                                  //clear all registers
+    $3  = 0x14D; $expect "0,0,0,14D,0,0,0,0";$actual "$0,$1,$2,$3,$4,$5,$6,$7"; //
+    $1  = 495;   $expect "1EF";              $actual "$1";                      //
+    $0++;        $expect "1";                $actual "$0";                      //
+    $1++;        $expect "1F0";              $actual "$1";                      //
+    $1 &= 255;   $expect "F0";               $actual "$1";                      //
+    $0 |= 0x80;  $expect "81";               $actual "$0";                      //
+    $0 |= 0x140; $expect "1C1, F0";          $actual "$0, $1";                  //
+    $1 |= 0x130; $expect "1C1, 1F0";         $actual "$0, $1";                  //
+    $3 ^= 0x55;  $expect "1C1, 118";         $actual "$0, $3";                  //
+    $1 +=1;      $expect "1F1";              $actual "$1";                      //
+    $1 -=2;      $expect "1EF";              $actual "$1";                      //
+    $1 +=4;      $expect "1F3";              $actual "$1";                      //
+    $1 += 17;    $expect "204";              $actual "$1";                      //
+    $1 -= 17;    $expect "1F3";              $actual "$1";                      //
+    $expect "1C1,1F3,0,118,0,0,0,0";         $actual "$0,$1,$2,$3,$4,$5,$6,$7"; //
+    $0+=1;                                                                      //ok
+    $0-=2;                                                                      //ok
+    $0+=4;                                                                      //ok
+    $0+=17;                                                                     //ok
+    $0-=17;                                                                     //ok
+
+    print "\n---- Field Access tests ----\n";                                   //
+    $curRow    = FREE_ROW; [0:31] = 0; $3 = 2;                                  //
+    [31]       = 0xEEEEEEEEEEEEEEEE; [2] = "The Key.";                          //
+#define TestField(fieldName, valu, word0, word1)=                               //block macro
+    print "Test field[$3]." #fieldName ":\n";                                   //
+    $5 = valu; [$3].fieldName = $5; $4 = [$3].fieldName;                        //
+             $expect "$5";          $actual "$4";                               //
+    $2 =[0]; $expect "[0]=" #word0; $actual "[0]=0x$2";                         //
+    $2 =[1]; $expect "[1]=" #word1; $actual "[1]=0x$2";                         //
+   print "\n";                                                                  //
+#endef                                                                          //
+    TestField(total, 0x987654321F,   0x0,                0x1F32547698);         //
+    TestField(p1,    0x377777777700, 0x7777777700000000, 0x6E00001F32547698);   //
+    TestField(p2,    0x355555555500, 0x7777777755555555, 0x6FA8001F32547698);   //
+    TestField(count, 0x733,          0x7777777755555555, 0x6FAF331F32547698);   //
+    TestField(stop,  0x1,            0x7777777755555555, 0xEFAF331F32547698);   //
+    printf "\n";                                                                //
+    $bug_indx;                                                                  //
+#undef TestField
+
+print "---- Arithmetics ----\n";                                                //
+print "ADD 0x8000 + 0x8000 == 0x0 and carry\n";                                 //
+    $expect "0"; $0 = 0x8000000000000000; $4 = $0; add $0, $4; $actual "$0";    //
+print "ADC 0x0 + 0x8000+carry == 0x8001 and ~carry\n";                          //
+    $expect "8000000000000001";                    adc $0, $4; $actual "$0";    //
+
+print "\nSHR 0x8001 == 0x4000 and carry\n";
+    $expect "4000000000000000 and carry\n";  SHR $0; if (c) {$actual "$0 and carry";} else {$actual "";}
+print "RCR 0x8001+carry == 0xA000 and carry\n";
+    $expect "A000000000000000 and ~carry";   RCR $0; if(!c) {$actual "$0 and ~carry";}else {$actual "";}
+
+print "\nSUB 0x8000 - 0x8000 == 0x0 and ~carry\n";
+    $expect "0";                $0 = 0x8000000000000000; $4 = $0; sub $0,$4; $actual "$0";
+print "SBB 0x4000 - 0x8000 - carry == 0xBFFF and ~carry\n";
+    $expect "BFFFFFFFFFFFFFFF and carry";   $0 = 0x8000000000000001; SHR $0;  sbb $0,$4; 
+                                                              if (c) $actual "$0 and carry"; else $actual "$0 and ~carry";   
+
+print "\nshift left = 0x7FFE ignoring carry\n";
+    $expect "carry";    SHL $0; if (C) {$actual "carry";} else $actual "";
+    $expect "non zero";         if (Z) {$actual "zero"; } else $actual "non zero";
+
+print "\nrotate left ~C and 0x$0 == 0xfffffffffffffffd\n";
+    $expect "fffffffffffffffd"; RCL $0; if (C) $actual "$0 carry"; else $actual "$0";
+
+print "\npush registers, change them, pop registers; results should be the unchanged\n";
+    $0 = 0x2468; $6 = 0x1357;
+    push $0,$6; $0 = 0x1234; $6 = 5678; pop $6,$0;
+    $expect "2468,1357"; xchg $0,$6; $actual "$6,$0";
+
+print "\nlogical OR\n";
+    $expect "FFFFFFFFFFFFFFFF"; $0 = 0x55555555AAAAAAAA; $6 = 0xAAAAAAAA55555555; OR  $0,$6; $actual "$0";
+print "\nlogical AND\n";
+    $expect "0";                $0 = 0x55555555AAAAAAAA;                          AND $0,$6; $actual "$0";
+print "\nlogical XOR\n";
+    $expect "FFFFFFFF";         $0 = 0x55555555AAAAAAAA; $6 = 0x5555555555555555; XOR $0,$6; $actual "$0";
+
+printf "\nweirdos: XTOS\n"; $expect "12345678, 987654321";
+    $0 = 0x12345678; push $0; $1 = 0x987654321; XTOS $1; pop $0; $actual "$1, $0"; 
+                                                        //
+    push $currow; pop $0;                               //
+    $4      = [10:7];                                   //read words 10 thru 7 to registers $4, $5, and $6
+    ret;                                                //
+  

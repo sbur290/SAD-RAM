@@ -1,0 +1,106 @@
+//Test of conditions: if(condition); for (... ; condition; .... etc
+#include <stdHeaders.sam>
+goto(long) start;
+/*For statements have the general format: 
+    for (initial Statement(s)s; conditional; incrementStatement(s)) {body of for loop}
+and forz (...) {...}.  'forz' is an slim version of 'for' that does not check for zero
+iterations and does not save $reg0 in evaluating the conditional.
+The most obvious initial/increment statements are type $reg = ... and $reg++/--.
+The conditional is used by for, forz, if, while, and do statements.
+For example 'forz ($5=6; $5 < 8; $5++)   {print "reg5=0x$5, ";}' is:
+ op    pc         opcode                  //source code
+06B6 //004      : $reg5 <= 0x6            //initialize $reg5
+07F0 //005      : OP_PRINT 4              //print "reg5=0x<value of $reg5, "
+AAB8 //006      : OP_INC $reg5            //increment $reg5
+0802 //007      : $reg0 = 0x8             //$0 = loop limit 
+04B8 //008      : OP_CMP $reg5            //cmp $reg0 against $reg5
+09A1 //009      : OP_GO_T(~C)  @(5)       //loop if < to pc = 5
+An even more efficient version of forz is:
+   'forz ($5=19; $5 > 0; $5-)   {print "reg5=0x$5, ";}' 
+which generates:
+13B6 //000      : $reg5 <= 0x2            //initialization
+02F0 //001      : OP_PRINT "$5, "  //body of for
+ABB8 //002      : OP_DEC $reg5            //conditional
+0381 //003      : OP_GO_T(~Z)  @(1)       //loop
+
+There are two stepping directions (++ and --) and three cases to consider, lim :: vbl is (lim - vbl)
+    source statement          jump condition                 <------- execute -------> <------- exit loop ------->
+0. for ($5=7; $5  < 8; $5++)  GO_T(~C && ~Z)                  8::7 ~C~Z,                8::8 ~CZ, 8::9 C~Z
+1. for ($5=7; $5 <= 8; $5++)  GO_T(~C || Z) == GO_F(C && ~Z)  8::7 ~C~Z, 8::8 ~CZ,                8::9 C~Z  
+2. for ($5=8; $5  > 7; $5--)  GO_T(C)                         7::8  C~Z, 7::7 ~CZ                 7::6 ~C~C
+3. for ($5=8; $5 >= 7; $5--)  GO_T(C  || Z) == GO_F(~C && ~Z) 7::8  C~Z,                7::7 ~CZ, 7::6 ~C~Z
+4. for ($5=6; $5 == 8; $5..)  GO_T(Z)
+5. for ($5=8; $5 != 6; $5..)  GO_F(Z)
+But we have to also consider perverse cases such as:
+0P. for ($5=9; $5  < 8; $5++) GO_T(~C && ~Z) (zero loops)    8::9  C~Z
+2P. for ($5=3; $5  > 8; $5++) GO_T(C)        (zero loops)    8::3 ~C~Z
+4P. for ($5=0; $5 == 8; $5..) GO_T(Z)        (zero loops)    8::0 ~C~Z
+5P. for ($5=6; $5 != 6; $5..) GO_F(Z)        (zero loops)    6::6 ~CZ
+
+6&7. forz($5=2; $5 > 0; $5--) used dec $5; goto(NZ) and do not molest $reg0
+*/
+
+    $shocode;                                            //
+start:                                                   //
+    $bug = 2;                                            // >= 1 required for print to actually display anything
+    print "\n";                                          // >= 2 for $expect/$actual to work
+//ordinary cases
+   print "case 0:\n"; $expect "7,";             for ($5=7; $5  < 8; $5++) {$actual "$5, ";} print "\n"; 
+   print "case 1:\n"; $expect "7, 8,"; $actual; for ($5=7; $5 <= 8; $5++) {print   "$5, ";} print "\n\n"; 
+   print "case 2:\n"; $expect "8, ";            for ($5=8; $5  > 7; $5--) {$actual "$5, ";} print "\n"; 
+   print "case 3:\n"; $expect "8, 7,"; $actual; for ($5=8; $5 >= 7; $5--) {print   "$5, ";} print "\n\n"; 
+   print "case 4:\n"; $expect "";      $actual; for ($5=6; $5 == 8; $5++) {print   "$5, ";} print "\n\n"; 
+   print "case 5:\n"; $expect "8, 7,"; $actual; for ($5=8; $5 != 6; $5--) {print   "$5, ";} print "\n\n"; 
+//pathological cases which loop zero times
+   print "case 0P:"; for ($5=9; $5  < 8; ) {print "bad $5, ";} print "\n"; 
+   print "case 2P:"; for ($5=3; $5  > 8; ) {print "bad $5, ";} print "\n"; 
+   print "case 4P:"; for ($5=0; $5 == 8; ) {print "bad $5, ";} print "\n"; 
+   print "case 5P:"; for ($5=6; $5 != 6; ) {print "bad $5, ";} print "\n"; 
+//optimized forx cases
+   print "case 6(forz):\n"; $expect "2, 1,"; $actual; forz($5=2; $5 != 0; $5--) {print "$5, ";} print "\n\n";
+   print "case 7(forz):\n"; $expect "2, 1,"; $actual; forz($5=2; $5 >  0; $5--) {print "$5, ";} print "\n\n";
+
+   //Validate break and continue in forz
+   print "case 8:(break)\n";    $expect "20,";          
+                forz($5=32; $5 >  0; $5--){$actual "$5, "; break; print "dead8";} print "\n";
+   print "case 9:(continue)\n"; $expect "g9"; $actual; 
+                forz($5=0; $5 < 1; $5++)  {print "g9"; continue; print "dead9";} print "\n";
+print "\n--------##For loops done --------\n\n";
+
+print "if () zero condition tests:\n";
+    $expect "iz1"; stz;         if (Z)  {$actual "iz1";}  print "\n";
+    $expect "";        $actual; if (~Z) {print   "iz2";}  print "\n\n";
+    $expect "";   clz; $actual; if (Z)  {print   "iz3";}  print "\n\n";
+    $expect "iz4";              if (~Z) {$actual "iz4";}  print "\n";
+
+print "if() carry condition tests:\n";
+    $expect "";   clc; $actual; if (C)  {print   "ic1";}  print "\n\n";
+    $expect "ic2";              if (~C) {$actual "ic2";}  print "\n";
+    $expect "ic2"; stc;         if (C)  {$actual "ic2";}  print "\n";
+    $expect "";        $actual; if (~C) {print   "ic4";}  print "\n\n";
+
+print "while () zero condition tests:\n";
+    $expect "wz1"; stz;             while (Z)  {$actual "wz1"; break;} print "\n";
+    $expect "";            $actual; while (~Z) {printf  "wz2"; break;} print "\n\n";
+    $expect "";   clz;     $actual; while (Z)  {$actual "wz3"; break;} print "\n\n";
+    $expect "wz4";         $actual; while (~Z) {print   "wz4"; break;} print "\n\n";
+    $expect "wz5"; $5 = 0; $actual; 
+         while ($5 < 1) {print "wz5"; $5++; continue; print "wzDead";} print "\n";
+    $expect "wz6"; while(true) {$actual "wz6"; break;} print "\n";
+    while(~qrdy){};
+
+print "while() carry condition tests:\n";
+    $expect "wc1"; stc;          while (C)  {$actual "wc1"; break;}  print "\n";
+    $expect "";    $actual;      while (~C) {print   "wc2"; break;}  print "\n\n";
+    $expect "";    $actual; clc; while (C)  {print   "wc3"; break;}  print "\n\n";
+    $expect "wc4";               while (~C) {$actual "wc4"; break;}  print "\n";
+
+print "do () condition tests:\n";
+    $expect "do1do1"; $0 = 1; $actual; do {print   "do1"; dec $0;} while (Z); print "\n\n"; 
+    $expect "do2";    $0 = 1;          do {$actual "do2"; dec $0;} while (~Z);print "\n"; 
+    $expect "do3do3"; $0 = 1; $actual; do {print   "do3"; shr $0;} while (C); print "\n\n";
+    $expect "do4";    $0 = 1;          do {$actual "do4"; stc;}    while (~C);print "\n"; 
+    $expect "do5"; $5 = 0;    $actual;
+                       do {print "do5"; continue; print "d5dead";} while (false); print "\n";
+    stop;
+//end of file...
