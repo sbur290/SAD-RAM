@@ -5,7 +5,7 @@
 #include <fcntl.h>
 #include <opName.h>
 #include <C3_atomize.h>
-#include <C3_errors.h> 
+#include <C3_errors.h>
 
 #pragma pack(push, 1)
 //External structure for opcode; represented as four hex digits in <program>.microcode.
@@ -167,7 +167,7 @@ class cCompile
    int           SimpleCondition(IATOM aa);                                  //
    int           SimplifiedForz(sCODE_BLOB *, int, sCODE_BLOB *, int);       //
    char         *strdupl(const char *srcP, int len=-1);                      //
-   int           RegAssignment(int pc, IATOM aa, int act);              //
+   int           RegAssignment(int pc, IATOM aa, int act);                   //
    int           RegisterPostOp(int pc, IATOM reg, IATOM postOp);            //
    void          StretchOp     (int pc);                                     //
    int           WhereisLabel  (const char *labelP);                         //

@@ -3,7 +3,7 @@
  Input is in register transfer format, meaning that each opcode and supporting
  parameters are specified in the style of a standard assembler plus some
  simple language extensions such as if, for, and while. 
- Syntax is: 
+ Syntax is:
     statement      == opcode plus supporting parameters terminated with ';'
     statement-List == {statement; statement;... }
     if (statement) statement-List [else statement-List]
@@ -564,16 +564,10 @@ int cCompile::MultiOp(int pc, OPCODE baseOp)
     bP  ->op.rpt.stepR = m_stepableB ? 0 : 1;                                   //
     bP  ->op.rpt.bkwd  = m_loAdr > m_hiAdr;                                     //step fwd/bkwd, eg read [0:10] versus read[10:0]
     bP++->ref          = m_ref;                                                 //
- // bP  ->lineNum      = m_lineNum;                                             //
- // bP  ->fileNum      = m_fileNum;                                             //
- // bP++->srcOffset    = m_srcOffset;     pc++;                                 //
     bP  ->op           = baseOp;                                                //duplicate opcode, but...
     bP  ->op.g.adr     = m_loAdr;                                               //starting word address
     bP  ->op.g.breg    = reg;                                                   //starting reg address
     bP->ref            = m_ref;                                                 //
-//  bP  ->fileNum      = m_fileNumber;                                          //
-//  bP  ->lineNum      = m_lineNumber;                                          //
-//  bP  ->srcOffset    = m_srcOffset;                                           //
     bP  ->hereP        = NULL;                                                  //label valid on first op, NULL thereafter
     return pc+1;                                                                //
    } //cCompile::MultiOp...
@@ -636,7 +630,7 @@ int cCompile::ShiftStmt(int pc, uint8_t shiftOp)
 
 int cCompile::_ErrorA(int erC, IATOM aa, const char *fileP, int line, const char *fncP)
    {char context[256], *pp=LOCAL_COPY(aa);                                      //
-    SNPRINTF(context), "line %03d:", m_ref.lineNum);                                //
+    SNPRINTF(context), "line %03d:", m_ref.lineNum);                            //
     CopySource(&context[strlen(context)], sizeof(context)-istrlen(context));    //
     return _Error(erC, context, pp, fileP, line, fncP);                         //
    } //cCompile::ErrorA...
@@ -698,7 +692,7 @@ int cCompile::Conditional(int pc, bool *ifTruP)
               BugEmit(startPc, pc-1, NULL);                                     //
        }     }                                                                  //
     else                                                                        //
-       {Backup(m_a); pc = CompileExpression(pc, m_safeRegB); InvertJmp(pc-1);} //
+       {Backup(m_a); pc = CompileExpression(pc, m_safeRegB); InvertJmp(pc-1);}  //
     if (!Is(')'))                                 return ErrorA(ERR_7184, m_a); //7184 = missing or unbalanced parentheses
     return pc;                                                                  //
    } //cCompile::Conditional
@@ -812,7 +806,7 @@ int cCompile::ForStmt(int pc, IATOM aa)
 //test condition: expression                                                    //
     if (Is(';')) {testCodeP = NULL; testCnt = 0;}                               //empty test, eg. for($1=0;;$1++)
     else {Backup(m_a); start = pc;                                              //
-          if ((pc=CompileExpression(pc, !forz || m_safeRegB)) < 0) return pc;  //
+          if ((pc=CompileExpression(pc, !forz || m_safeRegB)) < 0) return pc;   //
           testCodeP           = (sCODE_BLOB*)alloca((testCnt=pc-start)*szBlob); //
           memmove(testCodeP, &m_codeP[pc=start], testCnt * szBlob);             //save and back out test code
           if (!Is(';'))                          return ErrorA(ERR_3007, m_a);  //3007 = missing ';'
