@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\source-15\Assert.cpp" />
+    <ClCompile Include="..\source-15\C3_atomize.cpp" />
+    <ClCompile Include="..\source-15\C3_codeTimer.cpp" />
+    <ClCompile Include="..\source-15\c3_errors.cpp" />
+    <ClCompile Include="..\source-15\c3_preProcessor.cpp" />
+    <ClCompile Include="..\source-15\C3_print.cpp" />
+    <ClCompile Include="..\source-15\C3_timeFncs.cpp" />
+    <ClCompile Include="..\source-15\computeGeometry.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="generateVerilog.cpp" />
+    <ClCompile Include="generator.cpp" />
+    <ClCompile Include="math.cpp" />
+    <ClCompile Include="samApp.cpp" />
+    <ClCompile Include="samBug.cpp" />
+    <ClCompile Include="samHelper.cpp" />
+    <ClCompile Include="sam-15.cpp" />
+    <ClCompile Include="testDujour.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\emu-15\emu-15.h" />
+    <ClInclude Include="..\include-15\c3_always.h" />
+    <ClInclude Include="..\include-15\c3_preProcessor.h" />
+    <ClInclude Include="..\include-15\hStructures.h" />
+    <ClInclude Include="..\include-15\samParams.h" />
+    <ClInclude Include="..\include-15\simBug.h" />
+    <ClInclude Include="C3_atomize.h" />
+    <ClInclude Include="C3_codeTimer.h" />
+    <ClInclude Include="C3_timeFncs.h" />
+    <ClInclude Include="generator.h" />
+    <ClInclude Include="samApp.h" />
+    <ClInclude Include="samBug.h" />
+    <ClInclude Include="samHelper.h" />
+    <ClInclude Include="sam-15.h" />
+    <ClInclude Include="samOptions.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\ver-15\sadram\sadram.sim\sim_1\behav\xsim\blockRam.data" />
+    <None Include="..\ver-15\sadram\sadram.sim\sim_1\behav\xsim\params.data" />
+    <None Include="..\ver-15\sadram\sadram.srcs\sim_1\new\samDefines.sv" />
+    <None Include="..\ver-12\sadram\sadram.sim\sim_1\behav\xsim\blockRam.data" />
+    <None Include="..\ver-12\sadram\sadram.sim\sim_1\behav\xsim\bug-sim.cap" />
+    <None Include="..\ver-12\sadram\sadram.sim\sim_1\behav\xsim\firstRow.data" />
+    <None Include="..\ver-12\sadram\sadram.sim\sim_1\behav\xsim\params.data" />
+    <None Include="..\ver-12\sadram\sadram.sim\sim_1\behav\xsim\runsim.tcl" />
+    <None Include="..\ver-12\sadram\sadram.sim\sim_1\behav\xsim\user.data" />
+    <None Include="..\ver-12\sadram\sadram.sim\sim_1\behav\xsim\userCmds.data" />
+    <None Include="..\ver-12\sadram\sadram.srcs\sim_1\new\groupSmear.sv" />
+    <None Include="..\ver-12\sadram\sadram.srcs\sim_1\new\readWord.sv" />
+    <None Include="..\ver-12\sadram\sadram.srcs\sim_1\new\user.cmds" />
+    <None Include="..\ver-12\sadram\sadram.srcs\sim_1\new\writeWord.sv" />
+    <None Include="backup.bat" />
+    <None Include="cdBackup.bat" />
+    <None Include="cmpDump.bat" />
+    <None Include="compare1.bat" />
+    <None Include="compareWithBackup.bat" />
+    <None Include="crash.bat" />
+    <None Include="createKeyFile.bat" />
+    <None Include="makeVerilogData.bat" />
+    <None Include="manual1.keys" />
+    <None Include="manual2.keys" />
+    <None Include="memory.bug" />
+    <None Include="nuVersion.bat" />
+    <None Include="NYphoneBook.keys" />
+    <None Include="postProcessMemoryBug.bat" />
+    <None Include="quickTest.bat" />
+    <None Include="sam.bat" />
+    <None Include="samD.bat" />
+    <None Include="samsort.dump" />
+    <None Include="showStats.bat" />
+    <None Include="test.bat" />
+    <None Include="test1.bat" />
+    <None Include="testAll.bat" />
+    <None Include="testGroups.bat" />
+    <None Include="TestHelp.bat" />
+    <None Include="testLup.bat" />
+    <None Include="testpack.bat" />
+    <None Include="TestReformatBook.bat" />
+    <None Include="testSeq.bat" />
+    <None Include="testshort.bat" />
+    <None Include="wastage.bat" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\ver-15\sadram\sadram.sim\sim_1\behav\xsim\blockRam.txt" />
+    <Text Include="..\ver-15\sadram\sadram.sim\sim_1\behav\xsim\params.txt" />
+    <Text Include="..\ver-12\sadram\sadram.sim\sim_1\behav\xsim\blockRam.txt" />
+    <Text Include="..\ver-12\sadram\sadram.sim\sim_1\behav\xsim\params.txt" />
+    <Text Include="todo.txt" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{f87b3587-eb4c-498c-9191-44ecae81551a}</ProjectGuid>
+    <RootNamespace>sam</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <TargetName>sam</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <TargetName>sam</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>..\include-15;..\source-15;.</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <StackReserveSize>2000000</StackReserveSize>
+      <StackCommitSize>16384</StackCommitSize>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>..\include-15;..\source-15;.</AdditionalIncludeDirectories>
+      <AdditionalOptions>/D USE_TIMERS %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <StackReserveSize>2000000</StackReserveSize>
+      <StackCommitSize>16384</StackCommitSize>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
