@@ -1,0 +1,67 @@
+//File \svn\sam\ver-15\sadram\sadram.sim\sim_1\behav\xsim\scin.microcode created 19/03/2023@16:29.
+//op //pc  label     : interpretation    line# and source. Source file=scin.sam
+8218 //000 start  : $bugLevel=2                                                  line 9  $bug    = 2;
+
+0016 //001        : OP_CROWI=0                                                   line 10  $curRow = 0;
+
+6018 //002        : $BUG_INDX                                                    line 11  $bug_indx;
+
+002A //003        : OP_CFG(cell)                                                 line 12  cfg(cell);
+
+008A //004        : OP_CFG(group)                                                line 13  cfg(group);
+
+1816 //005        : OP_CROWI=24                                                  line 14  $curRow = 24;            $bug_indx;
+6018 //006        : $BUG_INDX                                                    line 14  
+
+3106 //007        : $0 = 0x31                                                    line 15  scin(indx) "7CB42901";   $bug_indx;
+303B //008        : OP_LDI $0 0x0C0E                                             line 15  
+4C8F //009        : OP_LDI $0 0x1323                                             line 15  
+4427 //010        : OP_LDI $0 0x1109                                             line 15  
+0CDF //011        : OP_LDI $0 0x0337                                             line 15  
+011C //012        : OP_SCIN(INDX)                                                line 15  
+6018 //013        : $BUG_INDX                                                    line 15  
+
+3406 //014        : $0 = 0x34                                                    line 16  scin(indx) "7AC20124";   $bug_indx;
+3233 //015        : OP_LDI $0 0x0C8C                                             line 16  
+4C0F //016        : OP_LDI $0 0x1303                                             line 16  
+2437 //017        : OP_LDI $0 0x090D                                             line 16  
+04DF //018        : OP_LDI $0 0x0137                                             line 16  
+011C //019        : OP_SCIN(INDX)                                                line 16  
+6018 //020        : $BUG_INDX                                                    line 16  
+
+4606 //021        : $0 = 0x46                                                    line 17  scin(indx) "7B4401CF";   $bug_indx;
+4333 //022        : OP_LDI $0 0x10CC                                             line 17  
+4C0F //023        : OP_LDI $0 0x1303                                             line 17  
+4347 //024        : OP_LDI $0 0x10D1                                             line 17  
+08DF //025        : OP_LDI $0 0x0237                                             line 17  
+011C //026        : OP_SCIN(INDX)                                                line 17  
+6018 //027        : $BUG_INDX                                                    line 17  
+
+3506 //028        : $0 = 0x35                                                    line 18  scin(indx) "7A619125";   $bug_indx;
+3233 //029        : OP_LDI $0 0x0C8C                                             line 18  
+4E4F //030        : OP_LDI $0 0x1393                                             line 18  
+1367 //031        : OP_LDI $0 0x04D9                                             line 18  
+04DF //032        : OP_LDI $0 0x0137                                             line 18  
+011C //033        : OP_SCIN(INDX)                                                line 18  
+6018 //034        : $BUG_INDX                                                    line 18  
+
+0935 //035        : OP_GO_F(full)  @(45)                                         line 19  if (full)
+
+001E //036        : OP_PRINT "line=$line, pc=$pc: Insert 0x$0 failed\n"          line 20  {print "line=$line, pc=$pc: Insert 0x$0 failed\n" ;
+
+8712 //037        : OP_REPEAT 8, reg++                                           line 21  PUSHALL;
+1402 //038        : OP_PUSH $0                                                   line 21  
+
+05A0 //039        : CALL mitosis@(45)                                            line 22  call mitosis;
+
+A712 //040        : OP_REPEAT 8, reg--                                           line 23  POPALL;
+13E2 //041        : OP_POP $7                                                    line 23  
+
+011C //042        : OP_SCIN(INDX)                                                line 24  scin(indx);
+
+1382 //043        : OP_POP $4                                                    line 23  POPALL;
+
+0018 //044        : OP_STOP                                                      line 25  stop;
+
+011E //045 mitosis: OP_PRINT "line=$line, pc=$pc: Start mitosis\n"               line 28  mitosis: print "line=$line, pc=$pc: Start mitosis\n" ; ret;
+000A //046        : OP_RET                                                       line 28  

@@ -1,0 +1,239 @@
+//File \svn\sam\ver-15\sadram\sadram.sim\sim_1\behav\xsim\gotos.microcode created 19/03/2023@16:29.
+//op //pc  label     : interpretation    line# and source. Source file=gotos.sam
+0001 //000 jmpTable  : OP_GO_L start @(4)                                           line 15  jmpTable: goto(long) start;
+0004 //001           : DW 0x0004 (address of start)                                 line 15  
+
+0001 //002 mitosis   : OP_GO_L _mitosis @(186)                                      line 16  mitosis:  goto(long) _mitosis;
+00BA //003           : DW 0x00BA (address of _mitosis)                              line 16  
+
+8218 //004 start     : $bugLevel=2                                                  line 18  $bug    = bug;
+
+0016 //005           : OP_CROWI=0                                                   line 19  $curRow = 0;
+
+4018 //006           : $BUG_RAW                                                     line 20  $BUG_RAW;
+
+002A //007           : OP_CFG(cell)                                                 line 21  cfg(cell);
+
+008A //008           : OP_CFG(group)                                                line 22  cfg(group);
+
+FF09 //009           : OP_GO_T(qrdy)  @(9)                                          line 23  while (qrdy) {}
+
+FF0D //010 idleLup   : OP_GO_F(qrdy)  @(10)                                         line 24  idleLup:while (!qrdy) {}
+
+1816 //011           : OP_CROWI=24                                                  line 25  $curRow = 24;
+
+3106 //012           : $0 = 0x31                                                    line 26  scin(indx) "7CB42901";
+303B //013           : OP_LDI $0 0x0C0E                                             line 26  
+4C8F //014           : OP_LDI $0 0x1323                                             line 26  
+4427 //015           : OP_LDI $0 0x1109                                             line 26  
+0CDF //016           : OP_LDI $0 0x0337                                             line 26  
+011C //017           : OP_SCIN(INDX)                                                line 26  
+
+3406 //018           : $0 = 0x34                                                    line 27  scin(indx) "7AC20124";   $bug_indx;
+3233 //019           : OP_LDI $0 0x0C8C                                             line 27  
+4C0F //020           : OP_LDI $0 0x1303                                             line 27  
+2437 //021           : OP_LDI $0 0x090D                                             line 27  
+04DF //022           : OP_LDI $0 0x0137                                             line 27  
+011C //023           : OP_SCIN(INDX)                                                line 27  
+6018 //024           : $BUG_INDX                                                    line 27  
+
+4606 //025           : $0 = 0x46                                                    line 28  scin(indx) "7B4401CF";   $bug_indx;
+4333 //026           : OP_LDI $0 0x10CC                                             line 28  
+4C0F //027           : OP_LDI $0 0x1303                                             line 28  
+4347 //028           : OP_LDI $0 0x10D1                                             line 28  
+08DF //029           : OP_LDI $0 0x0237                                             line 28  
+011C //030           : OP_SCIN(INDX)                                                line 28  
+6018 //031           : $BUG_INDX                                                    line 28  
+
+3506 //032           : $0 = 0x35                                                    line 29  scin(indx) "7A619125";   $bug_indx;
+3233 //033           : OP_LDI $0 0x0C8C                                             line 29  
+4E4F //034           : OP_LDI $0 0x1393                                             line 29  
+1367 //035           : OP_LDI $0 0x04D9                                             line 29  
+04DF //036           : OP_LDI $0 0x0137                                             line 29  
+011C //037           : OP_SCIN(INDX)                                                line 29  
+6018 //038           : $BUG_INDX                                                    line 29  
+
+0A35 //039           : OP_GO_F(full)  @(50)                                         line 30  if (full)
+
+001E //040           : OP_PRINT "Insert 0x$0 failed\n"                              line 31  {print "Insert 0x$0 failed\n" ;
+
+8712 //041           : OP_REPEAT 8, reg++                                           line 32  PUSHALL;
+1402 //042           : OP_PUSH $0                                                   line 32  
+
+0040 //043           : CALL mitosis@(2)                                             line 33  call mitosis;
+
+A712 //044           : OP_REPEAT 8, reg--                                           line 34  POPALL;
+13E2 //045           : OP_POP $7                                                    line 34  
+
+011C //046           : OP_SCIN(INDX)                                                line 35  scin(indx);
+
+1382 //047           : OP_POP $4                                                    line 34  POPALL;
+
+0001 //048           : OP_GO_L afterBlob @(179)                                     line 36  goto afterBlob;
+
+00B3 //049           : DW 0x00B3 (address of afterBlob)                             line 38  stop;
+0018 //050 >         : OP_STOP                                                      line 38  
+
+0000 //051           : DW 0x0000                                                    line 39  DW 64'h0000000000000000, 64'h0101010101010101, 64'h0202020202020
+0000 //052           : DW 0x0000                                                    line 39  
+0000 //053           : DW 0x0000                                                    line 39  
+0000 //054           : DW 0x0000                                                    line 39  
+0101 //055           : DW 0x0101                                                    line 39  
+0101 //056           : DW 0x0101                                                    line 39  
+0101 //057           : DW 0x0101                                                    line 39  
+0101 //058           : DW 0x0101                                                    line 39  
+0202 //059           : DW 0x0202                                                    line 39  
+0202 //060           : DW 0x0202                                                    line 39  
+0202 //061           : DW 0x0202                                                    line 39  
+0202 //062           : DW 0x0202                                                    line 39  
+0303 //063           : DW 0x0303                                                    line 39  
+0303 //064           : DW 0x0303                                                    line 39  
+0303 //065           : DW 0x0303                                                    line 39  
+0303 //066           : DW 0x0303                                                    line 39  
+
+1010 //067           : DW 0x1010                                                    line 40  DW 64'h1010101010101010, 64'h1111111111111111, 64'h1212121212121
+1010 //068           : DW 0x1010                                                    line 40  
+1010 //069           : DW 0x1010                                                    line 40  
+1010 //070           : DW 0x1010                                                    line 40  
+1111 //071           : DW 0x1111                                                    line 40  
+1111 //072           : DW 0x1111                                                    line 40  
+1111 //073           : DW 0x1111                                                    line 40  
+1111 //074           : DW 0x1111                                                    line 40  
+1212 //075           : DW 0x1212                                                    line 40  
+1212 //076           : DW 0x1212                                                    line 40  
+1212 //077           : DW 0x1212                                                    line 40  
+1212 //078           : DW 0x1212                                                    line 40  
+1313 //079           : DW 0x1313                                                    line 40  
+1313 //080           : DW 0x1313                                                    line 40  
+1313 //081           : DW 0x1313                                                    line 40  
+1313 //082           : DW 0x1313                                                    line 40  
+
+2020 //083           : DW 0x2020                                                    line 41  DW 64'h2020202020202020, 64'h2121212121212121, 64'h2222222222222
+2020 //084           : DW 0x2020                                                    line 41  
+2020 //085           : DW 0x2020                                                    line 41  
+2020 //086           : DW 0x2020                                                    line 41  
+2121 //087           : DW 0x2121                                                    line 41  
+2121 //088           : DW 0x2121                                                    line 41  
+2121 //089           : DW 0x2121                                                    line 41  
+2121 //090           : DW 0x2121                                                    line 41  
+2222 //091           : DW 0x2222                                                    line 41  
+2222 //092           : DW 0x2222                                                    line 41  
+2222 //093           : DW 0x2222                                                    line 41  
+2222 //094           : DW 0x2222                                                    line 41  
+2323 //095           : DW 0x2323                                                    line 41  
+2323 //096           : DW 0x2323                                                    line 41  
+2323 //097           : DW 0x2323                                                    line 41  
+2323 //098           : DW 0x2323                                                    line 41  
+
+3030 //099           : DW 0x3030                                                    line 42  DW 64'h3030303030303030, 64'h3131313131313131, 64'h3232323232323
+3030 //100           : DW 0x3030                                                    line 42  
+3030 //101           : DW 0x3030                                                    line 42  
+3030 //102           : DW 0x3030                                                    line 42  
+3131 //103           : DW 0x3131                                                    line 42  
+3131 //104           : DW 0x3131                                                    line 42  
+3131 //105           : DW 0x3131                                                    line 42  
+3131 //106           : DW 0x3131                                                    line 42  
+3232 //107           : DW 0x3232                                                    line 42  
+3232 //108           : DW 0x3232                                                    line 42  
+3232 //109           : DW 0x3232                                                    line 42  
+3232 //110           : DW 0x3232                                                    line 42  
+3333 //111           : DW 0x3333                                                    line 42  
+3333 //112           : DW 0x3333                                                    line 42  
+3333 //113           : DW 0x3333                                                    line 42  
+3333 //114           : DW 0x3333                                                    line 42  
+
+4040 //115           : DW 0x4040                                                    line 43  DW 64'h4040404040404040, 64'h4141414141414141, 64'h4242424242424
+4040 //116           : DW 0x4040                                                    line 43  
+4040 //117           : DW 0x4040                                                    line 43  
+4040 //118           : DW 0x4040                                                    line 43  
+4141 //119           : DW 0x4141                                                    line 43  
+4141 //120           : DW 0x4141                                                    line 43  
+4141 //121           : DW 0x4141                                                    line 43  
+4141 //122           : DW 0x4141                                                    line 43  
+4242 //123           : DW 0x4242                                                    line 43  
+4242 //124           : DW 0x4242                                                    line 43  
+4242 //125           : DW 0x4242                                                    line 43  
+4242 //126           : DW 0x4242                                                    line 43  
+4343 //127           : DW 0x4343                                                    line 43  
+4343 //128           : DW 0x4343                                                    line 43  
+4343 //129           : DW 0x4343                                                    line 43  
+4343 //130           : DW 0x4343                                                    line 43  
+
+5050 //131           : DW 0x5050                                                    line 44  DW 64'h5050505050505050, 64'h5151515151515151, 64'h5252525252525
+5050 //132           : DW 0x5050                                                    line 44  
+5050 //133           : DW 0x5050                                                    line 44  
+5050 //134           : DW 0x5050                                                    line 44  
+5151 //135           : DW 0x5151                                                    line 44  
+5151 //136           : DW 0x5151                                                    line 44  
+5151 //137           : DW 0x5151                                                    line 44  
+5151 //138           : DW 0x5151                                                    line 44  
+5252 //139           : DW 0x5252                                                    line 44  
+5252 //140           : DW 0x5252                                                    line 44  
+5252 //141           : DW 0x5252                                                    line 44  
+5252 //142           : DW 0x5252                                                    line 44  
+5353 //143           : DW 0x5353                                                    line 44  
+5353 //144           : DW 0x5353                                                    line 44  
+5353 //145           : DW 0x5353                                                    line 44  
+5353 //146           : DW 0x5353                                                    line 44  
+
+6060 //147           : DW 0x6060                                                    line 45  DW 64'h6060606060606060, 64'h6161616161616161, 64'h6262626262626
+6060 //148           : DW 0x6060                                                    line 45  
+6060 //149           : DW 0x6060                                                    line 45  
+6060 //150           : DW 0x6060                                                    line 45  
+6161 //151           : DW 0x6161                                                    line 45  
+6161 //152           : DW 0x6161                                                    line 45  
+6161 //153           : DW 0x6161                                                    line 45  
+6161 //154           : DW 0x6161                                                    line 45  
+6262 //155           : DW 0x6262                                                    line 45  
+6262 //156           : DW 0x6262                                                    line 45  
+6262 //157           : DW 0x6262                                                    line 45  
+6262 //158           : DW 0x6262                                                    line 45  
+6363 //159           : DW 0x6363                                                    line 45  
+6363 //160           : DW 0x6363                                                    line 45  
+6363 //161           : DW 0x6363                                                    line 45  
+6363 //162           : DW 0x6363                                                    line 45  
+
+7070 //163           : DW 0x7070                                                    line 46  DW 64'h7070707070707070, 64'h7171717171717171, 40'h7272727272;
+7070 //164           : DW 0x7070                                                    line 46  
+7070 //165           : DW 0x7070                                                    line 46  
+7070 //166           : DW 0x7070                                                    line 46  
+7171 //167           : DW 0x7171                                                    line 46  
+7171 //168           : DW 0x7171                                                    line 46  
+7171 //169           : DW 0x7171                                                    line 46  
+7171 //170           : DW 0x7171                                                    line 46  
+7272 //171           : DW 0x7272                                                    line 46  
+7272 //172           : DW 0x7272                                                    line 46  
+0072 //173           : DW 0x0072                                                    line 46  
+
+FFFF //174           : DW 0xFFFF                                                    line 47  DW 64'hFFFFFFFFFFFFFFFF   ; NOOP;
+FFFF //175           : DW 0xFFFF                                                    line 47  
+FFFF //176           : DW 0xFFFF                                                    line 47  
+FFFF //177           : DW 0xFFFF                                                    line 47  
+0005 //178           : NOOP                                                         line 47  
+
+0B01 //179 afterBlob : OP_GO_T patchMe @(191)                                       line 49  goto patchMe;
+
+1820 //180 afterPatch: CALL patchThee@(193)                                         line 51  call patchThee;
+
+0301 //181           : OP_GO_T  @(185)                                              line 52  if (false) {print "exit test\n"; goto idleLup;}
+011E //182           : OP_PRINT "exit test\n"                                       line 52  
+0001 //183           : OP_GO_L idleLup @(10)                                        line 52  
+
+000A //184           : DW 0x000A (address of idleLup)                               line 53  stop;
+0018 //185 >         : OP_STOP                                                      line 53  
+
+0001 //186 _mitosis  : OP_GO_L mitosis1 @(189)                                      line 54  _mitosis: goto(long) mitosis1;
+00BD //187           : DW 0x00BD (address of mitosis1)                              line 54  
+
+0005 //188           : NOOP                                                         line 55  goto mitosis1;
+
+021E //189 mitosis1  : OP_PRINT "Start mitosis\n"                                   line 56  mitosis1:print "Start mitosis\n" ; ret;
+000A //190           : OP_RET                                                       line 56  
+
+031E //191 patchMe   : OP_PRINT "Patch me\n"                                        line 58  patchMe:   print "Patch me\n" ;   goto afterPatch;
+F301 //192           : OP_GO_T afterPatch @(180)                                    line 58  
+
+0006 //193 patchThee : $0 = 0x0                                                     line 59  patchThee: $0 = $pc; print "Patch thee 0x$0\n" ; ret;
+030F //194           : OP_LDI $0 0x00C3                                             line 59  
+041E //195           : OP_PRINT "Patch thee 0x$0\n"                                 line 59  
+000A //196           : OP_RET                                                       line 59  
