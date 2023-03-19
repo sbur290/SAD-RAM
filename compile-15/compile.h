@@ -5,7 +5,7 @@
 #include <fcntl.h>
 #include <opName.h>
 #include <C3_atomize.h>
-#include <C3_errors.h>
+#include <C3_errors.h> 
 
 #pragma pack(push, 1)
 //External structure for opcode; represented as four hex digits in <program>.microcode.

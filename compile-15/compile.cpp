@@ -3,7 +3,7 @@
  Input is in register transfer format, meaning that each opcode and supporting
  parameters are specified in the style of a standard assembler plus some
  simple language extensions such as if, for, and while. 
- Syntax is:
+ Syntax is: 
     statement      == opcode plus supporting parameters terminated with ';'
     statement-List == {statement; statement;... }
     if (statement) statement-List [else statement-List]
