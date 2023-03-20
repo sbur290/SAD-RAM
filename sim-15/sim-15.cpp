@@ -957,13 +957,13 @@ int cSimDriver::OpPrint(int pc, OPCODE op, uint64_t *regsP, int bugLevel)
     for (len=m_printBuf[0]=0; *msgP; msgP++)                                    //
         {if (*msgP == '$')                                                      //
              {if (strnicmp(msgP, "$line", 5) == 0)                              //
-                 {snprintf(&m_printBuf[len], sizeof(m_printBuf)-len-1, "%d",    //
+                 {snprintf(&m_printBuf[len], sizeof(m_printBuf)-len-1, "0x%X",  //
                                       GetSourceLineNum(pc));                    //
                   msgP += 4;                                                    //
                  }                                                              //
               else                                                              //
               if (strnicmp(msgP, "$pc", 3) == 0)                                //
-                 {snprintf(&m_printBuf[len], sizeof(m_printBuf)-len-1, "%d",pc);//
+                 {snprintf(&m_printBuf[len],sizeof(m_printBuf)-len-1,"0x%X",pc);//
                   msgP += 2;                                                    //
                  }                                                              //
               else                                                              //

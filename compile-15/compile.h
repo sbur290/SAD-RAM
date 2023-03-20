@@ -56,10 +56,10 @@ const int TARGETBUS_SIZE=8, CELL_SZ=8;
 class cCompile
   {public:                                                                   //
    cPreProcessor *m_prepP;                                                   //
-   int            m_pgmSize,   m_pgmAvail, m_post,     m_loAdr, m_hiAdr,     //
-                  m_errCount, *m_nastiesP, m_nastyCnt, m_rowOvr;             //
-   bool           m_bugEmitB, m_rowOvrB,   m_unconditionalP,    m_stepableB, //
-                  m_badReg0B, m_safeRegB,  m_safeRegDefaultB,   m_patchDrvB, //
+   int            m_pgmSize,   m_pgmAvail, m_loAdr,          m_hiAdr,        //
+                  m_errCount, *m_nastiesP, m_nastyCnt,       m_rowOvr;       //
+   bool           m_bugEmitB,  m_rowOvrB,  m_unconditionalP, m_stepRegB,     //
+                  m_badReg0B,  m_safeRegB, m_safeRegDefaultB,m_patchDrvB,    //
                   m_alwaysMessageBoxB,     m_nuB[3];                         //
    char           m_cleanSource[MAX_LINE_LEN+1];                             //
    sSRC_REF       m_ref;
@@ -153,10 +153,11 @@ class cCompile
    bool          NoJumpsToHere (int pc);                                     //
    #define OPNAME(pc, labelP, knownB)                                        \
      m_opNameP->Show(pc, m_codeP[pc].op, m_codeP[(pc)+1].op, labelP, knownB) //
+   int           OpCfg         (int pc);                                     //
+   int           OpScan        (int pc);                                     //
    int           PatchSamDefines(CC samDefinesNameP);                        //
    int           Precedence    (uint32_t op);                                //
    int           PrintStmt     (int pc, int caze);                           //
-   int           Qualified     (int pc, bool cfgB);                          //
    int           StatementList (int pc,char stopper=';',bool oneShotB=false);//
    int           ResolveGotos  (void);                                       //
    int           ResolveNasties(void);                                       //
@@ -167,7 +168,7 @@ class cCompile
    int           SimpleCondition(IATOM aa);                                  //
    int           SimplifiedForz(sCODE_BLOB *, int, sCODE_BLOB *, int);       //
    char         *strdupl(const char *srcP, int len=-1);                      //
-   int           RegAssignment(int pc, IATOM aa, int act);                   //
+   int           RegAssign     (int pc, IATOM aa, int act);                  //
    int           RegisterPostOp(int pc, IATOM reg, IATOM postOp);            //
    void          StretchOp     (int pc);                                     //
    int           WhereisLabel  (const char *labelP);                         //

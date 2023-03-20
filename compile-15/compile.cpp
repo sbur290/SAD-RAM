@@ -328,7 +328,7 @@ int cCompile::StatementList(int pc, char stopper, bool oneShotB)
                                                                                 //
     vbl.act = 0; vbl.ctrl = X_VBL_ASSIGN; vbl.nameP = NULL;                     //
     while ((aa=Get()).type != GC_NULL)                                          //repeat to end of file
-       {m_pgmSize = startPc = pc; reg = -1; m_stepableB = m_rowOvrB = false;    //
+       {m_pgmSize = startPc = pc; reg = -1; m_stepRegB = m_rowOvrB = false;     //
         m_ref     = m_a.ref;                                                    //prevails thru this opcode generation
         #ifdef _DEBUG                                                           //
 //          _CrtCheckMemory();                                                  //
@@ -367,23 +367,19 @@ int cCompile::StatementList(int pc, char stopper, bool oneShotB)
         if (pc == pcPlz || m_ref.lineNum == linePlz)                            //stop on this pc/line
             bugEmitB = true;                                                    //<<< debugging point <<<
         switch (otP->ctrl)                                                      //
-          {case X_COMPILE_STOP: if (!Is(';')) Backup(m_a); continue;            //<--- debugging break point <<---
+          {case X_COMPILE_STOP: if (!Is(';')) Backup(m_a);            continue; //<--- debugging break point <<---
            case 0:                                  return ErrorA(ERR_2522, aa);//
-           case X_ONE: pc++; break;                                             //opcode from table is complete
+           case X_ONE: pc++;                                          break;    //opcode from table is complete
            case X_ENVIRONMENT:                                                  //
             if ((erC=SetEnvironment())                < 0) return erC;continue; //
            case X_ARITH: case X_UNOP:                                           //arithmetics except inline ops (pop, push, xchg) or shifts
             if ((pc=Arithmetic(pc, otP))              < 0) return pc; break;    //
            case X_SHIFT:                                                        //shift opcodes
             if ((pc=ShiftStmt(pc, (uint8_t)otP->act)) < 0) return pc; break;    //
-           case X_VBL_ASSIGN:                                                   //
-            if ((pc=AssignMem(pc, ii))                < 0) return pc; break;    //
-           case X_STORE:                                                        //[adr] = reg
-            if ((pc=AssignMem(pc, -1))                < 0) return pc; break;    //
-           case X_REG:                                                          //$reg = something 
-            if ((pc=RegAssignment(pc, aa, otP->act))  < 0) return pc; break;    //
-           case X_CFG:                                                          //expecting (cell) or (group)
-            if ((pc=Qualified(pc, true))              < 0) return pc; break;    //
+           case X_VBL_ASSIGN: if((pc=AssignMem(pc,ii))< 0) return pc; break;    //
+           case X_STORE:if((pc=AssignMem(pc, -1))     < 0) return pc; break;    //[adr] = reg
+           case X_REG:  if((pc=RegAssign(pc, aa, otP->act))< 0)return pc;break; //$reg = something 
+           case X_CFG:  if((pc=OpCfg(pc))             < 0) return pc; break;    //expecting (cell) or (group)
            case X_DW:   if((pc=DwStmt(pc))            < 0) return pc; break;    //
            case X_DO:   if((pc=DoStmt(pc))            < 0) return pc; continue; //
            case X_IF:   if((pc=IfStmt(pc))            < 0) return pc; continue; //
@@ -392,19 +388,19 @@ int cCompile::StatementList(int pc, char stopper, bool oneShotB)
            case X_WHILE:if((pc=WhileStmt(pc))         < 0) return pc; continue; //
            case X_PRINT:if((pc=PrintStmt(pc,otP->act))< 0) return pc; break;    //
            case X_ALLOC:if((erC=AllocateBram())       < 0) return erC;break;    //
-           case X_BRAKE:if ((pc=BreakStmt(pc, otP->act, &labelP)) < 0)          //
+           case X_BRAKE:if((pc=BreakStmt(pc, otP->act, &labelP)) < 0)           //
                                                            return pc; break;    //
            case X_SCAN:                                                         //expecting (rowType)
             //scin and scan allow target operand, eg. scan(indx) "abcdefgh"     //
             //plain 'scan(indx)' will use $reg0 as target                       // 
-            if ((pc=Qualified(pc, false)) < 0)             return pc;           //
+            if ((pc=OpScan(pc))                       < 0) return pc;           //
             bb = Is(';'); Backup(m_a);                                          //
             if (!bb)                                                            //
-               {blob     = *bP;                                                 //save opcode generated thus far
-                pc       = LongStringOrLiteral(pc-1, m_a);                      //    
-                *(bP     = &m_codeP[pc]) = blob;                                //restore opcode
+               {blob          = *bP;                                            //save opcode generated thus far
+                pc            = LongStringOrLiteral(pc-1, m_a);                 //insert literal
+                m_codeP[pc++] = blob;                                           //restore opcode
                }                                                                //
-            pc++; break;                                                        //
+            break;                                                              //
            case X_BUG:                                                          //
             if (Is('='))                                                        //
                {if ((erC=ConstantExpression(&result)) < 0) return erC;          //$bug = constant
@@ -557,18 +553,18 @@ int cCompile::MultiOp(int pc, OPCODE baseOp)
    {int  reg=baseOp.g.breg, repeat; sCODE_BLOB *bP=&m_codeP[pc];                //
     if (m_loAdr == m_hiAdr) return pc+1;                                        //
     bP->op.u16         = OP_REPEAT;                                             //first the repeat meta-op
-    bP->op.rpt.count   = m_hiAdr < m_loAdr ? (repeat = m_loAdr - m_hiAdr)       //
-                                           : (repeat = m_hiAdr - m_loAdr);      //
+    bP->op.rpt.count   = repeat = iabs(m_hiAdr - m_loAdr);                      //
     if (repeat >= 32) return Error(ERR_2734, "");                               //2734 = repeat is too big
-    bP  ->op.rpt.stepA = 1;                                                     //
-    bP  ->op.rpt.stepR = m_stepableB ? 0 : 1;                                   //
-    bP  ->op.rpt.bkwd  = m_loAdr > m_hiAdr;                                     //step fwd/bkwd, eg read [0:10] versus read[10:0]
-    bP++->ref          = m_ref;                                                 //
-    bP  ->op           = baseOp;                                                //duplicate opcode, but...
-    bP  ->op.g.adr     = m_loAdr;                                               //starting word address
-    bP  ->op.g.breg    = reg;                                                   //starting reg address
-    bP->ref            = m_ref;                                                 //
-    bP  ->hereP        = NULL;                                                  //label valid on first op, NULL thereafter
+    bP->op.rpt.stepA = 1;                                                       //
+    bP->op.rpt.stepR = m_stepRegB ? 0 : 1;                                      //
+    bP->op.rpt.bkwd  = m_loAdr > m_hiAdr;                                       //step fwd/bkwd, eg read [0:10] versus read[10:0]
+    bP->ref          = m_ref;                                                   //end of op_repeat
+    bP++;  pc++;                                                                //now the real op-code
+    bP->op           = baseOp;                                                  //duplicate opcode, but...
+    bP->op.g.adr     = m_loAdr;                                                 //starting word address
+    bP->op.g.breg    = reg;                                                     //starting reg address
+    bP->ref          = m_ref;                                                   //
+    bP->hereP        = NULL;                                                    //label valid on first op, NULL thereafter
     return pc+1;                                                                //
    } //cCompile::MultiOp...
 
@@ -994,29 +990,30 @@ int cCompile::PrintStmt(int pc, int caze)
     return pc;                                                                  //
    } //cCompile::PrintStmt...
 
-//OP_SCAN/OP_SCIN   are qualified with (indx) or (page) or (book)    configB = false
-//OP_CFG            is  qualified with (cell) or (group)             configB = true
-//cell and page/book return 0x100 (op.g.breg or op.sc.rowType == 1).
-int cCompile::Qualified(int pc, bool configB)
-   {IATOM   aa;                                                                 //
-    OPCODE *opP=&m_codeP[pc].op;                                                //
+//OP_CFG(cell) or OP_CFG(group)
+int cCompile::OpCfg(int pc)
+   {OPCODE *opP=&m_codeP[pc].op;                                                //
+    if (!Is('('))                                 return ErrorA(ERR_3007, m_a); //3007 = Missing open parenthesis
+    if ((Get()).type != GC_NAME)                  return ErrorA(ERR_3000, m_a); //3007 = Missing name
+    if (IsWord("cell"))  opP->g.breg = 5; else                                  //
+    if (IsWord("group")) opP->g.breg = 4; else    return ErrorA(ERR_2731, m_a); //2731 = Missing (cell) or (group)
+    if (!Is(')'))                                 return ErrorA(ERR_7184, m_a); //7184 = Missing close parenthesis ')' in an expression
+    return pc+1;
+   } //cCompile::OpCfg...
+
+//OP_SCAN/OP_SCIN (indx), (page), or (book). set rowType = 1 (for type INDX)
+int cCompile::OpScan(int pc)
+   {OPCODE *opP=&m_codeP[pc].op;                                                //
     if (!Is('('))                                 return ErrorA(ERR_3007, m_a); //3007 = Missing open parenthesis
     //opcode qualifier, (cell), (group), (indx), (page), or (book)              //
-    //eg. cfg(cell), scin(indx) <target>. set = 1, type from qualifier.         // 
-    if ((aa=Get()).type != GC_NAME)               return ErrorA(ERR_3000, m_a); //3007 = Missing name
+    if ((Get()).type != GC_NAME)                  return ErrorA(ERR_3000, m_a); //3007 = Missing name
+    if (IsWord("indx")) opP->sc.rowType = 1; else                               //indx/page bit in OP_CFG
+    if (IsWord("page")) {}                   else                               //book & page have identical structures
+    if (IsWord("book")) {}                   else                               //                 "
+                                                  return ErrorA(ERR_2731, m_a); //2731 = Missing (cell) or (group)
     if (!Is(')'))                                 return ErrorA(ERR_7184, m_a); //7184 = Missing close parenthesis ')' in an expression
-    m_a = aa;                                                                   //makes IsWord() work properly
-    if (configB)                                                                //
-       {if (IsWord("cell")) {opP->g.breg = 1;     return pc+1;}                 //
-        if (IsWord("group"))                      return pc+1;                  //
-       }                                                                        //
-    else                                                                        //
-       {if (IsWord("indx")) {opP->sc.rowType = 1; return pc+1;}                 //indx/page bit in OP_CFG
-        if (IsWord("page"))                       return pc+1;                  //book & page have identical structures
-        if (IsWord("book"))                       return pc+1;                  //                 "
-       }                                                                        //
-    return ErrorA(ERR_2731, m_a);                                               //2731 = Missing (cell) or (group)
-   } //cCompile::Qualified...
+    return pc+1;
+   } //cCompile::OpScan...
 
 IATOM cCompile::Get(bool probeB) 
    {while ((m_a=m_azP->GetAtom(probeB)).type == GC_COMMENT) {}
@@ -1644,7 +1641,7 @@ xit:free(bufP);                                                         //      
    } //cCompile::PatchSamDefines...
 
 //Wrapper for AssignReg to handle $reg:$reg and redirect $reg++ etc
-int cCompile::RegAssignment(int pc, IATOM lhs, int act)
+int cCompile::RegAssign(int pc, IATOM lhs, int act)
    {int        regRange= 0, baseReg=0, reg;                                     //
     bool       curRowB = (act == OP_CROW);                                      //
                                                                                 //
@@ -1670,7 +1667,7 @@ int cCompile::RegAssignment(int pc, IATOM lhs, int act)
        }                                                                        //
     if (regRange == 0 && m_a.type == GC_GETX)return RegisterPostOp(pc, lhs,m_a);//
 err:return ErrorA(ERR_2736, m_a);                                               //2736 = Invalid register
-   } //cCompile::RegAssignment...
+   } //cCompile::RegAssign...
 
 /*$<reg> = expression; assign value to register. 
  RHS may be another register (OPS_R2R), a literal, or a memory reference [adr].
@@ -1693,7 +1690,7 @@ int cCompile::AssignReg(int pc, IATOM dstnAtom)
     sCODE_BLOB *bP=&m_codeP[pc];                                        //
     bool        curRowB=bP->op.u16 == OP_CROW;                          //dstn reg is $curRow
                                                                         //
-    m_stepableB = false;                                                //
+    m_stepRegB = false;                                                 //
     if (!curRowB && !IsRegister(dstnAtom, &dstnReg)) goto err;          //LHS = $curRow or dReg
     //Now process RHS                                                   //
     if (Is("$pc"))                                                      //generates $reg = long literal (always)
@@ -1727,7 +1724,7 @@ int cCompile::AssignReg(int pc, IATOM dstnAtom)
             bP->op.u16   = OP_READ;                                     //replace OP_ARITH with OP_READ
             bP->op.g.breg= dstnReg;                                     //
             if ((pc=Address(pc)) < 0) return pc;                        //
-            m_stepableB  = true;                                        //
+            m_stepRegB  = true;                                        //
             if (!Is(']')) goto err;                                     //
        }   }                                                            //
     else
@@ -1740,7 +1737,7 @@ int cCompile::AssignReg(int pc, IATOM dstnAtom)
     else {//= literal                                                   //
           Backup(m_a);                                                  //
           pc = BuildLiteral(pc, curRowB, dstnReg) - 1;                  //MultiOp will step pc
-          m_stepableB = true;                                           //
+          m_stepRegB = true;                                           //
          }                                                              //
     return MultiOp(pc, bP->op);                                         //
 err:return ErrorA(ERR_2736, m_a);                                       //2736 = Expecting a register. 
@@ -1760,11 +1757,11 @@ err:return ErrorA(ERR_2736, m_a);                                       //2736 =
  [lo:hi]         = $regData | op.rpt.count = (hi-lo-1) (meaning (1+hi-lo) repititions)
                             | followed by op.g.act = OP_WRYT, op.g.sreg = reg. 
                             | Both the register and op.g.adr are incremented on 
-                            | each repitition (m_stepableB = false).   
+                            | each repitition (m_stepRegB = false).   
                             | op.rpt.bkwd = hi < lo and the adr/reg are decremented
  [lo:hi]         = literal  | $0 = literal, op.rpt.count as above, however, 
                             | op.rpt.stepR == 0, op.rpt.stepA == 1 meaning only the 
-                            | address field is incremented/decremented (m_stepableB = true).
+                            | address field is incremented/decremented (m_stepRegB = true).
  vbl < 0 expression was [...] =
  vbl > 0 expression was vbl   = 
 */
@@ -1773,7 +1770,7 @@ int cCompile::AssignMem(int pc, int vbl)
      sCODE_BLOB blob = m_codeP[pc];                                             //
      OPCODE     op   = blob.op;                                                 //
      bool       indirectB=false;                                                //
-     m_stepableB = false;                                                       //
+     m_stepRegB = false;                                                        //
      if (vbl < 0 && IsRegister(Get(), &adrReg))                                 //
         {//[$adrReg] = rhs; or [$adrReg].field = rhs;                           //
          op.u16 = OP_WRF; op.ind.areg = adrReg; indirectB = true;               //
@@ -1785,30 +1782,27 @@ int cCompile::AssignMem(int pc, int vbl)
          op.ind.fieldNum = fieldNum; blob.op = op; m_codeP[pc] = blob;          // 
         }                                                                       //
      else                                                                       //
-        {op.u16 = OP_WRYT; blob.op = op; m_codeP[pc] = blob; m_stepableB= true; //
-         if (vbl >= 0) 
+        {op.u16 = OP_WRYT; blob.op = op; m_codeP[pc] = blob; m_stepRegB= true;  //
+         if (vbl >= 0)                                                          //
             {op.g.adr = m_loAdr = m_hiAdr = (int)m_vblsP[vbl].wordAdr;}         //row override ??
-         else
+         else                                                                   //
             {if (((pc=Address(pc)) < 0)) return pc;                             //
              op.g.adr = m_loAdr;                                                //write address
              if (!Is(']'))               return ErrorA(ERR_3005, m_a);          //3005 = Missing ']'
         }   }                                                                   //
-     if (!(m_safeRegB=Is('!'))) Backup(m_a);                                   //
+     if (Is('!'))  m_safeRegB = false;                                          //
+     else         {m_safeRegB = m_safeRegDefaultB; Backup(m_a);}                //
      if (!Is('='))                       return ErrorA(ERR_2729, m_a);          //2729 = missing '='	
      if (IsRegister(Get(), &dataReg))                                           //
-        {if (indirectB)                                                         //[$reg] = $reg;
-//            {op.ind.dataReg = op.ind.adrReg; op.ind.adrReg = dataReg;         //
-              {op.ind.breg = dataReg;                                           //
-               m_post = 1;                                                      //post 1 merely pc++; 
-              }                                                                 //
-         else {op.g.breg = dataReg; op.g.adr = m_loAdr;}                        //[m] = $reg, or [m:n] = $reg;
-         m_stepableB = false;                                                   //
+        {op.g.breg  = dataReg;                                                  //[$reg] = $reg;
+         if (!indirectB) op.g.adr = m_loAdr;                                    //[m] = $reg, or [m:n] = $reg;
+         m_stepRegB = false;                                                    //
         }                                                                       //
      else                                                                       //
-        {op          = m_codeP[pc].op;                                          //save partial opcode
-         Backup(m_a);
+        {Backup(m_a);                                                           //
+         op          = m_codeP[pc].op;                                          //save partial opcode
          pc          = LongStringOrLiteral(pc, m_a);                            //
-         m_stepableB = true;                                                    // 
+         m_stepRegB  = true;                                                    // 
         }                                                                       // 
     blob.op = op; m_codeP[pc] = blob;                                           // 
     return MultiOp(pc, op);                                                     //MultoOp increments pc
