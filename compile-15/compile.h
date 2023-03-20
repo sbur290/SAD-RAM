@@ -59,7 +59,7 @@ class cCompile
    int            m_pgmSize,   m_pgmAvail, m_post,     m_loAdr, m_hiAdr,     //
                   m_errCount, *m_nastiesP, m_nastyCnt, m_rowOvr;             //
    bool           m_bugEmitB, m_rowOvrB,   m_unconditionalP,    m_stepableB, //
-                  m_badReg0B, m_safeRegB, m_safeRegDefaultB,  m_patchDrvB, //
+                  m_badReg0B, m_safeRegB,  m_safeRegDefaultB,   m_patchDrvB, //
                   m_alwaysMessageBoxB,     m_nuB[3];                         //
    char           m_cleanSource[MAX_LINE_LEN+1];                             //
    sSRC_REF       m_ref;

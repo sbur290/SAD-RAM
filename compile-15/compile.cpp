@@ -1781,13 +1781,13 @@ int cCompile::AssignMem(int pc, int vbl)
          if (!Is(']'))                        return ErrorA(ERR_3005, m_a);     //3005 = missing ']' or '}'
          if (!Is('.')) {Backup(m_a); fieldNum = 0;} else                        // 
          if ((fieldNum=FieldName(Get())) < 0) return fieldNum;                  //
-         if (!(m_safeRegB=Is('!'))) Backup(m_a);                               //
+         if (!(m_safeRegB=Is('!'))) Backup(m_a);                                //
          op.ind.fieldNum = fieldNum; blob.op = op; m_codeP[pc] = blob;          // 
         }                                                                       //
      else                                                                       //
         {op.u16 = OP_WRYT; blob.op = op; m_codeP[pc] = blob; m_stepableB= true; //
          if (vbl >= 0) 
-            {op.g.adr = m_loAdr = m_hiAdr = (int)m_vblsP[vbl].wordAdr;} //row override ??
+            {op.g.adr = m_loAdr = m_hiAdr = (int)m_vblsP[vbl].wordAdr;}         //row override ??
          else
             {if (((pc=Address(pc)) < 0)) return pc;                             //
              op.g.adr = m_loAdr;                                                //write address

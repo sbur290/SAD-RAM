@@ -14,7 +14,7 @@
   #define _stricmp            strcasecmp
   #include <unistd.h>
 #endif
-#include "..\sam-15\samOptions.h"
+#include <samOptions.h>
 #include "C3_timeFncs.h"
 #include "C3_codeTimer.h"
 
