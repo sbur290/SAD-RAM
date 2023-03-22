@@ -1,0 +1,382 @@
+//File \svn\sam\ver-15\sadram\sadram.sim\sim_1\behav\xsim\loops.microcode created 22/03/2023@10:56.
+//op //pc  label     : interpretation    line# and source. Source file=loops.sam
+0001 //000 (line 0003)      : OP_GO_L start @(2)                               [+94] goto(long) start;
+0002 //001 (line 0003)      : DW 0x0002 (address of start)                  [+99] 
+
+8218 //002 (line 0045) start: $bugLevel=2                                   [+2656] $bug = 2;
+
+001E //003 (line 0046)      : OP_PRINT "\n"                                 [+2769] print "\n" ;
+
+011E //004 (line 0048)      : OP_PRINT "case 0:\n"                          [+2878] print "case 0:\n" ; $expect "7,";             for ($5=7; $5  < 8;
+023E //005 (line 0048)      : OP_EXPECT "7,\n"                              [+2897] 
+07A6 //006 (line 0048)      : $5 = 0x7                                      [+2928] 
+0201 //007 (line 0048)      : OP_GO_T  @(10)                                [+2943] 
+035E //008 (line 0048)      : OP_ACTUAL "$5, \n"                            [+2950] 
+AAA2 //009 (line 0048)      : OP_INC $5                                     [+2943] 
+1402 //010 (line 0048)      : OP_PUSH $0                                    [+2931] 
+0806 //011 (line 0048)      : $0 = 0x8                                      [+2931] 
+04A2 //012 (line 0048)      : $0 CMP $5                                     [+2931] 
+1302 //013 (line 0048)      : OP_POP $0                                     [+2931] 
+F9A1 //014 (line 0048)      : OP_GO_T(~C ~Z)  @(8)                          [+2931] 
+001E //015 (line 0048)      : OP_PRINT "\n"                                 [+2967] 
+
+041E //016 (line 0049)      : OP_PRINT "case 1:\n"                          [+2983] print "case 1:\n" ; $expect "7, 8,"; $actual; for ($5=7; $5 <= 8;
+053E //017 (line 0049)      : OP_EXPECT "7, 8,\n"                           [+3002] 
+065E //018 (line 0049)      : OP_ACTUAL ""                                  [+3019] 
+07A6 //019 (line 0049)      : $5 = 0x7                                      [+3033] 
+0201 //020 (line 0049)      : OP_GO_T  @(23)                                [+3048] 
+071E //021 (line 0049)      : OP_PRINT "$5, "                               [+3055] 
+AAA2 //022 (line 0049)      : OP_INC $5                                     [+3048] 
+1402 //023 (line 0049)      : OP_PUSH $0                                    [+3036] 
+0806 //024 (line 0049)      : $0 = 0x8                                      [+3036] 
+04A2 //025 (line 0049)      : $0 CMP $5                                     [+3036] 
+1302 //026 (line 0049)      : OP_POP $0                                     [+3036] 
+F915 //027 (line 0049)      : OP_GO_F(C)  @(21)                             [+3036] 
+081E //028 (line 0049)      : OP_PRINT "\n\n"                               [+3072] 
+
+091E //029 (line 0050)      : OP_PRINT "case 2:\n"                          [+3090] print "case 2:\n" ; $expect "8, ";            for ($5=8; $5  > 7;
+0A3E //030 (line 0050)      : OP_EXPECT "8, \n"                             [+3109] 
+08A6 //031 (line 0050)      : $5 = 0x8                                      [+3140] 
+0201 //032 (line 0050)      : OP_GO_T  @(35)                                [+3155] 
+035E //033 (line 0050)      : OP_ACTUAL "$5, \n"                            [+3162] 
+ABA2 //034 (line 0050)      : OP_DEC $5                                     [+3155] 
+1402 //035 (line 0050)      : OP_PUSH $0                                    [+3143] 
+0706 //036 (line 0050)      : $0 = 0x7                                      [+3143] 
+04A2 //037 (line 0050)      : $0 CMP $5                                     [+3143] 
+1302 //038 (line 0050)      : OP_POP $0                                     [+3143] 
+F911 //039 (line 0050)      : OP_GO_T(C)  @(33)                             [+3143] 
+001E //040 (line 0050)      : OP_PRINT "\n"                                 [+3179] 
+
+0B1E //041 (line 0051)      : OP_PRINT "case 3:\n"                          [+3195] print "case 3:\n" ; $expect "8, 7,"; $actual; for ($5=8; $5 >= 7;
+0C3E //042 (line 0051)      : OP_EXPECT "8, 7,\n"                           [+3214] 
+065E //043 (line 0051)      : OP_ACTUAL ""                                  [+3231] 
+08A6 //044 (line 0051)      : $5 = 0x8                                      [+3245] 
+0201 //045 (line 0051)      : OP_GO_T  @(48)                                [+3260] 
+071E //046 (line 0051)      : OP_PRINT "$5, "                               [+3267] 
+ABA2 //047 (line 0051)      : OP_DEC $5                                     [+3260] 
+1402 //048 (line 0051)      : OP_PUSH $0                                    [+3248] 
+0706 //049 (line 0051)      : $0 = 0x7                                      [+3248] 
+04A2 //050 (line 0051)      : $0 CMP $5                                     [+3248] 
+1302 //051 (line 0051)      : OP_POP $0                                     [+3248] 
+F9A5 //052 (line 0051)      : OP_GO_F(~C ~Z)  @(46)                         [+3248] 
+081E //053 (line 0051)      : OP_PRINT "\n\n"                               [+3284] 
+
+0D1E //054 (line 0052)      : OP_PRINT "case 4:\n"                          [+3302] print "case 4:\n" ; $expect "";      $actual; for ($5=6; $5 == 8;
+0E3E //055 (line 0052)      : OP_EXPECT "\n"                                [+3321] 
+065E //056 (line 0052)      : OP_ACTUAL ""                                  [+3338] 
+06A6 //057 (line 0052)      : $5 = 0x6                                      [+3352] 
+0201 //058 (line 0052)      : OP_GO_T  @(61)                                [+3367] 
+071E //059 (line 0052)      : OP_PRINT "$5, "                               [+3374] 
+AAA2 //060 (line 0052)      : OP_INC $5                                     [+3367] 
+1402 //061 (line 0052)      : OP_PUSH $0                                    [+3355] 
+0806 //062 (line 0052)      : $0 = 0x8                                      [+3355] 
+04A2 //063 (line 0052)      : $0 CMP $5                                     [+3355] 
+1302 //064 (line 0052)      : OP_POP $0                                     [+3355] 
+F941 //065 (line 0052)      : OP_GO_T(Z)  @(59)                             [+3355] 
+081E //066 (line 0052)      : OP_PRINT "\n\n"                               [+3391] 
+
+0F1E //067 (line 0053)      : OP_PRINT "case 5:\n"                          [+3409] print "case 5:\n" ; $expect "8, 7,"; $actual; for ($5=8; $5 != 6;
+0C3E //068 (line 0053)      : OP_EXPECT "8, 7,\n"                           [+3428] 
+065E //069 (line 0053)      : OP_ACTUAL ""                                  [+3445] 
+08A6 //070 (line 0053)      : $5 = 0x8                                      [+3459] 
+0201 //071 (line 0053)      : OP_GO_T  @(74)                                [+3474] 
+071E //072 (line 0053)      : OP_PRINT "$5, "                               [+3481] 
+ABA2 //073 (line 0053)      : OP_DEC $5                                     [+3474] 
+1402 //074 (line 0053)      : OP_PUSH $0                                    [+3462] 
+0606 //075 (line 0053)      : $0 = 0x6                                      [+3462] 
+04A2 //076 (line 0053)      : $0 CMP $5                                     [+3462] 
+1302 //077 (line 0053)      : OP_POP $0                                     [+3462] 
+F981 //078 (line 0053)      : OP_GO_T(~Z)  @(72)                            [+3462] 
+081E //079 (line 0053)      : OP_PRINT "\n\n"                               [+3498] 
+
+101E //080 (line 0055)      : OP_PRINT "case 0P:"                           [+3559] print "case 0P:"; for ($5=9; $5  < 8; ) {print "bad $5, ";} prin
+09A6 //081 (line 0055)      : $5 = 0x9                                      [+3582] 
+0101 //082 (line 0055)      : OP_GO_T  @(84)                                [+3585] 
+111E //083 (line 0055)      : OP_PRINT "bad $5, "                           [+3600] 
+1402 //084 (line 0055)      : OP_PUSH $0                                    [+3585] 
+0806 //085 (line 0055)      : $0 = 0x8                                      [+3585] 
+04A2 //086 (line 0055)      : $0 CMP $5                                     [+3585] 
+1302 //087 (line 0055)      : OP_POP $0                                     [+3585] 
+FAA1 //088 (line 0055)      : OP_GO_T(~C ~Z)  @(83)                         [+3585] 
+001E //089 (line 0055)      : OP_PRINT "\n"                                 [+3619] 
+
+121E //090 (line 0056)      : OP_PRINT "case 2P:"                           [+3635] print "case 2P:"; for ($5=3; $5  > 8; ) {print "bad $5, ";} prin
+03A6 //091 (line 0056)      : $5 = 0x3                                      [+3658] 
+0101 //092 (line 0056)      : OP_GO_T  @(94)                                [+3661] 
+111E //093 (line 0056)      : OP_PRINT "bad $5, "                           [+3676] 
+1402 //094 (line 0056)      : OP_PUSH $0                                    [+3661] 
+0806 //095 (line 0056)      : $0 = 0x8                                      [+3661] 
+04A2 //096 (line 0056)      : $0 CMP $5                                     [+3661] 
+1302 //097 (line 0056)      : OP_POP $0                                     [+3661] 
+FA11 //098 (line 0056)      : OP_GO_T(C)  @(93)                             [+3661] 
+001E //099 (line 0056)      : OP_PRINT "\n"                                 [+3695] 
+
+131E //100 (line 0057)      : OP_PRINT "case 4P:"                           [+3711] print "case 4P:"; for ($5=0; $5 == 8; ) {print "bad $5, ";} prin
+00A6 //101 (line 0057)      : $5 = 0x0                                      [+3734] 
+0101 //102 (line 0057)      : OP_GO_T  @(104)                               [+3737] 
+111E //103 (line 0057)      : OP_PRINT "bad $5, "                           [+3752] 
+1402 //104 (line 0057)      : OP_PUSH $0                                    [+3737] 
+0806 //105 (line 0057)      : $0 = 0x8                                      [+3737] 
+04A2 //106 (line 0057)      : $0 CMP $5                                     [+3737] 
+1302 //107 (line 0057)      : OP_POP $0                                     [+3737] 
+FA41 //108 (line 0057)      : OP_GO_T(Z)  @(103)                            [+3737] 
+001E //109 (line 0057)      : OP_PRINT "\n"                                 [+3771] 
+
+141E //110 (line 0058)      : OP_PRINT "case 5P:"                           [+3787] print "case 5P:"; for ($5=6; $5 != 6; ) {print "bad $5, ";} prin
+06A6 //111 (line 0058)      : $5 = 0x6                                      [+3810] 
+0101 //112 (line 0058)      : OP_GO_T  @(114)                               [+3813] 
+111E //113 (line 0058)      : OP_PRINT "bad $5, "                           [+3828] 
+1402 //114 (line 0058)      : OP_PUSH $0                                    [+3813] 
+0606 //115 (line 0058)      : $0 = 0x6                                      [+3813] 
+04A2 //116 (line 0058)      : $0 CMP $5                                     [+3813] 
+1302 //117 (line 0058)      : OP_POP $0                                     [+3813] 
+FA81 //118 (line 0058)      : OP_GO_T(~Z)  @(113)                           [+3813] 
+001E //119 (line 0058)      : OP_PRINT "\n"                                 [+3847] 
+
+151E //120 (line 0060)      : OP_PRINT "case 6(forz):\n"                    [+3886] print "case 6(forz):\n" ; $expect "2, 1,"; $actual; forz($5=2; $5
+163E //121 (line 0060)      : OP_EXPECT "2, 1,\n"                           [+3911] 
+065E //122 (line 0060)      : OP_ACTUAL ""                                  [+3928] 
+02A6 //123 (line 0060)      : $5 = 0x2                                      [+3942] 
+071E //124 (line 0060)      : OP_PRINT "$5, "                               [+3964] 
+ABA2 //125 (line 0060)      : OP_DEC $5                                     [+3957] 
+1402 //126 (line 0060)      : OP_PUSH $0                                    [+3945] 
+0006 //127 (line 0060)      : $0 = 0x0                                      [+3945] 
+04A2 //128 (line 0060)      : $0 CMP $5                                     [+3945] 
+1302 //129 (line 0060)      : OP_POP $0                                     [+3945] 
+F981 //130 (line 0060)      : OP_GO_T(~Z)  @(124)                           [+3945] 
+081E //131 (line 0060)      : OP_PRINT "\n\n"                               [+3979] 
+
+171E //132 (line 0061)      : OP_PRINT "case 7(forz):\n"                    [+3996] print "case 7(forz):\n" ; $expect "2, 1,"; $actual; forz($5=2; $5
+163E //133 (line 0061)      : OP_EXPECT "2, 1,\n"                           [+4021] 
+065E //134 (line 0061)      : OP_ACTUAL ""                                  [+4038] 
+02A6 //135 (line 0061)      : $5 = 0x2                                      [+4052] 
+071E //136 (line 0061)      : OP_PRINT "$5, "                               [+4074] 
+ABA2 //137 (line 0061)      : OP_DEC $5                                     [+4067] 
+1402 //138 (line 0061)      : OP_PUSH $0                                    [+4055] 
+0006 //139 (line 0061)      : $0 = 0x0                                      [+4055] 
+04A2 //140 (line 0061)      : $0 CMP $5                                     [+4055] 
+1302 //141 (line 0061)      : OP_POP $0                                     [+4055] 
+F911 //142 (line 0061)      : OP_GO_T(C)  @(136)                            [+4055] 
+081E //143 (line 0061)      : OP_PRINT "\n\n"                               [+4089] 
+
+181E //144 (line 0064)      : OP_PRINT "case 8:(break)\n"                   [+4148] print "case 8:(break)\n" ;    $expect "20,";
+193E //145 (line 0064)      : OP_EXPECT "20,\n"                             [+4177] 
+
+20A6 //146 (line 0065)      : $5 = 0x20                                     [+4223] forz($5=32; $5 >  0; $5--){$actual "$5, "; break; print "dead8";
+035E //147 (line 0065)      : OP_ACTUAL "$5, \n"                            [+4245] 
+0701 //148 (line 0065)      : OP_GO_T break @(156)                          [+4261] 
+1A1E //149 (line 0065)      : OP_PRINT "dead8"                              [+4268] 
+ABA2 //150 (line 0065)      : OP_DEC $5                                     [+4239] 
+1402 //151 (line 0065)      : OP_PUSH $0                                    [+4226] 
+0006 //152 (line 0065)      : $0 = 0x0                                      [+4226] 
+04A2 //153 (line 0065)      : $0 CMP $5                                     [+4226] 
+1302 //154 (line 0065)      : OP_POP $0                                     [+4226] 
+F711 //155 (line 0065)      : OP_GO_T(C)  @(147)                            [+4226] 
+001E //156 (line 0065)      : OP_PRINT "\n"                                 [+4284] 
+
+1B1E //157 (line 0066)      : OP_PRINT "case 9:(continue)\n"                [+4299] print "case 9:(continue)\n" ; $expect "g9"; $actual;
+1C3E //158 (line 0066)      : OP_EXPECT "g9\n"                              [+4328] 
+065E //159 (line 0066)      : OP_ACTUAL ""                                  [+4342] 
+
+00A6 //160 (line 0067)      : $5 = 0x0                                      [+4373] forz($5=0; $5 < 1; $5++)  {print "g9"; continue; print "dead9";}
+1D1E //161 (line 0067)      : OP_PRINT "g9"                                 [+4395] 
+0101 //162 (line 0067)      : OP_GO_T continue @(164)                       [+4407] 
+1E1E //163 (line 0067)      : OP_PRINT "dead9"                              [+4417] 
+AAA2 //164 (line 0067)      : OP_INC $5                                     [+4387] 
+1402 //165 (line 0067)      : OP_PUSH $0                                    [+4376] 
+0106 //166 (line 0067)      : $0 = 0x1                                      [+4376] 
+04A2 //167 (line 0067)      : $0 CMP $5                                     [+4376] 
+1302 //168 (line 0067)      : OP_POP $0                                     [+4376] 
+F7A1 //169 (line 0067)      : OP_GO_T(~C ~Z)  @(161)                        [+4376] 
+001E //170 (line 0067)      : OP_PRINT "\n"                                 [+4433] 
+
+1F1E //171 (line 0068)      : OP_PRINT "\n--------##For loops done --------\n\n"   [+4445] print "\n--------##For loops done --------\n\n"   ;
+
+201E //172 (line 0070)      : OP_PRINT "if () zero condition tests:\n"      [+4495] print "if () zero condition tests:\n" ;
+
+213E //173 (line 0071)      : OP_EXPECT "iz1\n"                             [+4538] $expect "iz1"; stz;         if (Z)  {$actual "iz1";}  print "\n" 
+1802 //174 (line 0071)      : OP_STZ $0                                     [+4553] 
+0145 //175 (line 0071)      : OP_GO_F(Z)  @(177)                            [+4566] 
+225E //176 (line 0071)      : OP_ACTUAL "iz1\n"                             [+4575] 
+001E //177 (line 0071) >    : OP_PRINT "\n"                                 [+4592] 
+
+0E3E //178 (line 0072)      : OP_EXPECT "\n"                                [+4608] $expect "";        $actual; if (~Z) {print   "iz2";}  print "\n\n"
+065E //179 (line 0072)      : OP_ACTUAL ""                                  [+4627] 
+0185 //180 (line 0072)      : OP_GO_F(~Z)  @(182)                           [+4636] 
+231E //181 (line 0072)      : OP_PRINT "iz2"                                [+4645] 
+081E //182 (line 0072) >    : OP_PRINT "\n\n"                               [+4662] 
+
+0E3E //183 (line 0073)      : OP_EXPECT "\n"                                [+4680] $expect "";   clz; $actual; if (Z)  {print   "iz3";}  print "\n\n"
+1902 //184 (line 0073)      : OP_CLZ $0                                     [+4694] 
+065E //185 (line 0073)      : OP_ACTUAL ""                                  [+4699] 
+0145 //186 (line 0073)      : OP_GO_F(Z)  @(188)                            [+4708] 
+241E //187 (line 0073)      : OP_PRINT "iz3"                                [+4717] 
+081E //188 (line 0073) >    : OP_PRINT "\n\n"                               [+4734] 
+
+253E //189 (line 0074)      : OP_EXPECT "iz4\n"                             [+4752] $expect "iz4";              if (~Z) {$actual "iz4";}  print "\n" 
+0185 //190 (line 0074)      : OP_GO_F(~Z)  @(192)                           [+4780] 
+265E //191 (line 0074)      : OP_ACTUAL "iz4\n"                             [+4789] 
+001E //192 (line 0074) >    : OP_PRINT "\n"                                 [+4806] 
+
+271E //193 (line 0076)      : OP_PRINT "if() carry condition tests:\n"      [+4819] print "if() carry condition tests:\n" ;
+
+0E3E //194 (line 0077)      : OP_EXPECT "\n"                                [+4862] $expect "";   clc; $actual; if (C)  {print   "ic1";}  print "\n\n"
+1702 //195 (line 0077)      : OP_CLC $0                                     [+4876] 
+065E //196 (line 0077)      : OP_ACTUAL ""                                  [+4881] 
+0115 //197 (line 0077)      : OP_GO_F(C)  @(199)                            [+4890] 
+281E //198 (line 0077)      : OP_PRINT "ic1"                                [+4899] 
+081E //199 (line 0077) >    : OP_PRINT "\n\n"                               [+4916] 
+
+293E //200 (line 0078)      : OP_EXPECT "ic2\n"                             [+4934] $expect "ic2";              if (~C) {$actual "ic2";}  print "\n" 
+0125 //201 (line 0078)      : OP_GO_F(~C)  @(203)                           [+4962] 
+2A5E //202 (line 0078)      : OP_ACTUAL "ic2\n"                             [+4971] 
+001E //203 (line 0078) >    : OP_PRINT "\n"                                 [+4988] 
+
+293E //204 (line 0079)      : OP_EXPECT "ic2\n"                             [+5004] $expect "ic2"; stc;         if (C)  {$actual "ic2";}  print "\n" 
+1602 //205 (line 0079)      : OP_STC $0                                     [+5019] 
+0115 //206 (line 0079)      : OP_GO_F(C)  @(208)                            [+5032] 
+2A5E //207 (line 0079)      : OP_ACTUAL "ic2\n"                             [+5041] 
+001E //208 (line 0079) >    : OP_PRINT "\n"                                 [+5058] 
+
+0E3E //209 (line 0080)      : OP_EXPECT "\n"                                [+5074] $expect "";        $actual; if (~C) {print   "ic4";}  print "\n\n"
+065E //210 (line 0080)      : OP_ACTUAL ""                                  [+5093] 
+0125 //211 (line 0080)      : OP_GO_F(~C)  @(213)                           [+5102] 
+2B1E //212 (line 0080)      : OP_PRINT "ic4"                                [+5111] 
+081E //213 (line 0080) >    : OP_PRINT "\n\n"                               [+5128] 
+
+2C1E //214 (line 0082)      : OP_PRINT "while () zero condition tests:\n"   [+5143] print "while () zero condition tests:\n" ;
+
+2D3E //215 (line 0083)      : OP_EXPECT "wz1\n"                             [+5189] $expect "wz1"; stz;             while (Z)  {$actual "wz1"; break
+1802 //216 (line 0083)      : OP_STZ $0                                     [+5204] 
+0345 //217 (line 0083)      : OP_GO_F(Z)  @(221)                            [+5221] 
+2E5E //218 (line 0083)      : OP_ACTUAL "wz1\n"                             [+5233] 
+0101 //219 (line 0083)      : OP_GO_T break @(221)                          [+5248] 
+00C9 //220 (line 0083)      : OP_GO_T(qrdy Z ~Z)  @(30)                     [+5254] 
+001E //221 (line 0083) >    : OP_PRINT "\n"                                 [+5256] 
+
+0E3E //222 (line 0084)      : OP_EXPECT "\n"                                [+5272] $expect "";            $actual; while (~Z) {printf  "wz2"; break
+065E //223 (line 0084)      : OP_ACTUAL ""                                  [+5295] 
+0385 //224 (line 0084)      : OP_GO_F(~Z)  @(228)                           [+5304] 
+2F1E //225 (line 0084)      : OP_PRINT "wz2"                                [+5316] 
+0101 //226 (line 0084)      : OP_GO_T break @(228)                          [+5328] 
+0001 //227 (line 0084)      : OP_GO_L  @(2078)                              [+5334] 
+081E //228 (line 0084) >    : OP_PRINT "\n\n"                               [+5336] 
+
+0E3E //229 (line 0085)      : OP_EXPECT "\n"                                [+5357] $expect "";   clz;     $actual; while (Z)  {$actual "wz3"; break
+1902 //230 (line 0085)      : OP_CLZ $0                                     [+5371] 
+065E //231 (line 0085)      : OP_ACTUAL ""                                  [+5380] 
+0345 //232 (line 0085)      : OP_GO_F(Z)  @(236)                            [+5389] 
+305E //233 (line 0085)      : OP_ACTUAL "wz3\n"                             [+5401] 
+0101 //234 (line 0085)      : OP_GO_T break @(236)                          [+5416] 
+0041 //235 (line 0085)      : OP_GO_T(Z)  @(2078)                           [+5422] 
+081E //236 (line 0085) >    : OP_PRINT "\n\n"                               [+5424] 
+
+313E //237 (line 0086)      : OP_EXPECT "wz4\n"                             [+5442] $expect "wz4";         $actual; while (~Z) {print   "wz4"; break
+065E //238 (line 0086)      : OP_ACTUAL ""                                  [+5465] 
+0385 //239 (line 0086)      : OP_GO_F(~Z)  @(243)                           [+5474] 
+321E //240 (line 0086)      : OP_PRINT "wz4"                                [+5486] 
+0101 //241 (line 0086)      : OP_GO_T break @(243)                          [+5501] 
+0079 //242 (line 0086)      : OP_GO_T(qrdy full Z)  @(2078)                 [+5507] 
+081E //243 (line 0086) >    : OP_PRINT "\n\n"                               [+5509] 
+
+333E //244 (line 0087)      : OP_EXPECT "wz5\n"                             [+5527] $expect "wz5"; $5 = 0; $actual;
+00A6 //245 (line 0087)      : $5 = 0x0                                      [+5542] 
+065E //246 (line 0087)      : OP_ACTUAL ""                                  [+5550] 
+
+1402 //247 (line 0088)      : OP_PUSH $0                                    [+5569] while ($5 < 1) {print "wz5"; $5++; continue; print "wzDead";} pr
+0106 //248 (line 0088)      : $0 = 0x1                                      [+5569] 
+04A2 //249 (line 0088)      : $0 CMP $5                                     [+5569] 
+1302 //250 (line 0088)      : OP_POP $0                                     [+5569] 
+05A5 //251 (line 0088)      : OP_GO_F(~C ~Z)  @(257)                        [+5569] 
+341E //252 (line 0088)      : OP_PRINT "wz5"                                [+5585] 
+AAA2 //253 (line 0088)      : OP_INC $5                                     [+5598] 
+F801 //254 (line 0088)      : OP_GO_T continue @(247)                       [+5604] 
+351E //255 (line 0088)      : OP_PRINT "wzDead"                             [+5614] 
+00B9 //256 (line 0088)      : OP_GO_T(qrdy full ~Z)  @(30)                  [+5629] 
+001E //257 (line 0088) >    : OP_PRINT "\n"                                 [+5631] 
+
+363E //258 (line 0089)      : OP_EXPECT "wz6\n"                             [+5647] $expect "wz6"; while(true) {$actual "wz6"; break;} print "\n";
+375E //259 (line 0089) >    : OP_ACTUAL "wz6\n"                             [+5672] 
+0101 //260 (line 0089)      : OP_GO_T break @(262)                          [+5687] 
+FD01 //261 (line 0089)      : OP_GO_T  @(259)                               [+5693] 
+001E //262 (line 0089)      : OP_PRINT "\n"                                 [+5695] 
+
+FF0D //263 (line 0090)      : OP_GO_F(qrdy)  @(263)                         [+5714] while(~qrdy){};
+
+381E //264 (line 0092)      : OP_PRINT "while() carry condition tests:\n"   [+5731] print "while() carry condition tests:\n" ;
+
+393E //265 (line 0093)      : OP_EXPECT "wc1\n"                             [+5777] $expect "wc1"; stc;          while (C)  {$actual "wc1"; break;} 
+1602 //266 (line 0093)      : OP_STC $0                                     [+5792] 
+0315 //267 (line 0093)      : OP_GO_F(C)  @(271)                            [+5806] 
+3A5E //268 (line 0093)      : OP_ACTUAL "wc1\n"                             [+5818] 
+0101 //269 (line 0093)      : OP_GO_T break @(271)                          [+5833] 
+0059 //270 (line 0093)      : OP_GO_T(qrdy C Z)  @(30)                      [+5839] 
+001E //271 (line 0093) >    : OP_PRINT "\n"                                 [+5842] 
+
+0E3E //272 (line 0094)      : OP_EXPECT "\n"                                [+5858] $expect "";    $actual;      while (~C) {print   "wc2"; break;} 
+065E //273 (line 0094)      : OP_ACTUAL ""                                  [+5873] 
+0325 //274 (line 0094)      : OP_GO_F(~C)  @(278)                           [+5887] 
+3B1E //275 (line 0094)      : OP_PRINT "wc2"                                [+5899] 
+0101 //276 (line 0094)      : OP_GO_T break @(278)                          [+5914] 
+0091 //277 (line 0094)      : OP_GO_T(C ~Z)  @(2078)                        [+5920] 
+081E //278 (line 0094) >    : OP_PRINT "\n\n"                               [+5923] 
+
+0E3E //279 (line 0095)      : OP_EXPECT "\n"                                [+5941] $expect "";    $actual; clc; while (C)  {print   "wc3"; break;} 
+065E //280 (line 0095)      : OP_ACTUAL ""                                  [+5956] 
+1702 //281 (line 0095)      : OP_CLC $0                                     [+5965] 
+0315 //282 (line 0095)      : OP_GO_F(C)  @(286)                            [+5970] 
+3C1E //283 (line 0095)      : OP_PRINT "wc3"                                [+5982] 
+0101 //284 (line 0095)      : OP_GO_T break @(286)                          [+5997] 
+00D1 //285 (line 0095)      : OP_GO_T(C Z ~Z)  @(2078)                      [+6003] 
+081E //286 (line 0095) >    : OP_PRINT "\n\n"                               [+6006] 
+
+3D3E //287 (line 0096)      : OP_EXPECT "wc4\n"                             [+6024] $expect "wc4";               while (~C) {$actual "wc4"; break;} 
+0325 //288 (line 0096)      : OP_GO_F(~C)  @(292)                           [+6053] 
+3E5E //289 (line 0096)      : OP_ACTUAL "wc4\n"                             [+6065] 
+0101 //290 (line 0096)      : OP_GO_T break @(292)                          [+6080] 
+0001 //291 (line 0096)      : OP_GO_L  @(30)                                [+6086] 
+001E //292 (line 0096) >    : OP_PRINT "\n"                                 [+6089] 
+
+3F1E //293 (line 0098)      : OP_PRINT "do () condition tests:\n"           [+6102] print "do () condition tests:\n" ;
+
+403E //294 (line 0099)      : OP_EXPECT "do1do1\n"                          [+6140] $expect "do1do1"; $0 = 1; $actual; do {print   "do1"; dec $0;} w
+0106 //295 (line 0099)      : $0 = 0x1                                      [+6158] 
+065E //296 (line 0099)      : OP_ACTUAL ""                                  [+6166] 
+411E //297 (line 0099)      : OP_PRINT "do1"                                [+6179] 
+0B02 //298 (line 0099)      : OP_DEC $0                                     [+6194] 
+FD41 //299 (line 0099)      : OP_GO_T(Z)  @(297)                            [+6203] 
+081E //300 (line 0099)      : OP_PRINT "\n\n"                               [+6214] 
+
+423E //301 (line 0100)      : OP_EXPECT "do2\n"                             [+6233] $expect "do2";    $0 = 1;          do {$actual "do2"; dec $0;} w
+0106 //302 (line 0100)      : $0 = 0x1                                      [+6251] 
+435E //303 (line 0100)      : OP_ACTUAL "do2\n"                             [+6272] 
+0B02 //304 (line 0100)      : OP_DEC $0                                     [+6287] 
+FD81 //305 (line 0100)      : OP_GO_T(~Z)  @(303)                           [+6296] 
+001E //306 (line 0100)      : OP_PRINT "\n"                                 [+6307] 
+
+443E //307 (line 0101)      : OP_EXPECT "do3do3\n"                          [+6324] $expect "do3do3"; $0 = 1; $actual; do {print   "do3"; shr $0;} w
+0106 //308 (line 0101)      : $0 = 0x1                                      [+6342] 
+065E //309 (line 0101)      : OP_ACTUAL ""                                  [+6350] 
+451E //310 (line 0101)      : OP_PRINT "do3"                                [+6363] 
+0D02 //311 (line 0101)      : OP_SHR $0                                     [+6378] 
+FD11 //312 (line 0101)      : OP_GO_T(C)  @(310)                            [+6387] 
+081E //313 (line 0101)      : OP_PRINT "\n\n"                               [+6398] 
+
+463E //314 (line 0102)      : OP_EXPECT "do4\n"                             [+6416] $expect "do4";    $0 = 1;          do {$actual "do4"; stc;}    w
+0106 //315 (line 0102)      : $0 = 0x1                                      [+6434] 
+475E //316 (line 0102)      : OP_ACTUAL "do4\n"                             [+6455] 
+1602 //317 (line 0102)      : OP_STC $0                                     [+6470] 
+FD21 //318 (line 0102)      : OP_GO_T(~C)  @(316)                           [+6479] 
+001E //319 (line 0102)      : OP_PRINT "\n"                                 [+6490] 
+
+483E //320 (line 0103)      : OP_EXPECT "do5\n"                             [+6507] $expect "do5"; $5 = 0;    $actual;
+00A6 //321 (line 0103)      : $5 = 0x0                                      [+6522] 
+065E //322 (line 0103)      : OP_ACTUAL ""                                  [+6533] 
+
+491E //323 (line 0104)      : OP_PRINT "do5"                                [+6569] do {print "do5"; continue; print "d5dead";} while (false); print
+0101 //324 (line 0104)      : OP_GO_T continue @(326)                       [+6582] 
+4A1E //325 (line 0104)      : OP_PRINT "d5dead"                             [+6592] 
+FC05 //326 (line 0104)      : OP_GO_F()  @(323)                             [+6609] 
+001E //327 (line 0104)      : OP_PRINT "\n"                                 [+6620] 
+
+0018 //328 (line 0105)      : OP_STOP                                       [+6640] stop;

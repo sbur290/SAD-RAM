@@ -1,0 +1,604 @@
+//File \svn\sam\ver-15\sadram\sadram.sim\sim_1\behav\xsim\basics.microcode created 22/03/2023@10:55.
+//op //pc  label     : interpretation    line# and source. Source file=basics.sam
+0001 //000 (line 0010) jmpTable   : OP_GO_L start @(2)                               [+339] goto(long)start;
+0002 //001 (line 0010)            : DW 0x0002 (address of start)            [+344] 
+
+8218 //002 (line 0014) start      : $bugLevel=2                             [+701] $bug = bug;
+
+0516 //003 (line 0015)            : OP_CROWI=5                              [+784] $curRow = 5;
+
+0016 //004 (line 0016)            : OP_CROWI=0                              [+867] $curRow = 0;
+
+00AA //005 (line 0017)            : OP_CFG(cell)                            [+950] cfg(cell);
+
+008A //006 (line 0018)            : OP_CFG(group)                           [+1066] cfg(group);
+
+011E //007 (line 0020)            : OP_PRINT "---- Test Literals ----\n"    [+1232] print "---- Test Literals ----\n" ;
+
+0006 //008 (line 0022)            : $0 = 0x0                                [+1398] [0] = 0x0;
+000C //009 (line 0022)            : OP_WRYT[0], $0                          [+1398] 
+
+1106 //010 (line 0023)            : $0 = 0x11                               [+1481] [1] = 0x11;
+010C //011 (line 0023)            : OP_WRYT[1], $0                          [+1481] 
+
+0006 //012 (line 0024)            : $0 = 0x0                                [+1564] [2] = 0x222;
+088B //013 (line 0024)            : OP_LDI $0 0x0222                        [+1564] 
+020C //014 (line 0024)            : OP_WRYT[2], $0                          [+1564] 
+
+0006 //015 (line 0025)            : $0 = 0x0                                [+1647] [3] = 0x3333;
+CCCF //016 (line 0025)            : OP_LDI $0 0x3333                        [+1647] 
+030C //017 (line 0025)            : OP_WRYT[3], $0                          [+1647] 
+
+1106 //018 (line 0026)            : $0 = 0x11                               [+1730] [4] = 0x44444;
+1113 //019 (line 0026)            : OP_LDI $0 0x0444                        [+1730] 
+040C //020 (line 0026)            : OP_WRYT[4], $0                          [+1730] 
+
+0006 //021 (line 0027)            : $0 = 0x0                                [+1813] [5] = 0x555555;
+0557 //022 (line 0027)            : OP_LDI $0 0x0155                        [+1813] 
+5557 //023 (line 0027)            : OP_LDI $0 0x1555                        [+1813] 
+050C //024 (line 0027)            : OP_WRYT[5], $0                          [+1813] 
+
+0006 //025 (line 0028)            : $0 = 0x0                                [+1896] [6] = 0x6666666;
+6667 //026 (line 0028)            : OP_LDI $0 0x1999                        [+1896] 
+999B //027 (line 0028)            : OP_LDI $0 0x2666                        [+1896] 
+060C //028 (line 0028)            : OP_WRYT[6], $0                          [+1896] 
+
+0706 //029 (line 0029)            : $0 = 0x7                                [+1979] [7] = 0x77777777;
+7777 //030 (line 0029)            : OP_LDI $0 0x1DDD                        [+1979] 
+DDDF //031 (line 0029)            : OP_LDI $0 0x3777                        [+1979] 
+070C //032 (line 0029)            : OP_WRYT[7], $0                          [+1979] 
+
+8806 //033 (line 0030)            : $0 = 0x88                               [+2062] [8] = 0x888888888;
+888B //034 (line 0030)            : OP_LDI $0 0x2222                        [+2062] 
+2223 //035 (line 0030)            : OP_LDI $0 0x0888                        [+2062] 
+080C //036 (line 0030)            : OP_WRYT[8], $0                          [+2062] 
+
+0006 //037 (line 0031)            : $0 = 0x0                                [+2145] [9] = 0x9999999999;
+2667 //038 (line 0031)            : OP_LDI $0 0x0999                        [+2145] 
+999B //039 (line 0031)            : OP_LDI $0 0x2666                        [+2145] 
+6667 //040 (line 0031)            : OP_LDI $0 0x1999                        [+2145] 
+090C //041 (line 0031)            : OP_WRYT[9], $0                          [+2145] 
+
+0206 //042 (line 0032)            : $0 = 0x2                                [+2228] [10]= 0xAAAAAAAAAAA;
+AAAB //043 (line 0032)            : OP_LDI $0 0x2AAA                        [+2228] 
+AAAB //044 (line 0032)            : OP_LDI $0 0x2AAA                        [+2228] 
+AAAB //045 (line 0032)            : OP_LDI $0 0x2AAA                        [+2228] 
+0A0C //046 (line 0032)            : OP_WRYT[10], $0                         [+2228] 
+
+2E06 //047 (line 0033)            : $0 = 0x2E                               [+2311] [11]= 0xBBBBBBBBBBBB;
+EEEF //048 (line 0033)            : OP_LDI $0 0x3BBB                        [+2311] 
+BBBB //049 (line 0033)            : OP_LDI $0 0x2EEE                        [+2311] 
+EEEF //050 (line 0033)            : OP_LDI $0 0x3BBB                        [+2311] 
+0B0C //051 (line 0033)            : OP_WRYT[11], $0                         [+2311] 
+
+0006 //052 (line 0034)            : $0 = 0x0                                [+2394] [12]= 0xCCCCCCCCCCCCC;
+0CCF //053 (line 0034)            : OP_LDI $0 0x0333                        [+2394] 
+3333 //054 (line 0034)            : OP_LDI $0 0x0CCC                        [+2394] 
+CCCF //055 (line 0034)            : OP_LDI $0 0x3333                        [+2394] 
+3333 //056 (line 0034)            : OP_LDI $0 0x0CCC                        [+2394] 
+0C0C //057 (line 0034)            : OP_WRYT[12], $0                         [+2394] 
+
+0006 //058 (line 0035)            : $0 = 0x0                                [+2477] [13]= 0xDDDDDDDDDDDDDD;
+DDDF //059 (line 0035)            : OP_LDI $0 0x3777                        [+2477] 
+7777 //060 (line 0035)            : OP_LDI $0 0x1DDD                        [+2477] 
+DDDF //061 (line 0035)            : OP_LDI $0 0x3777                        [+2477] 
+7777 //062 (line 0035)            : OP_LDI $0 0x1DDD                        [+2477] 
+0D0C //063 (line 0035)            : OP_WRYT[13], $0                         [+2477] 
+
+0E06 //064 (line 0036)            : $0 = 0xE                                [+2560] [14]= 0xEEEEEEEEEEEEEEE;
+EEEF //065 (line 0036)            : OP_LDI $0 0x3BBB                        [+2560] 
+BBBB //066 (line 0036)            : OP_LDI $0 0x2EEE                        [+2560] 
+EEEF //067 (line 0036)            : OP_LDI $0 0x3BBB                        [+2560] 
+BBBB //068 (line 0036)            : OP_LDI $0 0x2EEE                        [+2560] 
+0E0C //069 (line 0036)            : OP_WRYT[14], $0                         [+2560] 
+
+FF06 //070 (line 0037)            : $0 = 0xFF                               [+2643] [15]= 0xFFFFFFFFFFFFFFFF;
+0312 //071 (line 0037)            : OP_REPEAT 4                             [+2643] 
+FFFF //072 (line 0037)            : OP_LDI $0 0x3FFF                        [+2643] 
+0F0C //073 (line 0037)            : OP_WRYT[15], $0                         [+2643] 
+
+4018 //074 (line 0039)            : $BUG_RAW                                [+2809] $BUG_RAW;
+
+1916 //075 (line 0041)            : OP_CROWI=25                             [+2975] $curRow = 25;
+
+0A00 //076 (line 0042)            : CALL wr@(80)                            [+3075] call wr;
+
+021E //077 (line 0043)            : OP_PRINT "Exit from basic tests.\n"     [+3158] print "Exit from basic tests.\n" ;
+
+0018 //078 (line 0044)            : OP_STOP                                 [+3241] stop;
+
+FF01 //079 (line 0045) lup        : OP_GO_T lup @(79)                       [+3324] lup:goto lup;
+
+0106 //080 (line 0046) wr         : $0 = 0x1                                [+3407] wr: $0         = 0x12345678;
+2347 //081 (line 0046)            : OP_LDI $0 0x08D1                        [+3420] 
+59E3 //082 (line 0046)            : OP_LDI $0 0x1678                        [+3420] 
+
+031E //083 (line 0047)            : OP_PRINT "\n---- Random operators ----\n"   [+3490] print "\n---- Random operators ----\n"  ;
+
+E0A6 //084 (line 0048)            : $5 = 0xE0                               [+3573] $5         = 0xE0;
+
+ABA2 //085 (line 0049)            : OP_DEC $5                               [+3656] dec $5; $4 = 0x123;
+9102 //086 (line 0049)            : OP_XCHG $0,$4                           [+3664] 
+0006 //087 (line 0049)            : $0 = 0x0                                [+3669] 
+048F //088 (line 0049)            : OP_LDI $0 0x0123                        [+3669] 
+9102 //089 (line 0049)            : OP_XCHG $0,$4                           [+3664] 
+
+87A2 //090 (line 0050)            : $4 = $4 AND $5                          [+3739] and $4,$5;
+
+1402 //091 (line 0051)            : OP_PUSH $0                              [+3822] and $4, 5;
+0506 //092 (line 0051)            : $0 = 0x5                                [+3822] 
+8702 //093 (line 0051)            : $4 = $4 AND $0                          [+3822] 
+1302 //094 (line 0051)            : OP_POP $0                               [+3822] 
+
+043E //095 (line 0052)            : OP_EXPECT "12345678,0x1,0xdf\n"         [+3905] $expect "12345678,0x1,0xdf"; $actual "$0,0x$4,0x$5";
+055E //096 (line 0052)            : OP_ACTUAL "$0,0x$4,0x$5\n"              [+3934] 
+
+000C //097 (line 0053)            : OP_WRYT[0], $0                          [+3988] [0]     = $0;
+
+190C //098 (line 0054)            : OP_WRYT[25], $0                         [+4071] [25]    = $0;
+
+C612 //099 (line 0055)            : OP_REPEAT 7, reg++, adr++               [+4154] [25:31] = $0;
+190C //100 (line 0055)            : OP_WRYT[25], $0                         [+4154] 
+
+1402 //101 (line 0056)            : OP_PUSH $0                              [+4237] [25@1:31]= 0;
+1916 //102 (line 0056)            : OP_CROWI=25                             [+4237] 
+0006 //103 (line 0056)            : $0 = 0x0                                [+4237] 
+5E12 //104 (line 0056)            : OP_REPEAT 31, adr++                     [+4237] 
+010C //105 (line 0056)            : OP_WRYT[1], $0                          [+4237] 
+1302 //106 (line 0056)            : OP_POP $0                               [+4237] 
+
+1402 //107 (line 0057)            : OP_PUSH $0                              [+4345] [9:10]  = 0x8765432112345678;
+8706 //108 (line 0057)            : $0 = 0x87                               [+4345] 
+6543 //109 (line 0057)            : OP_LDI $0 0x1950                        [+4345] 
+C847 //110 (line 0057)            : OP_LDI $0 0x3211                        [+4345] 
+2347 //111 (line 0057)            : OP_LDI $0 0x08D1                        [+4345] 
+59E3 //112 (line 0057)            : OP_LDI $0 0x1678                        [+4345] 
+4112 //113 (line 0057)            : OP_REPEAT 2, adr++                      [+4345] 
+090C //114 (line 0057)            : OP_WRYT[9], $0                          [+4345] 
+1302 //115 (line 0057)            : OP_POP $0                               [+4345] 
+
+03A6 //116 (line 0058)            : $5 = 0x3                                [+4482] $5      = 3*(2**4-15);
+
+061E //117 (line 0059)            : OP_PRINT "3*(2**4-15) = 0x$5\n"         [+4565] print "3*(2**4-15) = 0x$5\n" ;
+
+C112 //118 (line 0060)            : OP_REPEAT 2, reg++, adr++               [+4648] [30:31] = $5;
+1EAC //119 (line 0060)            : OP_WRYT[30], $5                         [+4648] 
+
+1904 //120 (line 0061)            : OP_READ $0,[25]                         [+4756] $0 = [25];
+
+4612 //121 (line 0062)            : OP_REPEAT 7, adr++                      [+4839] $0 = [25:31];
+1904 //122 (line 0062)            : OP_READ $0,[25]                         [+4844] 
+
+4412 //123 (line 0063)            : OP_REPEAT 5, adr++                      [+4922] $3 = [25@27:31];
+1B64 //124 (line 0063)            : OP_READ $3,[27]                         [+4927] 
+
+4018 //125 (line 0064)            : $BUG_RAW                                [+5017] $bug_raw;
+
+0005 //126 (line 0065)            : NOOP                                    [+5100] NOOP; NOOP; NOOP;
+0005 //127 (line 0065)            : NOOP                                    [+5106] 
+0005 //128 (line 0065)            : NOOP                                    [+5112] 
+
+071E //129 (line 0066)            : OP_PRINT "\n---- Basic Arithmetic Tests ----\n"   [+5183] print "\n---- Basic Arithmetic Tests ----\n"  ;
+
+0006 //130 (line 0067)            : $0 = 0x0                                [+5266] $0:$4 = 500; $7:$6 = $5; $expect "$5,$5";$actual "$6,$7";
+07D3 //131 (line 0067)            : OP_LDI $0 0x01F4                        [+5274] 
+8312 //132 (line 0067)            : OP_REPEAT 4, reg++                      [+5274] 
+1022 //133 (line 0067)            : $1 = $0                                 [+5274] 
+B0E2 //134 (line 0067)            : $7 = $5                                 [+5279] 
+F0C2 //135 (line 0067)            : $6 = $7                                 [+5287] 
+083E //136 (line 0067)            : OP_EXPECT "$5,$5\n"                     [+5291] 
+095E //137 (line 0067)            : OP_ACTUAL "$6,$7\n"                     [+5307] 
+
+00E6 //138 (line 0068)            : $7 = 0x0                                [+5349] $7:$0 = 0;
+A612 //139 (line 0068)            : OP_REPEAT 7, reg--                      [+5357] 
+F0C2 //140 (line 0068)            : $6 = $7                                 [+5357] 
+
+7102 //141 (line 0069)            : OP_XCHG $0,$3                           [+5451] $3  = 0x14D; $expect "0,0,0,14D,0,0,0,0";$actual "$0,$1,$2,$3,$4
+0006 //142 (line 0069)            : $0 = 0x0                                [+5457] 
+0537 //143 (line 0069)            : OP_LDI $0 0x014D                        [+5457] 
+7102 //144 (line 0069)            : OP_XCHG $0,$3                           [+5451] 
+0A3E //145 (line 0069)            : OP_EXPECT "0,0,0,14D,0,0,0,0\n"         [+5464] 
+0B5E //146 (line 0069)            : OP_ACTUAL "$0,$1,$2,$3,$4,$5,$6,$7\n"   [+5492] 
+
+3102 //147 (line 0070)            : OP_XCHG $0,$1                           [+5534] $1  = 495;   $expect "1EF";              $actual "$1";
+0006 //148 (line 0070)            : $0 = 0x0                                [+5540] 
+07BF //149 (line 0070)            : OP_LDI $0 0x01EF                        [+5540] 
+3102 //150 (line 0070)            : OP_XCHG $0,$1                           [+5534] 
+0C3E //151 (line 0070)            : OP_EXPECT "1EF\n"                       [+5547] 
+0D5E //152 (line 0070)            : OP_ACTUAL "$1\n"                        [+5575] 
+
+0A02 //153 (line 0071)            : OP_INC $0                               [+5617] $0++;        $expect "1";                $actual "$0";
+0E3E //154 (line 0071)            : OP_EXPECT "1\n"                         [+5630] 
+0F5E //155 (line 0071)            : OP_ACTUAL "$0\n"                        [+5658] 
+
+2A22 //156 (line 0072)            : OP_INC $1                               [+5700] $1++;        $expect "1F0";              $actual "$1";
+103E //157 (line 0072)            : OP_EXPECT "1F0\n"                       [+5713] 
+0D5E //158 (line 0072)            : OP_ACTUAL "$1\n"                        [+5741] 
+
+1402 //159 (line 0073)            : OP_PUSH $0                              [+5783] $1 &= 255;   $expect "F0";               $actual "$1";
+FF06 //160 (line 0073)            : $0 = 0xFF                               [+5783] 
+2702 //161 (line 0073)            : $1 = $1 AND $0                          [+5783] 
+1302 //162 (line 0073)            : OP_POP $0                               [+5783] 
+113E //163 (line 0073)            : OP_EXPECT "F0\n"                        [+5796] 
+0D5E //164 (line 0073)            : OP_ACTUAL "$1\n"                        [+5824] 
+
+1422 //165 (line 0074)            : OP_PUSH $1                              [+5866] $0 |= 0x80;  $expect "81";               $actual "$0";
+8026 //166 (line 0074)            : $1 = 0x80                               [+5866] 
+0622 //167 (line 0074)            : $0 = $0 OR $1                           [+5866] 
+1322 //168 (line 0074)            : OP_POP $1                               [+5866] 
+123E //169 (line 0074)            : OP_EXPECT "81\n"                        [+5879] 
+0F5E //170 (line 0074)            : OP_ACTUAL "$0\n"                        [+5907] 
+
+1422 //171 (line 0075)            : OP_PUSH $1                              [+5949] $0 |= 0x140; $expect "1C1, F0";          $actual "$0, $1";
+1022 //172 (line 0075)            : $1 = $0                                 [+5949] 
+0006 //173 (line 0075)            : $0 = 0x0                                [+5949] 
+0503 //174 (line 0075)            : OP_LDI $0 0x0140                        [+5949] 
+0622 //175 (line 0075)            : $0 = $0 OR $1                           [+5949] 
+1322 //176 (line 0075)            : OP_POP $1                               [+5949] 
+133E //177 (line 0075)            : OP_EXPECT "1C1, F0\n"                   [+5962] 
+145E //178 (line 0075)            : OP_ACTUAL "$0, $1\n"                    [+5990] 
+
+1402 //179 (line 0076)            : OP_PUSH $0                              [+6032] $1 |= 0x130; $expect "1C1, 1F0";         $actual "$0, $1";
+0006 //180 (line 0076)            : $0 = 0x0                                [+6032] 
+04C3 //181 (line 0076)            : OP_LDI $0 0x0130                        [+6032] 
+2602 //182 (line 0076)            : $1 = $1 OR $0                           [+6032] 
+1302 //183 (line 0076)            : OP_POP $0                               [+6032] 
+153E //184 (line 0076)            : OP_EXPECT "1C1, 1F0\n"                  [+6045] 
+145E //185 (line 0076)            : OP_ACTUAL "$0, $1\n"                    [+6073] 
+
+1402 //186 (line 0077)            : OP_PUSH $0                              [+6115] $3 ^= 0x55;  $expect "1C1, 118";         $actual "$0, $3";
+5506 //187 (line 0077)            : $0 = 0x55                               [+6115] 
+6502 //188 (line 0077)            : $3 = $3 XOR $0                          [+6115] 
+1302 //189 (line 0077)            : OP_POP $0                               [+6115] 
+163E //190 (line 0077)            : OP_EXPECT "1C1, 118\n"                  [+6128] 
+175E //191 (line 0077)            : OP_ACTUAL "$0, $3\n"                    [+6156] 
+
+2A22 //192 (line 0078)            : OP_INC $1                               [+6198] $1 +=1;      $expect "1F1";              $actual "$1";
+183E //193 (line 0078)            : OP_EXPECT "1F1\n"                       [+6211] 
+0D5E //194 (line 0078)            : OP_ACTUAL "$1\n"                        [+6239] 
+
+2B22 //195 (line 0079)            : OP_DEC $1                               [+6281] $1 -=2;      $expect "1EF";              $actual "$1";
+2B22 //196 (line 0079)            : OP_DEC $1                               [+6281] 
+0C3E //197 (line 0079)            : OP_EXPECT "1EF\n"                       [+6294] 
+0D5E //198 (line 0079)            : OP_ACTUAL "$1\n"                        [+6322] 
+
+0312 //199 (line 0080)            : OP_REPEAT 4                             [+6364] $1 +=4;      $expect "1F3";              $actual "$1";
+2A22 //200 (line 0080)            : OP_INC $1                               [+6364] 
+193E //201 (line 0080)            : OP_EXPECT "1F3\n"                       [+6377] 
+0D5E //202 (line 0080)            : OP_ACTUAL "$1\n"                        [+6405] 
+
+1402 //203 (line 0081)            : OP_PUSH $0                              [+6447] $1 += 17;    $expect "204";              $actual "$1";
+1106 //204 (line 0081)            : $0 = 0x11                               [+6447] 
+2002 //205 (line 0081)            : $1 = $1 ADD $0                          [+6447] 
+1302 //206 (line 0081)            : OP_POP $0                               [+6447] 
+1A3E //207 (line 0081)            : OP_EXPECT "204\n"                       [+6460] 
+0D5E //208 (line 0081)            : OP_ACTUAL "$1\n"                        [+6488] 
+
+1402 //209 (line 0082)            : OP_PUSH $0                              [+6530] $1 -= 17;    $expect "1F3";              $actual "$1";
+1106 //210 (line 0082)            : $0 = 0x11                               [+6530] 
+0822 //211 (line 0082)            : $0 = $0 SUBX $1                         [+6530] 
+1022 //212 (line 0082)            : $1 = $0                                 [+6530] 
+1302 //213 (line 0082)            : OP_POP $0                               [+6530] 
+193E //214 (line 0082)            : OP_EXPECT "1F3\n"                       [+6543] 
+0D5E //215 (line 0082)            : OP_ACTUAL "$1\n"                        [+6571] 
+
+1B3E //216 (line 0083)            : OP_EXPECT "1C1,1F3,0,118,0,0,0,0\n"     [+6613] $expect "1C1,1F3,0,118,0,0,0,0";         $actual "$0,$1,$2,$3,$4
+0B5E //217 (line 0083)            : OP_ACTUAL "$0,$1,$2,$3,$4,$5,$6,$7\n"   [+6654] 
+
+0A02 //218 (line 0084)            : OP_INC $0                               [+6696] $0+=1;
+
+0B02 //219 (line 0085)            : OP_DEC $0                               [+6781] $0-=2;
+0B02 //220 (line 0085)            : OP_DEC $0                               [+6781] 
+
+0312 //221 (line 0086)            : OP_REPEAT 4                             [+6866] $0+=4;
+0A02 //222 (line 0086)            : OP_INC $0                               [+6866] 
+
+3422 //223 (line 0087)            : OP_PUSH $1                              [+6951] $0+=17;
+1022 //224 (line 0087)            : $1 = $0                                 [+6951] 
+1106 //225 (line 0087)            : $0 = 0x11                               [+6951] 
+0022 //226 (line 0087)            : $0 = $0 ADD $1                          [+6951] 
+1322 //227 (line 0087)            : OP_POP $1                               [+6951] 
+
+3422 //228 (line 0088)            : OP_PUSH $1                              [+7036] $0-=17;
+1022 //229 (line 0088)            : $1 = $0                                 [+7036] 
+1106 //230 (line 0088)            : $0 = 0x11                               [+7036] 
+0822 //231 (line 0088)            : $0 = $0 SUBX $1                         [+7036] 
+1322 //232 (line 0088)            : OP_POP $1                               [+7036] 
+
+1C1E //233 (line 0090)            : OP_PRINT "\n---- Field Access tests ----\n"   [+7122] print "\n---- Field Access tests ----\n"  ;
+
+1916 //234 (line 0091)            : OP_CROWI=25                             [+7205] $curRow    = FREE_ROW; [0:31] = 0; $3 = 2;
+1402 //235 (line 0091)            : OP_PUSH $0                              [+7222] 
+0006 //236 (line 0091)            : $0 = 0x0                                [+7222] 
+5F12 //237 (line 0091)            : OP_REPEAT 32, adr++                     [+7222] 
+000C //238 (line 0091)            : OP_WRYT[0], $0                          [+7222] 
+1302 //239 (line 0091)            : OP_POP $0                               [+7222] 
+0266 //240 (line 0091)            : $3 = 0x2                                [+7234] 
+
+1402 //241 (line 0092)            : OP_PUSH $0                              [+7288] [31]       = 0xEEEEEEEEEEEEEEEE; [2] = "The Key.";
+EE06 //242 (line 0092)            : $0 = 0xEE                               [+7288] 
+EEEF //243 (line 0092)            : OP_LDI $0 0x3BBB                        [+7288] 
+BBBB //244 (line 0092)            : OP_LDI $0 0x2EEE                        [+7288] 
+EEEF //245 (line 0092)            : OP_LDI $0 0x3BBB                        [+7288] 
+BBBB //246 (line 0092)            : OP_LDI $0 0x2EEE                        [+7288] 
+1F0C //247 (line 0092)            : OP_WRYT[31], $0                         [+7288] 
+1302 //248 (line 0092)            : OP_POP $0                               [+7288] 
+1402 //249 (line 0092)            : OP_PUSH $0                              [+7321] 
+2E06 //250 (line 0092)            : $0 = 0x2E                               [+7321] 
+7967 //251 (line 0092)            : OP_LDI $0 0x1E59                        [+7321] 
+52CB //252 (line 0092)            : OP_LDI $0 0x14B2                        [+7321] 
+0657 //253 (line 0092)            : OP_LDI $0 0x0195                        [+7321] 
+A153 //254 (line 0092)            : OP_LDI $0 0x2854                        [+7321] 
+020C //255 (line 0092)            : OP_WRYT[2], $0                          [+7321] 
+1302 //256 (line 0092)            : OP_POP $0                               [+7321] 
+
+1D1E //257 (line 0101)            : OP_PRINT "Test field[$3].total:\n"      [+8046] TestField(total, 0x987654321F,   0x0,                0x1F3254769
+B102 //258 (line 0101)            : OP_XCHG $0,$5                           [+8121] 
+0006 //259 (line 0101)            : $0 = 0x0                                [+8126] 
+261F //260 (line 0101)            : OP_LDI $0 0x0987                        [+8126] 
+6543 //261 (line 0101)            : OP_LDI $0 0x1950                        [+8126] 
+C87F //262 (line 0101)            : OP_LDI $0 0x321F                        [+8126] 
+B102 //263 (line 0101)            : OP_XCHG $0,$5                           [+8121] 
+66B0 //264 (line 0101)            : OP_WRF [$3].total = $5                  [+8141] 
+6688 //265 (line 0101)            : OP_RDF $4 = [$3].total                  [+8159] 
+1E3E //266 (line 0101)            : OP_EXPECT "$5\n"                        [+8202] 
+1F5E //267 (line 0101)            : OP_ACTUAL "$4\n"                        [+8225] 
+0044 //268 (line 0101)            : OP_READ $2,[0]                          [+8271] 
+203E //269 (line 0101)            : OP_EXPECT "[0]=0x0\n"                   [+8280] 
+215E //270 (line 0101)            : OP_ACTUAL "[0]=0x$2\n"                  [+8302] 
+0144 //271 (line 0101)            : OP_READ $2,[1]                          [+8348] 
+223E //272 (line 0101)            : OP_EXPECT "[1]=0x1F32547698\n"          [+8357] 
+235E //273 (line 0101)            : OP_ACTUAL "[1]=0x$2\n"                  [+8388] 
+241E //274 (line 0101)            : OP_PRINT "\n"                           [+8434] 
+
+251E //275 (line 0102)            : OP_PRINT "Test field[$3].p1:\n"         [+8129] TestField(p1,    0x377777777700, 0x7777777700000000, 0x6E00001F3
+B102 //276 (line 0102)            : OP_XCHG $0,$5                           [+8201] 
+0D06 //277 (line 0102)            : $0 = 0xD                                [+8206] 
+DDDF //278 (line 0102)            : OP_LDI $0 0x3777                        [+8206] 
+7777 //279 (line 0102)            : OP_LDI $0 0x1DDD                        [+8206] 
+DC03 //280 (line 0102)            : OP_LDI $0 0x3700                        [+8206] 
+B102 //281 (line 0102)            : OP_XCHG $0,$5                           [+8201] 
+63B0 //282 (line 0102)            : OP_WRF [$3].P1 = $5                     [+8223] 
+6388 //283 (line 0102)            : OP_RDF $4 = [$3].P1                     [+8238] 
+1E3E //284 (line 0102)            : OP_EXPECT "$5\n"                        [+8278] 
+1F5E //285 (line 0102)            : OP_ACTUAL "$4\n"                        [+8301] 
+0044 //286 (line 0102)            : OP_READ $2,[0]                          [+8347] 
+263E //287 (line 0102)            : OP_EXPECT "[0]=0x7777777700000000\n"    [+8356] 
+215E //288 (line 0102)            : OP_ACTUAL "[0]=0x$2\n"                  [+8393] 
+0144 //289 (line 0102)            : OP_READ $2,[1]                          [+8439] 
+273E //290 (line 0102)            : OP_EXPECT "[1]=0x6E00001F32547698\n"    [+8448] 
+235E //291 (line 0102)            : OP_ACTUAL "[1]=0x$2\n"                  [+8485] 
+241E //292 (line 0102)            : OP_PRINT "\n"                           [+8531] 
+
+281E //293 (line 0103)            : OP_PRINT "Test field[$3].p2:\n"         [+8212] TestField(p2,    0x355555555500, 0x7777777755555555, 0x6FA8001F3
+B102 //294 (line 0103)            : OP_XCHG $0,$5                           [+8284] 
+0D06 //295 (line 0103)            : $0 = 0xD                                [+8289] 
+5557 //296 (line 0103)            : OP_LDI $0 0x1555                        [+8289] 
+5557 //297 (line 0103)            : OP_LDI $0 0x1555                        [+8289] 
+5403 //298 (line 0103)            : OP_LDI $0 0x1500                        [+8289] 
+B102 //299 (line 0103)            : OP_XCHG $0,$5                           [+8284] 
+64B0 //300 (line 0103)            : OP_WRF [$3].P2 = $5                     [+8306] 
+6488 //301 (line 0103)            : OP_RDF $4 = [$3].P2                     [+8321] 
+1E3E //302 (line 0103)            : OP_EXPECT "$5\n"                        [+8361] 
+1F5E //303 (line 0103)            : OP_ACTUAL "$4\n"                        [+8384] 
+0044 //304 (line 0103)            : OP_READ $2,[0]                          [+8430] 
+293E //305 (line 0103)            : OP_EXPECT "[0]=0x7777777755555555\n"    [+8439] 
+215E //306 (line 0103)            : OP_ACTUAL "[0]=0x$2\n"                  [+8476] 
+0144 //307 (line 0103)            : OP_READ $2,[1]                          [+8522] 
+2A3E //308 (line 0103)            : OP_EXPECT "[1]=0x6FA8001F32547698\n"    [+8531] 
+235E //309 (line 0103)            : OP_ACTUAL "[1]=0x$2\n"                  [+8568] 
+241E //310 (line 0103)            : OP_PRINT "\n"                           [+8614] 
+
+2B1E //311 (line 0104)            : OP_PRINT "Test field[$3].count:\n"      [+8295] TestField(count, 0x733,          0x7777777755555555, 0x6FAF331F3
+B102 //312 (line 0104)            : OP_XCHG $0,$5                           [+8370] 
+0006 //313 (line 0104)            : $0 = 0x0                                [+8375] 
+1CCF //314 (line 0104)            : OP_LDI $0 0x0733                        [+8375] 
+B102 //315 (line 0104)            : OP_XCHG $0,$5                           [+8370] 
+65B0 //316 (line 0104)            : OP_WRF [$3].count = $5                  [+8383] 
+6588 //317 (line 0104)            : OP_RDF $4 = [$3].count                  [+8401] 
+1E3E //318 (line 0104)            : OP_EXPECT "$5\n"                        [+8444] 
+1F5E //319 (line 0104)            : OP_ACTUAL "$4\n"                        [+8467] 
+0044 //320 (line 0104)            : OP_READ $2,[0]                          [+8513] 
+293E //321 (line 0104)            : OP_EXPECT "[0]=0x7777777755555555\n"    [+8522] 
+215E //322 (line 0104)            : OP_ACTUAL "[0]=0x$2\n"                  [+8559] 
+0144 //323 (line 0104)            : OP_READ $2,[1]                          [+8605] 
+2C3E //324 (line 0104)            : OP_EXPECT "[1]=0x6FAF331F32547698\n"    [+8614] 
+235E //325 (line 0104)            : OP_ACTUAL "[1]=0x$2\n"                  [+8651] 
+241E //326 (line 0104)            : OP_PRINT "\n"                           [+8697] 
+
+2D1E //327 (line 0105)            : OP_PRINT "Test field[$3].stop:\n"       [+8378] TestField(stop,  0x1,            0x7777777755555555, 0xEFAF331F3
+01A6 //328 (line 0105)            : $5 = 0x1                                [+8452] 
+62B0 //329 (line 0105)            : OP_WRF [$3].stop = $5                   [+8463] 
+6288 //330 (line 0105)            : OP_RDF $4 = [$3].stop                   [+8480] 
+1E3E //331 (line 0105)            : OP_EXPECT "$5\n"                        [+8522] 
+1F5E //332 (line 0105)            : OP_ACTUAL "$4\n"                        [+8545] 
+0044 //333 (line 0105)            : OP_READ $2,[0]                          [+8591] 
+293E //334 (line 0105)            : OP_EXPECT "[0]=0x7777777755555555\n"    [+8600] 
+215E //335 (line 0105)            : OP_ACTUAL "[0]=0x$2\n"                  [+8637] 
+0144 //336 (line 0105)            : OP_READ $2,[1]                          [+8683] 
+2E3E //337 (line 0105)            : OP_EXPECT "[1]=0xEFAF331F32547698\n"    [+8692] 
+235E //338 (line 0105)            : OP_ACTUAL "[1]=0x$2\n"                  [+8729] 
+241E //339 (line 0105)            : OP_PRINT "\n"                           [+8775] 
+
+241E //340 (line 0106)            : OP_PRINT "\n"                           [+8461] printf "\n";
+
+6018 //341 (line 0107)            : $BUG_INDX                               [+8544] $bug_indx;
+
+2F1E //342 (line 0110)            : OP_PRINT "---- Arithmetics ----\n"      [+8641] print "---- Arithmetics ----\n" ;
+
+301E //343 (line 0111)            : OP_PRINT "ADD 0x8000 + 0x8000 == 0x0 and carry\n"   [+8724] print "ADD 0x8000 + 0x8000 == 0x0 and carry\n" ;
+
+313E //344 (line 0112)            : OP_EXPECT "0\n"                         [+8811] $expect "0"; $0 = 0x8000000000000000; $4 = $0; add $0, $4; $actu
+8006 //345 (line 0112)            : $0 = 0x80                               [+8824] 
+0312 //346 (line 0112)            : OP_REPEAT 4                             [+8829] 
+0003 //347 (line 0112)            : OP_LDI $0 0x0000                        [+8829] 
+1082 //348 (line 0112)            : $4 = $0                                 [+8849] 
+0082 //349 (line 0112)            : $0 = $0 ADD $4                          [+8858] 
+0F5E //350 (line 0112)            : OP_ACTUAL "$0\n"                        [+8870] 
+
+321E //351 (line 0113)            : OP_PRINT "ADC 0x0 + 0x8000+carry == 0x8001 and ~carry\n"   [+8890] print "ADC 0x0 + 0x8000+carry == 0x8001 and ~carry\n" ;
+
+333E //352 (line 0114)            : OP_EXPECT "8000000000000001\n"          [+8977] $expect "8000000000000001";                    adc $0, $4; $actu
+0182 //353 (line 0114)            : $0 = $0 ADC $4                          [+9024] 
+0F5E //354 (line 0114)            : OP_ACTUAL "$0\n"                        [+9036] 
+
+341E //355 (line 0116)            : OP_PRINT "\nSHR 0x8001 == 0x4000 and carry\n"   [+9057] print "\nSHR 0x8001 == 0x4000 and carry\n"  ;
+
+353E //356 (line 0117)            : OP_EXPECT "4000000000000000 and carry\n\n"   [+9105] $expect "4000000000000000 and carry\n" ;  SHR $0; if (c) {$actual
+0D02 //357 (line 0117)            : OP_SHR $0                               [+9146] 
+0215 //358 (line 0117)            : OP_GO_F(C)  @(361)                      [+9154] 
+365E //359 (line 0117)            : OP_ACTUAL "$0 and carry\n"              [+9162] 
+0101 //360 (line 0117)            : OP_GO_T  @(362)                         [+9187] 
+375E //361 (line 0117) >          : OP_ACTUAL "\n"                          [+9193] 
+
+381E //362 (line 0118) >          : OP_PRINT "RCR 0x8001+carry == 0xA000 and carry\n"   [+9206] print "RCR 0x8001+carry == 0xA000 and carry\n" ;
+
+393E //363 (line 0119)            : OP_EXPECT "A000000000000000 and ~carry\n"   [+9258] $expect "A000000000000000 and ~carry";   RCR $0; if(!c) {$actual
+0F02 //364 (line 0119)            : OP_RCR $0                               [+9299] 
+0225 //365 (line 0119)            : OP_GO_F(~C)  @(368)                     [+9307] 
+3A5E //366 (line 0119)            : OP_ACTUAL "$0 and ~carry\n"             [+9315] 
+0101 //367 (line 0119)            : OP_GO_T  @(369)                         [+9340] 
+375E //368 (line 0119) >          : OP_ACTUAL "\n"                          [+9346] 
+
+3B1E //369 (line 0121) >          : OP_PRINT "\nSUB 0x8000 - 0x8000 == 0x0 and ~carry\n"   [+9360] print "\nSUB 0x8000 - 0x8000 == 0x0 and ~carry\n"  ;
+
+313E //370 (line 0122)            : OP_EXPECT "0\n"                         [+9415] $expect "0";                $0 = 0x8000000000000000; $4 = $0; su
+8006 //371 (line 0122)            : $0 = 0x80                               [+9443] 
+0312 //372 (line 0122)            : OP_REPEAT 4                             [+9448] 
+0003 //373 (line 0122)            : OP_LDI $0 0x0000                        [+9448] 
+1082 //374 (line 0122)            : $4 = $0                                 [+9468] 
+0282 //375 (line 0122)            : $0 = $0 SUB $4                          [+9477] 
+0F5E //376 (line 0122)            : OP_ACTUAL "$0\n"                        [+9488] 
+
+3C1E //377 (line 0123)            : OP_PRINT "SBB 0x4000 - 0x8000 - carry == 0xBFFF and ~carry\n"   [+9502] print "SBB 0x4000 - 0x8000 - carry == 0xBFFF and ~carry\n" ;
+
+3D3E //378 (line 0124)            : OP_EXPECT "BFFFFFFFFFFFFFFF and carry\n"   [+9566] $expect "BFFFFFFFFFFFFFFF and carry";   $0 = 0x8000000000000001;
+8006 //379 (line 0124)            : $0 = 0x80                               [+9606] 
+0003 //380 (line 0124)            : OP_LDI $0 0x0000                        [+9611] 
+0003 //381 (line 0124)            : OP_LDI $0 0x0000                        [+9611] 
+0003 //382 (line 0124)            : OP_LDI $0 0x0000                        [+9611] 
+0007 //383 (line 0124)            : OP_LDI $0 0x0001                        [+9611] 
+0D02 //384 (line 0124)            : OP_SHR $0                               [+9631] 
+0382 //385 (line 0124)            : $0 = $0 SBB $4                          [+9640] 
+
+0215 //386 (line 0125)            : OP_GO_F(C)  @(389)                      [+9714] if (c) $actual "$0 and carry"; else $actual "$0 and ~carry";
+365E //387 (line 0125)            : OP_ACTUAL "$0 and carry\n"              [+9721] 
+0101 //388 (line 0125)            : OP_GO_T  @(390)                         [+9745] 
+3A5E //389 (line 0125) >          : OP_ACTUAL "$0 and ~carry\n"             [+9750] 
+
+3E1E //390 (line 0127) >          : OP_PRINT "\nshift left = 0x7FFE ignoring carry\n"   [+9779] print "\nshift left = 0x7FFE ignoring carry\n"  ;
+
+3F3E //391 (line 0128)            : OP_EXPECT "carry\n"                     [+9831] $expect "carry";    SHL $0; if (C) {$actual "carry";} else $actu
+0C02 //392 (line 0128)            : OP_SHL $0                               [+9851] 
+0215 //393 (line 0128)            : OP_GO_F(C)  @(396)                      [+9859] 
+405E //394 (line 0128)            : OP_ACTUAL "carry\n"                     [+9867] 
+0101 //395 (line 0128)            : OP_GO_T  @(397)                         [+9885] 
+375E //396 (line 0128) >          : OP_ACTUAL "\n"                          [+9890] 
+
+413E //397 (line 0129) >          : OP_EXPECT "non zero\n"                  [+9906] $expect "non zero";         if (Z) {$actual "zero"; } else $actu
+0245 //398 (line 0129)            : OP_GO_F(Z)  @(401)                      [+9934] 
+425E //399 (line 0129)            : OP_ACTUAL "zero\n"                      [+9942] 
+0101 //400 (line 0129)            : OP_GO_T  @(402)                         [+9960] 
+435E //401 (line 0129) >          : OP_ACTUAL "non zero\n"                  [+9965] 
+
+441E //402 (line 0131) >          : OP_PRINT "\nrotate left ~C and 0x$0 == 0xfffffffffffffffd\n"   [+9986] print "\nrotate left ~C and 0x$0 == 0xfffffffffffffffd\n"  ;
+
+453E //403 (line 0132)            : OP_EXPECT "fffffffffffffffd\n"          [+10049] $expect "fffffffffffffffd"; RCL $0; if (C) $actual "$0 carry"; e
+0E02 //404 (line 0132)            : OP_RCL $0                               [+10077] 
+0215 //405 (line 0132)            : OP_GO_F(C)  @(408)                      [+10085] 
+465E //406 (line 0132)            : OP_ACTUAL "$0 carry\n"                  [+10092] 
+0101 //407 (line 0132)            : OP_GO_T  @(409)                         [+10112] 
+0F5E //408 (line 0132) >          : OP_ACTUAL "$0\n"                        [+10117] 
+
+471E //409 (line 0134) >          : OP_PRINT "\npush registers, change them, pop registers; results should be the unchanged\n"   [+10132] print "\npush registers, change them, pop registers; results shou
+
+0006 //410 (line 0135)            : $0 = 0x0                                [+10225] $0 = 0x2468; $6 = 0x1357;
+91A3 //411 (line 0135)            : OP_LDI $0 0x2468                        [+10230] 
+D102 //412 (line 0135)            : OP_XCHG $0,$6                           [+10238] 
+0006 //413 (line 0135)            : $0 = 0x0                                [+10243] 
+4D5F //414 (line 0135)            : OP_LDI $0 0x1357                        [+10243] 
+D102 //415 (line 0135)            : OP_XCHG $0,$6                           [+10238] 
+
+1402 //416 (line 0136)            : OP_PUSH $0                              [+10255] push $0,$6; $0 = 0x1234; $6 = 5678; pop $6,$0;
+14C2 //417 (line 0136)            : OP_PUSH $6                              [+10255] 
+0006 //418 (line 0136)            : $0 = 0x0                                [+10267] 
+48D3 //419 (line 0136)            : OP_LDI $0 0x1234                        [+10272] 
+D102 //420 (line 0136)            : OP_XCHG $0,$6                           [+10280] 
+0006 //421 (line 0136)            : $0 = 0x0                                [+10285] 
+58BB //422 (line 0136)            : OP_LDI $0 0x162E                        [+10285] 
+D102 //423 (line 0136)            : OP_XCHG $0,$6                           [+10280] 
+13C2 //424 (line 0136)            : OP_POP $6                               [+10291] 
+1302 //425 (line 0136)            : OP_POP $0                               [+10291] 
+
+483E //426 (line 0137)            : OP_EXPECT "2468,1357\n"                 [+10306] $expect "2468,1357"; xchg $0,$6; $actual "$6,$0";
+D102 //427 (line 0137)            : OP_XCHG $0,$6                           [+10327] 
+495E //428 (line 0137)            : OP_ACTUAL "$6,$0\n"                     [+10339] 
+
+4A1E //429 (line 0139)            : OP_PRINT "\nlogical OR\n"               [+10357] print "\nlogical OR\n"  ;
+
+4B3E //430 (line 0140)            : OP_EXPECT "FFFFFFFFFFFFFFFF\n"          [+10385] $expect "FFFFFFFFFFFFFFFF"; $0 = 0x55555555AAAAAAAA; $6 = 0xAAAA
+5506 //431 (line 0140)            : $0 = 0x55                               [+10413] 
+5557 //432 (line 0140)            : OP_LDI $0 0x1555                        [+10418] 
+556B //433 (line 0140)            : OP_LDI $0 0x155A                        [+10418] 
+AAAB //434 (line 0140)            : OP_LDI $0 0x2AAA                        [+10418] 
+AAAB //435 (line 0140)            : OP_LDI $0 0x2AAA                        [+10418] 
+D102 //436 (line 0140)            : OP_XCHG $0,$6                           [+10438] 
+AA06 //437 (line 0140)            : $0 = 0xAA                               [+10443] 
+AAAB //438 (line 0140)            : OP_LDI $0 0x2AAA                        [+10443] 
+AA97 //439 (line 0140)            : OP_LDI $0 0x2AA5                        [+10443] 
+5557 //440 (line 0140)            : OP_LDI $0 0x1555                        [+10443] 
+5557 //441 (line 0140)            : OP_LDI $0 0x1555                        [+10443] 
+D102 //442 (line 0140)            : OP_XCHG $0,$6                           [+10438] 
+06C2 //443 (line 0140)            : $0 = $0 OR $6                           [+10463] 
+0F5E //444 (line 0140)            : OP_ACTUAL "$0\n"                        [+10474] 
+
+4C1E //445 (line 0141)            : OP_PRINT "\nlogical AND\n"              [+10488] print "\nlogical AND\n"  ;
+
+313E //446 (line 0142)            : OP_EXPECT "0\n"                         [+10517] $expect "0";                $0 = 0x55555555AAAAAAAA;            
+5506 //447 (line 0142)            : $0 = 0x55                               [+10545] 
+5557 //448 (line 0142)            : OP_LDI $0 0x1555                        [+10550] 
+556B //449 (line 0142)            : OP_LDI $0 0x155A                        [+10550] 
+AAAB //450 (line 0142)            : OP_LDI $0 0x2AAA                        [+10550] 
+AAAB //451 (line 0142)            : OP_LDI $0 0x2AAA                        [+10550] 
+07C2 //452 (line 0142)            : $0 = $0 AND $6                          [+10595] 
+0F5E //453 (line 0142)            : OP_ACTUAL "$0\n"                        [+10606] 
+
+4D1E //454 (line 0143)            : OP_PRINT "\nlogical XOR\n"              [+10620] print "\nlogical XOR\n"  ;
+
+4E3E //455 (line 0144)            : OP_EXPECT "FFFFFFFF\n"                  [+10649] $expect "FFFFFFFF";         $0 = 0x55555555AAAAAAAA; $6 = 0x5555
+5506 //456 (line 0144)            : $0 = 0x55                               [+10677] 
+5557 //457 (line 0144)            : OP_LDI $0 0x1555                        [+10682] 
+556B //458 (line 0144)            : OP_LDI $0 0x155A                        [+10682] 
+AAAB //459 (line 0144)            : OP_LDI $0 0x2AAA                        [+10682] 
+AAAB //460 (line 0144)            : OP_LDI $0 0x2AAA                        [+10682] 
+D102 //461 (line 0144)            : OP_XCHG $0,$6                           [+10702] 
+5506 //462 (line 0144)            : $0 = 0x55                               [+10707] 
+0312 //463 (line 0144)            : OP_REPEAT 4                             [+10707] 
+5557 //464 (line 0144)            : OP_LDI $0 0x1555                        [+10707] 
+D102 //465 (line 0144)            : OP_XCHG $0,$6                           [+10702] 
+05C2 //466 (line 0144)            : $0 = $0 XOR $6                          [+10727] 
+0F5E //467 (line 0144)            : OP_ACTUAL "$0\n"                        [+10738] 
+
+4F1E //468 (line 0146)            : OP_PRINT "\nweirdos: XTOS\n"            [+10753] printf "\nweirdos: XTOS\n"; $expect "12345678, 987654321";
+503E //469 (line 0146)            : OP_EXPECT "12345678, 987654321\n"       [+10779] 
+
+0106 //470 (line 0147)            : $0 = 0x1                                [+10816] $0 = 0x12345678; push $0; $1 = 0x987654321; XTOS $1; pop $0; $ac
+2347 //471 (line 0147)            : OP_LDI $0 0x08D1                        [+10821] 
+59E3 //472 (line 0147)            : OP_LDI $0 0x1678                        [+10821] 
+1402 //473 (line 0147)            : OP_PUSH $0                              [+10833] 
+3102 //474 (line 0147)            : OP_XCHG $0,$1                           [+10842] 
+9806 //475 (line 0147)            : $0 = 0x98                               [+10847] 
+7657 //476 (line 0147)            : OP_LDI $0 0x1D95                        [+10847] 
+0C87 //477 (line 0147)            : OP_LDI $0 0x0321                        [+10847] 
+3102 //478 (line 0147)            : OP_XCHG $0,$1                           [+10842] 
+3202 //479 (line 0147)            : OP_XTOS $1                              [+10860] 
+1302 //480 (line 0147)            : OP_POP $0                               [+10869] 
+515E //481 (line 0147)            : OP_ACTUAL "$1, $0\n"                    [+10877] 
+
+1502 //482 (line 0149)            : OP_PUSH $currow                         [+10959] push $currow; pop $0;
+1302 //483 (line 0149)            : OP_POP $0                               [+10973] 
+
+6312 //484 (line 0150)            : OP_REPEAT 4, adr--                      [+11018] $4      = [10:7];
+0A84 //485 (line 0150)            : OP_READ $4,[10]                         [+11028] 
+
+000A //486 (line 0151)            : OP_RET                                  [+11125] ret;
