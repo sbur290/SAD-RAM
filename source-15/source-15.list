@@ -1,0 +1,37 @@
+"c:\program files\7-zip\7z.exe" l  source-15.7z
+
+7-Zip 19.00 (x64) : Copyright (c) 1999-2018 Igor Pavlov : 2019-02-21
+
+Scanning the drive for archives:
+1 file, 102031 bytes (100 KiB)
+
+Listing archive: source-15.7z
+
+--
+Path = source-15.7z
+Type = 7z
+Physical Size = 102031
+Headers Size = 559
+Method = LZMA2:19 7zAES
+Solid = +
+Blocks = 1
+
+   Date      Time    Attr         Size   Compressed  Name
+------------------- ----- ------------ ------------  ------------------------
+2023-02-18 15:48:20 ....A         5430       101472  source-15\Assert.cpp
+2023-04-19 19:24:37 ....A        12943               source-15\C3_atomize.cpp
+2022-11-02 20:40:59 ....A         6401               source-15\C3_codeTimer.cpp
+2023-04-22 21:44:24 ....A          607               source-15\C3_Errors.c
+2023-04-22 22:18:33 ....A       228661               source-15\C3_errors.cpp
+2022-12-19 17:50:39 ....A          604               source-15\C3_Errors.xml
+2022-12-19 17:50:53 ....A          606               source-15\C3_Errors.xsl
+2022-12-19 17:43:51 ....A        20417               source-15\C3_gstring.cpp
+2023-04-11 11:05:14 ....A       126769               source-15\c3_preProcessor.cpp
+2023-03-21 21:47:24 ....A         3082               source-15\C3_print.cpp
+2023-02-01 08:51:24 ....A        15474               source-15\C3_timeFncs.cpp
+2023-04-25 10:29:43 ....A          149               source-15\cdBackup.bat
+2023-03-22 09:59:31 ....A         6151               source-15\computeGeometry.cpp
+2023-04-22 18:38:27 ....A        17810               source-15\opName.cpp
+2022-12-19 17:14:38 ....A         1285               source-15\symbols.txt
+------------------- ----- ------------ ------------  ------------------------
+2023-04-25 10:29:43             446389       101472  15 files

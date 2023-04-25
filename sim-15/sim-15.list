@@ -1,0 +1,54 @@
+"c:\program files\7-zip\7z.exe" l  sim-15.7z
+
+7-Zip 19.00 (x64) : Copyright (c) 1999-2018 Igor Pavlov : 2019-02-21
+
+Scanning the drive for archives:
+1 file, 81074 bytes (80 KiB)
+
+Listing archive: sim-15.7z
+
+--
+Path = sim-15.7z
+Type = 7z
+Physical Size = 81074
+Headers Size = 935
+Method = LZMA2:19 7zAES
+Solid = +
+Blocks = 2
+
+   Date      Time    Attr         Size   Compressed  Name
+------------------- ----- ------------ ------------  ------------------------
+2023-02-13 10:34:48 ....A         1157          827  sim-15\compareWithBackup.bat
+2023-03-22 12:17:29 ....A          616               sim-15\todo.txt
+2023-03-15 19:08:24 ....A         9588        79312  sim-15\architecture.cpp
+2023-03-15 19:08:24 ....A         1335               sim-15\backup.bat
+2023-03-12 05:16:57 ....A           68               sim-15\backupMsgs.bat
+2023-01-06 09:31:11 ....A          686               sim-15\bugClean.bat
+2023-02-17 15:54:33 ....A          716               sim-15\build_architecture_h.bat
+2023-04-08 07:26:25 ....A           76               sim-15\cdBackup.bat
+2023-02-19 16:12:58 ....A           60               sim-15\compare1.bat
+2023-03-15 19:25:51 ....A       156148               sim-15\compile.cpp
+2023-03-15 19:08:24 ....A        10356               sim-15\compile.h
+2023-03-15 19:08:24 ....A       130054               sim-15\compile.save
+2023-04-25 14:08:59 ....A        28980               sim-15\EmulateMicrocode.cpp
+2023-03-13 14:12:24 ....A           78               sim-15\fixGoldMsg.bat
+2023-03-15 19:08:24 ....A         2271               sim-15\makedist.bat
+2023-03-01 07:49:11 ....A         5888               sim-15\microCodeTest.sam
+2023-01-05 15:03:00 ....A          863               sim-15\microIndx.sam
+2023-01-06 19:28:29 ....A          746               sim-15\microPage.sam
+2023-03-14 09:21:49 ....A          494               sim-15\opcodes.txt
+2023-03-13 11:34:25 ....A           98               sim-15\postBuildEvent.bat
+2023-03-15 19:08:24 ....A          501               sim-15\preBuildEvent.bat
+2023-03-30 08:51:30 ....A          363               sim-15\Preview attachment 3_28_23_patent_notes.txt [Text] 7.9 KB.url
+2023-04-25 14:10:04 ....A       112700               sim-15\sim-15.cpp
+2023-04-11 18:48:29 ....A        13203               sim-15\sim-15.h
+2022-10-31 00:00:44 ....A         1426               sim-15\sim.sln
+2023-04-10 12:21:44 ....A        14641               sim-15\sim.vcxproj
+2023-03-16 03:00:35 ....A        11871               sim-15\sim.vcxproj.filters
+2023-03-30 20:27:11 ....A          789               sim-15\sim.vcxproj.user
+2023-03-02 09:13:23 ....A         7998               sim-15\simBug.cpp
+2023-03-15 19:08:24 ....A         2779               sim-15\simBug.h
+2023-04-19 19:26:41 ....A         5543               sim-15\simHelp.cpp
+2023-03-27 16:38:55 ....A         3735               sim-15\testAll.bat
+------------------- ----- ------------ ------------  ------------------------
+2023-04-25 14:10:04             525827        80139  32 files

@@ -1,0 +1,31 @@
+"c:\program files\7-zip\7z.exe" l  samSources-15.7z
+
+7-Zip 19.00 (x64) : Copyright (c) 1999-2018 Igor Pavlov : 2019-02-21
+
+Scanning the drive for archives:
+1 file, 7183 bytes (8 KiB)
+
+Listing archive: samSources-15.7z
+
+--
+Path = samSources-15.7z
+Type = 7z
+Physical Size = 7183
+Headers Size = 399
+Method = LZMA2:48k 7zAES
+Solid = +
+Blocks = 1
+
+   Date      Time    Attr         Size   Compressed  Name
+------------------- ----- ------------ ------------  ------------------------
+2023-04-23 14:11:29 ....A        11154         6784  samSources-15\basics.sam
+2023-04-25 10:30:10 ....A          153               samSources-15\cdBackup.bat
+2023-03-24 10:43:14 ....A         4422               samSources-15\gotos.sam
+2023-03-31 17:48:27 ....A          925               samSources-15\govly.sam
+2023-04-16 16:40:35 ....A         5812               samSources-15\loops.sam
+2023-03-27 20:52:31 ....A         6525               samSources-15\master.sam
+2023-03-26 22:46:25 ....A         2070               samSources-15\scin.sam
+2023-04-11 21:56:20 ....A         1593               samSources-15\stdHeaders.sam
+2023-04-19 19:21:27 ....A         5660               samSources-15\thiz.sam
+------------------- ----- ------------ ------------  ------------------------
+2023-04-25 10:30:10              38314         6784  9 files

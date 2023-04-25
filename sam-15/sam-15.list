@@ -1,0 +1,83 @@
+"c:\program files\7-zip\7z.exe" l  sam-15.7z
+
+7-Zip 19.00 (x64) : Copyright (c) 1999-2018 Igor Pavlov : 2019-02-21
+
+Scanning the drive for archives:
+1 file, 91466 bytes (90 KiB)
+
+Listing archive: sam-15.7z
+
+--
+Path = sam-15.7z
+Type = 7z
+Physical Size = 91466
+Headers Size = 1391
+Method = LZMA2:19 7zAES
+Solid = +
+Blocks = 2
+
+   Date      Time    Attr         Size   Compressed  Name
+------------------- ----- ------------ ------------  ------------------------
+2023-03-16 04:04:27 ....A         1359          539  sam-15\compareWithBackup.bat
+2023-03-15 17:15:30 ....A         1734        89536  sam-15\backup.bat
+2023-03-15 17:15:30 ....A         1591               sam-15\C3_atomize.whatIsThis
+2023-04-08 07:26:44 ....A           76               sam-15\cdBackup.bat
+2022-08-30 01:09:50 ....A         2369               sam-15\cmdOptions.h
+2023-03-15 17:15:30 ....A           58               sam-15\cmpbad.bat
+2022-12-26 21:43:45 ....A         1824               sam-15\cmpDump.bat
+2023-04-03 14:33:44 ....A           99               sam-15\compare1.bat
+2023-03-15 17:15:30 ....A           94               sam-15\comparedDumpfiles.bat
+2023-03-15 17:15:30 ....A           40               sam-15\compareV10.bat
+2022-08-28 16:08:28 ....A          703               sam-15\crash.bat
+2022-07-27 15:51:08 ....A          417               sam-15\createKeyFile.bat
+2022-10-17 20:42:20 ....A          161               sam-15\deltaTime.bat
+2023-04-25 14:07:00 ....A        76103               sam-15\generateVerilog.cpp
+2023-03-15 19:05:27 ....A         5392               sam-15\generateVerilog.h
+2023-02-03 13:08:29 ....A        14970               sam-15\generator.cpp
+2023-03-15 17:15:30 ....A         1149               sam-15\generator.h
+2022-09-25 13:11:39 ....A           45               sam-15\makeVerilogData.bat
+2023-03-15 17:15:30 ....A          766               sam-15\makeZip.bat
+2022-08-17 16:09:17 ....A          929               sam-15\manual1.keys
+2022-09-05 10:59:05 ....A         6297               sam-15\manual2.keys
+2023-03-15 17:15:30 ....A        17465               sam-15\math.cpp
+2022-09-01 23:03:43 ....A          449               sam-15\math.csv
+2022-09-01 13:28:59 ....A         9984               sam-15\math.xlsx
+2023-01-02 19:30:27 ....A         1562               sam-15\notes.txt
+2023-01-03 07:42:01 ....A         1845               sam-15\nuVersion.bat
+2022-11-03 10:05:06 ....A          144               sam-15\NYphoneBook.keys
+2022-09-03 16:20:57 ....A         1525               sam-15\pawlowski-no.txt
+2022-08-30 01:30:11 ....A         1068               sam-15\pawlowski-yes.txt
+2022-12-26 21:43:45 ....A          970               sam-15\postProcessMemoryBug.bat
+2023-01-24 21:21:22 ....A          807               sam-15\progress.txt
+2022-09-04 22:03:04 ....A          665               sam-15\quickTest.bat
+2022-10-01 06:37:26 ....A           42               sam-15\runsim.bat
+2022-11-07 15:08:51 ....A         2463               sam-15\sam-11.diagram
+2023-03-15 19:05:27 ....A        82113               sam-15\sam-15.cpp
+2023-03-21 13:04:49 ....A        18147               sam-15\sam-15.h
+2022-08-13 19:16:44 ....A           29               sam-15\sam.bat
+2022-08-14 14:53:19 ....A         1426               sam-15\sam.sln
+2023-03-15 19:12:24 ....A        12112               sam-15\sam.vcxproj
+2023-03-15 19:12:24 ....A         9337               sam-15\sam.vcxproj.filters
+2023-02-09 11:56:34 ....A          643               sam-15\sam.vcxproj.user
+2023-03-15 17:15:30 ....A        76844               sam-15\samApp.cpp
+2022-11-17 09:09:45 ....A         1395               sam-15\samApp.h
+2023-04-10 12:23:34 ....A        37302               sam-15\samBug.cpp
+2023-03-15 17:15:30 ....A         4351               sam-15\samBug.h
+2022-08-13 19:16:53 ....A           23               sam-15\samD.bat
+2023-03-15 17:15:30 ....A        18192               sam-15\samHelper.cpp
+2023-03-15 17:15:30 ....A         2446               sam-15\samHelper.h
+2022-09-05 16:16:23 ....A          150               sam-15\showStats.bat
+2022-08-30 01:09:58 ....A          559               sam-15\test.bat
+2022-11-03 09:51:23 ....A         3714               sam-15\testall.bat
+2023-03-15 17:15:30 ....A         7247               sam-15\testDujour.cpp
+2022-09-04 22:03:04 ....A         2030               sam-15\testGroups.bat
+2022-10-28 13:47:51 ....A          539               sam-15\testHelp.bat
+2022-08-03 10:01:36 ....A           65               sam-15\testLup.bat
+2022-09-07 15:15:00 ....A          532               sam-15\testpack.bat
+2022-09-05 18:12:15 ....A          339               sam-15\testSeq.bat
+2022-09-04 23:33:42 ....A         1351               sam-15\testshort.bat
+2022-10-17 20:42:20 ....A          770               sam-15\wastage.bat
+2022-09-11 16:12:22 ....A         1105               sam-15\wasted.csv
+2022-10-03 20:34:31 ....A         1241               sam-15\worksheet.cell
+------------------- ----- ------------ ------------  ------------------------
+2023-04-25 14:07:00             439167        90075  61 files

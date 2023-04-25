@@ -1,0 +1,38 @@
+"c:\program files\7-zip\7z.exe" l  compile-15.7z
+
+7-Zip 19.00 (x64) : Copyright (c) 1999-2018 Igor Pavlov : 2019-02-21
+
+Scanning the drive for archives:
+1 file, 49943 bytes (49 KiB)
+
+Listing archive: compile-15.7z
+
+--
+Path = compile-15.7z
+Type = 7z
+Physical Size = 49943
+Headers Size = 547
+Method = LZMA2:384k 7zAES
+Solid = +
+Blocks = 2
+
+   Date      Time    Attr         Size   Compressed  Name
+------------------- ----- ------------ ------------  ------------------------
+2023-03-19 09:25:55 ....A         1086          452  compile-15\compareWithBackup.bat
+2023-03-15 17:12:54 ....A         1339        48944  compile-15\backup.bat
+2023-04-08 07:28:39 ....A           80               compile-15\cdBackup.bat
+2023-02-19 16:12:58 ....A           60               compile-15\compare1.bat
+2023-03-15 17:22:26 ....A         3983               compile-15\compile-15.cpp
+2023-03-15 11:21:50 ....A          504               compile-15\compile-15.unused
+2023-04-25 14:07:45 ....A       202416               compile-15\compile.cpp
+2023-04-19 11:06:39 ....A        13740               compile-15\compile.h
+2023-03-20 15:49:45 ....A         1425               compile-15\compile.sln
+2023-04-10 12:43:40 ....A        12100               compile-15\compile.vcxproj
+2023-03-31 17:00:03 ....A         7734               compile-15\compile.vcxproj.filters
+2023-04-22 19:06:15 ....A          645               compile-15\compile.vcxproj.user
+2023-03-15 17:12:54 ....A         1752               compile-15\makedist.bat
+2023-03-15 22:07:47 ....A           59               compile-15\postBuildEvent.bat
+2023-03-15 17:12:54 ....A          501               compile-15\preBuildEvent.bat
+2023-04-01 20:29:07 ....A        15832               compile-15\UpgradeLog.htm
+------------------- ----- ------------ ------------  ------------------------
+2023-04-25 14:07:45             263256        49396  16 files
