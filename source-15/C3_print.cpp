@@ -24,13 +24,13 @@ void Printf(char const *fmtP,...)
          fmtP++;                                                                //ignore always
         }                                                                       //
      va_start(arg, fmtP);                                                       //
-     len = vsnprintf(&bufP[first], bufSize-first-1, fmtP, arg);                 //
+     len = vsnprintf(&bufP[first], bufSize-first-1, fmtP, arg) + first;         //
      va_end(arg);                                                               //
      if (len < 0)                                                               //whoops
-        {bufP    = (char*)calloc(10, sizeof(buf));                              //need more space
+        {bufP    = (char*)calloc(10, sizeof(buf)); bufP[0] = buf[0];            //need more space
          bufSize = 10 * sizeof(buf);                                            //
          va_start(arg, fmtP);                                                   //
-         len     = vsnprintf(&bufP[first], bufSize-2, fmtP, arg);               //try again
+         len     = vsnprintf(&bufP[first], bufSize-2, fmtP, arg) + first;       //try again
          va_end(arg);                                                           //
          }                                                                      //
      if (len < 0) strcpy(&bufP[bufSize-3], "\n");                               //still failed

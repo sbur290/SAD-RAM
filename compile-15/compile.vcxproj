@@ -114,11 +114,11 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalOptions>/D _CRT_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/D _CRT_SECURE_NO_WARNINGS /D WINDOWS_IGNORE_PACKING_MISMATCH %(AdditionalOptions)</AdditionalOptions>
       <AdditionalIncludeDirectories>..\source-15;..\include-15;.</AdditionalIncludeDirectories>
       <LanguageStandard>Default</LanguageStandard>
     </ClCompile>
@@ -137,13 +137,13 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalOptions>/D _CRT_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/D _CRT_SECURE_NO_WARNINGS /D WINDOWS_IGNORE_PACKING_MISMATCH %(AdditionalOptions)</AdditionalOptions>
       <AdditionalIncludeDirectories>..\source-15;..\include-15;.</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -186,6 +186,7 @@
   <ItemGroup>
     <None Include="..\samSources-15\basics.sam" />
     <None Include="..\samSources-15\gotos.sam" />
+    <None Include="..\samSources-15\govly.sam" />
     <None Include="..\samSources-15\loops.sam" />
     <None Include="..\samSources-15\master.sam" />
     <None Include="..\samSources-15\scin.sam" />
@@ -207,6 +208,19 @@
     <None Include="..\ver-15\sadram\sadram.sim\sim_1\behav\xsim\scin.lineMap" />
     <None Include="..\ver-15\sadram\sadram.sim\sim_1\behav\xsim\scin.microcode" />
     <None Include="..\ver-15\sadram\sadram.sim\sim_1\behav\xsim\scin.msgFile" />
+    <None Include="..\ver-15\sadram\sadram.srcs\sim_1\new\architecture.sv" />
+    <None Include="..\ver-15\sadram\sadram.srcs\sim_1\new\groupSmear.sv" />
+    <None Include="..\ver-15\sadram\sadram.srcs\sim_1\new\readWord.sv" />
+    <None Include="..\ver-15\sadram\sadram.srcs\sim_1\new\readWriteField.sv" />
+    <None Include="..\ver-15\sadram\sadram.srcs\sim_1\new\samArithmetic.sv" />
+    <None Include="..\ver-15\sadram\sadram.srcs\sim_1\new\samControl.sv" />
+    <None Include="..\ver-15\sadram\sadram.srcs\sim_1\new\samDefines.sv" />
+    <None Include="..\ver-15\sadram\sadram.srcs\sim_1\new\SeqCell-withDebug.sv" />
+    <None Include="..\ver-15\sadram\sadram.srcs\sim_1\new\sequencerArray.sv" />
+    <None Include="..\ver-15\sadram\sadram.srcs\sim_1\new\SequencerCell.sv" />
+    <None Include="..\ver-15\sadram\sadram.srcs\sim_1\new\sequencerGroup.sv" />
+    <None Include="..\ver-15\sadram\sadram.srcs\sim_1\new\simulationDriver.sv" />
+    <None Include="..\ver-15\sadram\sadram.srcs\sim_1\new\writeWord.sv" />
     <None Include="makedist.bat" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,6 +1,6 @@
 /*
 =============================================================================
-     File: C3_errors.h. Ver , Mar 20 2023.
+     File: C3_errors.h. Ver , Apr 22 2023.
 
      This file contain error codes in the format:
           #define ERR_<4digitNumber> <4digitNumber> //<description>
@@ -32,9 +32,9 @@ enum {XSEVERITY_NOERROR,      //not an error at all
 
 //Following define is a comma delimitted list of error codes that are at or below the warning level.
 #define WARNING_AND_INFORMATION_ERRNUMS\
-          1031,1106,1561,1581,1793,1821,2003,2502,2504,2505,2506,2507,3037,3510,3512,3514,3516,3518,3523,3524,3525,3526,3527,3528,3529,3530,3531,3532,3533,3534,3535,\
-          3536,3537,3538,3539,3540,3541,3542,3543,3544,3545,3546,3547,3548,3549,3038,6920,6947,7017,7018,7021,7022,7023,7049,7050,7051,7052,7103,7122,7124,7155,7156,\
-          7170,7192,7204,7206,7209,7214,7223,7224,7254,7303,7319,7333,7346,7350,7357,7380,7381,7381,7452,7516,7517,7518,7519,7525,9212
+          1031,1106,1561,1581,1793,1821,2003,2502,2504,2505,2506,2507,2700,2701,2702,2743,3037,3510,3512,3514,3516,3518,3523,3524,3525,3526,3527,3528,3529,3530,3531,\
+          3532,3533,3534,3535,3536,3537,3538,3539,3540,3541,3542,3543,3544,3545,3546,3547,3548,3549,3038,6920,6947,7017,7018,7021,7022,7023,7049,7050,7051,7052,7103,\
+          7122,7124,7155,7156,7170,7192,7204,7206,7209,7214,7223,7224,7254,7303,7319,7333,7346,7350,7357,7380,7381,7381,7452,7516,7517,7518,7519,7525,9212
 #define ERROR_HISTORY_DEPTH 4                   //number of error codes in history. Used to get error parameter by ShortError.
 static const int MAX_ERROR_PARAM_SIZE=256,      //maximum size of the param field to cPicoError::LogError
                  MAX_ERROR_MESSAGE_SIZE=  256;  //maximimum size of the text defined in error table.
@@ -225,10 +225,11 @@ static const int MAX_ERROR_PARAM_SIZE=256,      //maximum size of the param fiel
 #define ERR_2600 2600 //Software error generating botcode from Madcode: %s
 #define ERR_2601 2601 //Software error generating line number table from Madcode:
 #define ERR_2602 2602 //Unresolved label: '%s'
-#define ERR_2701 2701 //m_params != Computed structure sizes
-#define ERR_2702 2702 //Inconsistent setting for params.testAdr:%s
+#define ERR_2700 2700 //pause for output
+#define ERR_2701 2701 //Simulation has stopped at the requested line or PC
+#define ERR_2702 2702 //pause for output
 #define ERR_2703 2703 //Sequence error in BRAM dump used
-#define ERR_2704 2704 //stopAtLine must not be zero in params.txt
+#define ERR_2704 2704 //stop encountered during simulatioin/emulation
 #define ERR_2705 2705 //target of opcode is invalid
 #define ERR_2706 2706 //the number commands(=%s) in user.cmds > space available
 #define ERR_2707 2707 //Unable to open 'simulate.log'
@@ -239,7 +240,7 @@ static const int MAX_ERROR_PARAM_SIZE=256,      //maximum size of the param fiel
 #define ERR_2712 2712 //%s inconsistent: FPGA versus software
 #define ERR_2713 2713 //Wrong duck: %s
 #define ERR_2714 2714 //Invalid command on command: %2
-#define ERR_2715 2715 //the row is out of sequence
+#define ERR_2715 2715 //$expect or $actual used recursively
 #define ERR_2716 2716 //commands(=%s) in userCmds.data has invalid length
 #define ERR_2717 2717 //commands(=%s) in userCmds.data contains invalid data
 #define ERR_2718 2718 //commands(=%s) in userCmds.data has invalid opcode
@@ -266,6 +267,8 @@ static const int MAX_ERROR_PARAM_SIZE=256,      //maximum size of the param fiel
 #define ERR_2739 2739 //#expect: <value> not equal to #actual: <value> in simulation.
 #define ERR_2740 2740 //Address of call is beyond range of call OPcode.
 #define ERR_2741 2741 //Sam source file not specified on command line.
+#define ERR_2742 2742 ///run command must be invoked from cmd.exe.
+#define ERR_2743 2743 //Target Register not selected
 #define ERR_3000 3000 //Missing name
 #define ERR_3001 3001 //Duplicate name in declaration
 #define ERR_3002 3002 //Variable '%s' has not been declared

@@ -24,6 +24,8 @@ typedef struct
     {int rowSize, targetBusSz;
     } sHDW_PARAMS;
 
+typedef enum {ITEM_CFG=0, ITEM_INDX=1, ITEM_PAGE=2, ITEM_BOOK=3} eITEM_TYPE;
+
 //DO NOT USE sizeof(hINDX), sizeof(hPAGE), or sizeof(hBOOK)
 extern uint32_t hINDX_size,   hPAGE_size,   hBOOK_size,                         //sizes with user key (variable length)
                 hINDX_padSz,  hPAGE_padSz,  hBOOK_padSz,                        //sizes rounded to targetBus size
@@ -46,6 +48,7 @@ typedef struct  //hINDX                                                         
               stop : STOP_BIT;        //[63]       word[0]                      //
    //char     key[n];                 //[64+..]    word[1+]                     //actual key; n=2 thru 8
     } hINDX;                                                                    //
+#define hINDX_KEY(hP) (((uint8_t*)hP) + sizeof(hINDX))
 
 /*typedef struct packed                                                           //
     {logic [31:0]                p1,        //bits[ 31:  0]   word[0]           //row address of page1 (low 32 bits)
@@ -65,7 +68,9 @@ typedef struct //hPAGE
                stop  : 1;                   // 1                                //
    //char     key[n];                       //                                  //actual key; n=2 thru 8
     } hPAGE;                                                                    //
+#define hPAGE_KEY(pP) (((uint8_t*)pP) + sizeof(hPAGE))
 typedef hPAGE       hBOOK;                                                      //exactly the same structure as cPAGE
+#define hBOOK_KEY(bP) (((uint8_t*)bP) + sizeof(hBOOK))
 
 inline uint64_t HiLo40(uint64_t u64)
    {uint8_t *u8P=(uint8_t*)&u64, u8[5], r8[5];

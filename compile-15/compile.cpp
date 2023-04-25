@@ -29,44 +29,54 @@
 
  The opcodes generated are 16-bits wide and are structured as follows:
 ┌───────────────────────────────────────────────────────── OPCODE TABLE ───────────────────────────────────────────────┬───┐
-├───┬───┬───┬───┬───┬───┬─┬──OPCODE─┬───┬───┬───┬───┬───┬───┬───╥─────────┬────────────────────────────────────────────┼───┤
+├───┬───┬───┬───┬───┬───┬───┬─bit number┬───┬───┬───┬───┬───┬───╥─────────┬────────────────────────────────────────────┼───┤
 | 15| 14| 13| 12| 11| 10| 9 | 8 ║ 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0 ║ OPNAME  |          MEANING                           |   |
 ├───┴───┴───┴───┴───┴───┴───┴───╫───┴───┴───┴───┴───┴───┴───┴───╫─────────┼────────────────────────────────────────────┼───┤
 |                               ║<-------- shortOp ------------>║         |                                            |   |
-├───┬───┬─ address bits ┬───┬───╫───┬───┬───╥───┬─action bits───╟─────────┼────────────────────────────────────────────┼───┤
-|a10| a9| a8| a7| a6| a5| a4| a3| a2| a1| a0║ 0 | 0 | 0 | 0 | 0 ║ OP_CALL | push pc, goto {a10:a0}                     |(1)|
-├───┴───┴───╫───┼───┼───┼───┬───╫─reg bits──╫───┼───┼───┼───┼───╫─────────┼────────────────────────────────────────────┼───┤
-|           ║ 0 |   |   |   |   ║           ║ 0 | 1 | 0 | 0 | 0 ║ OP_RDF  | field={f3:f0}; $breg <= [$areg].field      |   |
-|  $areg    ║nu | f3| f2| f1| f0║  $breg    ╟───┼───┼───┼───┼───╫─────────┼────────────────────────────────────────────┤(5)|
-|           ║ 0 |   |   |   |   ║           ║ 1 | 0 | 0 | 0 | 0 ║ OP_WRF  | field={f3:f0}; [$areg].field <= $breg      |   |
-├───┬───┬───╫───┼───┼───┼───┼───╫───┬───┬───╫───┼───┼───┼───┼───╫─────────┼────────────────────────────────────────────┼───┤
-| f2| f1| f0║ l4| l3| l2| l1| l0║ 0 | 0 | 0 ║ 1 | 1 | 0 | 0 | 0 ║ OP_BUG  | if(f2)bugLevel <= {l4:l0}, f2==0 adhoc cmds|(6)|
-├───┼───┼───╟───┼───┼───┼───┼───╟───┼───┼───╟───┼───┼───┼───┼───╫─────────┼────────────────────────────────────────────┼───┤
-| 0 | 0 | 0 ║ 0 | 0 | 0 | 0 | 0 ║ 0 | 0 | 0 ║ 1 | 1 | 0 | 0 | 0 ║ OP_STOP | $stop simulation (OP_BUG with {f2:f0} == 0)|   |
-├───┼───┼───╫───┼───┼───┼───┼───╫───┼───┼───╟───┼───┼───┼───┼───╫─────────┼────────────────────────────────────────────┼───┤
+├───┬───┬──address bits─┬───┬───╫──reg bits─╥───┬─action bits───╟─────────┼────────────────────────────────────────────┼───┤
+|a10| a9| a8| a7| a6| a5| a4| a3| a2| a1| a0║ 0 | 0 | 0 | 0 | 0 ║ OP_CALL | push {ovly#,bugLevel,pc}, goto {a10:a0}    |(1)|
+├───┼───┼───┼───┼───┼───┼───┼───╫───┴───┴───╫───┼───┼───┼───┼───╫─────────┼────────────────────────────────────────────┼───┤
+|   |   |   |   |   |   |   |   ║           ║ 0 | 0 | 1 | 0 | 0 ║ OP_READ | $breg <= curRow[a7:a0]                     |   |
+| a7| a6| a5| a4| a3| a2| a1| a0║   $breg   ╟───┼───┼───┼───┼───╫─────────┼────────────────────────────────────────────┼───┤
+|      address within row   |   ║           ║ 0 | 1 | 1 | 0 | 0 ║ OP_WRYT | curRow[a7:a0] <= $breg                     |   |
+├───┴───┴───┴───┴───┴───╫───┴───╫───────────╫───┼───┼───┼───┼───╫─────────┼────────────────────────────────────────────┼───┤
+|     Reserved for      ║ row   ║           ║ 1 | 0 | 1 | 0 | 0 ║ OP_SCAN | Scan for $breg; rowType: 0=PAGE,1=INDX     |   |
+|  multi-key support    ║  type ║   $breg   ╟───┼───┼───┼───┼───╫─────────┼────────────────────────────────────────────┤(2)|
+|                       ║       ║           ║ 1 | 1 | 1 | 0 | 0 ║ OP_SCIN | Scan and insert $breg into rowType         |   |
+├───┴───┴───╫───┼───┼───╫───┼───╫───────────╫───┼───┼───┼───┼───╫─────────┼────────────────────────────────────────────┼───┤
+|           ║ x |   |   |   |   ║           ║ 0 | 1 | 0 | 0 | 0 ║ OP_RDF  | field={f3:f0}; $breg <= [$areg].field      |   |
+|  $areg    ║nu | f3| f2| f1| f0║   $breg   ╟───┼───┼───┼───┼───╫─────────┼────────────────────────────────────────────┤(5)|
+|           ║ x |  field number ║           ║ 1 | 0 | 0 | 0 | 0 ║ OP_WRF  | field={f3:f0}; [$areg].field <= $breg      |   |
+├───┬───┬───╫───┼───╫───┼───┼───╫───┬───┬───╫───┼───┼───┼───┼───╫─────────┼────────────────────────────────────────────┼───┤
+|  fnc != 0 ║ nu=0  ║ l2| l1| l0║ 0 | 0 | 0 ║ 1 | 1 | 0 | 0 | 0 ║ OP_BUG  | fnc==4:bugLevel={l2:l0}, fnc!=4 adhoc cmds |(6)|
+├───┼───┼───╟───┼───╫───┼───┼───╫───┼───┼───╫───┼───┼───┼───┼───╫─────────┼────────────────────────────────────────────┼───┤
+|  fnc == 0 ║ 0 | 0 ║ 0 | 0 | 0 ║ 0 | 0 | 0 ║ 1 | 1 | 0 | 0 | 0 ║ OP_STOP | $stop simulation (OP_BUG with {f2:f0} == 0)|   |
+├───┬───┬───╫───┼───╫───┼───┼───╫───┼───┼───╟───┼───┼───┼───┼───╫─────────┼────────────────────────────────────────────┼───┤
+| m7| m6| m5| m4| m3| m2| m1| m0║  variant  ║ 1 | 1 | 0 | 0 | 0 ║ OP_PRINT| msg#={m7:m0}, var:1=print,2-7=expect/actual|(7)|
+├───┼───┼───├───┼───┼───┼───┼───╫───┼───┼───╫───┼───╫───┼───┼───╫─────────┼────────────────────────────────────────────┼───┤
 | a7| a6| a5| a4| a3| a2| a1| a0║ c4| c3| c2| c1| c0║ 0 | 0 | 1 ║ OP_GO_T | if(condition & status)==condition goto adr |(3)|
 |  relative destination address ║     condition     ║ 1 | 0 | 1 ║ OP_GO_F | if(condition & status)!=condition goto adr |   |
 ├───┬───┬───╥───┬───┬───┬───┬───╫───┴───┴───╥───┼───╫───┼───┼───╫─────────┼────────────────────────────────────────────┼───┤
 |   $areg   ║     subOp         ║   $breg   ║ 0 | 0 | 0 | 1 | 0 ║ OP_ARITH| $breg <= $areg <subOp> $breg or unary ops  |(4)|
 ├───┬───┬───╫───┬───┬───┬───┬───╫───┬───┬───╫───┼───┼───┼───┼───╫─────────┼────────────────────────────────────────────┼───┤
-| i7| i6| i5| i4| i3| i2| i1| i0║   $breg   ║ 0 | 0 | 1 | 1 | 0 ║ OP_RI   | $breg <= {n'b0,i7:i0}                      |   |
-├───┼───┼───╫───┼───┼───┼───┼───╫───┼───┼───╟───┼───┼───┼───┼───╫─────────┼────────────────────────────────────────────┼───┤
-| 0 | 0 | 0 ║ 0 | 0 | 0 | 0 | 0 ║ 0 | 0 | 0 ║ 0 | 1 | 0 | 1 | 0 ║ OP_RET  | return from call                           |   |
-├───┼───┼───╫───┼───┼───┼───┼───╫───┼───┼───╟───┼───┼───┼───┼───╟─────────┼────────────────────────────────────────────┼───┤
+| i7| i6| i5| i4| i3| i2| i1| i0║   $breg   ║ 0 | 0 | 1 | 1 | 0 ║ OP_RI   | $breg <= {n'b0,i7:i0}, zero fill hi end    |   |
+├───┼───┼───╫───┼───┼───┼───┼───╫───┬───┬───╫───┼───┼───┼───┼───╫─────────┼────────────────────────────────────────────┼───┤
+| 0 | 0 | 0 ║ 0 | 0 | 0 | 0 | 0 ║ 0 | 0 | 0 ║ 0 | 1 | 0 | 1 | 0 ║ OP_RET  | return from call, restore ovly#,buglevel,pc|   |
+├───┼───┼───╫───┼───┼───┼───┼───╫───┼───┼───╫───┼───┼───┼───┼───╫─────────┼────────────────────────────────────────────┼───┤
 | 0 | 0 | 0 ║ 0 | 0 | 0 | 0 | 0 ║ 1 | 0 | 0 ║ 0 | 1 | 0 | 1 | 0 ║ OP_CFG_G| CFG(group); group.konfig<=dramI            |   |
 | 0 | 0 | 0 ║ 0 | 0 | 0 | 0 | 0 ║ 1 | 0 | 1 ║ 0 | 1 | 0 | 1 | 0 ║ OP_CFG_C| CFG(cell);  cell. konfig<=dramI            |   |
-├───┼───┼───╫───┼───┼───┼───┼───╫───┼───┼───╟───┼───┼───┼───┼───╫─────────┼────────────────────────────────────────────┼───┤
-| R | A | - ║ 0 | 0 | 0 | 0 | 0 ║   $breg   ║ 0 | 1 | 1 | 1 | 0 ║OP_REPREG| repeat nxt op, breg = repititions          |   |
-├───┼───┼───╫───┼───┼───┬───┬───╫───┼───┼───╟───┼───┼───┼───┼───╟─────────┼────────────────────────────────────────────┼───┤
-| R | A | - ║   repeatCount-1   ║ 0 | 0 | 0 ║ 1 | 0 | 0 | 1 | 0 ║OP_REPEAT| repeat nxt op, R:reg ++/--, A:adr ++/--    |   |
-├───┴───┴───╫───┴───┴───┴───┴───╫───┼───┼───╫───┼───┼───┼───┼───╫─────────┼────────────────────────────────────────────┼───┤
-| a7| a6| a5| a4| a3| a2| a1| a0║ 0 | 0 | 0 ║ 1 | 0 | 1 | 1 | 0 ║ OP_CROWI| currentRow <= {a7:a0}                      |   |
-├───┴───┴───╫───┬───┬───┬───┬───╫───┼───┼───╫───┼───┼───┼───┼───╫─────────┼────────────────────────────────────────────┼───┤
+├───┼───┼───╫───┼───┼───┼───┼───╫───┼───┼───╫───┼───┼───┼───┼───╫─────────┼────────────────────────────────────────────┼───┤
+|   |   |   ║ 0 | 0 | 0 | 0 | 0 ║   $breg   ║ 0 | 1 | 1 | 1 | 0 ║OP_REPREG| repeat nxt op, breg = repititions          |   |
+| R | A | - ╟───┼───┼───┬───┬───╫───┬───┬───╫───┼───┼───┼───┼───╫─────────┼────────────────────────────────────────────┼───┤
+|   |   |   ║         repeatCount-1         ║ 1 | 0 | 0 | 1 | 0 ║OP_REPEAT| repeat nxt op, R:reg ++/--, A:adr ++/--    |   |
+├───┴───┴───╫───┬───┬───┬───┬───╥───┬───┬───╫───┼───┼───┼───┼───╫─────────┼────────────────────────────────────────────┼───┤
+|r10| r9| r8| r7| r6| r5| r4| r3║ r2| r1|r0 ║ 1 | 0 | 1 | 1 | 0 ║ OP_CROWI| currentRow <= {r10:a0}                     |   |
+├───┴───┴───╫───┼───┼───┼───┼───╫───┼───┼───╫───┼───┼───┼───┼───╫─────────┼────────────────────────────────────────────┼───┤
 |   $areg   ║ 0 | 0 | 0 | 0 | 0 ║ 0 | 0 | 0 ║ 1 | 1 | 0 | 1 | 0 ║ OP_CROW | currentRow <= $areg                        |   |
-├───┬───┬───╟───┼───┼───┼───┼───╟───┼───┼───╟───┼───┼───┼───┼───╫─────────┼────────────────────────────────────────────┼───┤
-| a7| a6| a5| a4| a3| a2| a1| a0║ v2| v1| v0║ 1 | 1 | 1 | 1 | 0 ║ OP_PRINT| $display($reg0)  a7:a0 = message # in host |(7)|
-├───┼───┼───├───┼───┼───┼───┼───╫───┼───┼───╫───┼───┼───╫───┼───╫─────────┼────────────────────────────────────────────┼───┤
-|i13|i12|i11|i10| i9| i8| i7| i6| i5| i4| i3| i2| i1| i0║ 1 | 1 ║ OP_LDI  | $reg0 <= ($reg0 << 14) + i13:i0            |   |
+├───┬───┬───╟───┼───┼───┼───┼───╫───┼───┼───╫───┼───┼───┼───┼───╫─────────┼────────────────────────────────────────────┼───┤
+| o7| o6| o5| o4| o3| o2| o1| o0║ 0 | 0 | 0 ║ 1 | 1 | 1 | 1 | 0 ║ OP_GOVLY| load overlay {o7:o0} and jmp to code[pc+1] |   |
+├───┴───┴───┼───┬───┬───┬───┬───╫───┼───┼───╫───┼───┼───╫───┼───╫─────────┼────────────────────────────────────────────┼───┤
+|i13|i12|i11|i10| i9| i8| i7| i6| i5| i4| i3| i2| i1| i0║ 1 | 1 ║ OP_LDI  | $reg0 <= ($reg0 << 14)+i13:i0, no zero fill|   |
 ├───┼───┼───├───┼───┼───┼───┼───╫───┴───┴───╫───┬───┼───╨───┼───╫─────────┼────────────────────────────────────────────┼───┤
 |   |   |   |   |   |   |   |   ║           ║ 0 | 0 | 1 | 0 | 0 ║ OP_READ | $breg <= curRow[a7:a0]                     |   |
 | a7| a6| a5| a4| a3| a2| a1| a0║           ╟───┼───┼───┼───┼───╫─────────┼────────────────────────────────────────────┼───┤
@@ -75,7 +85,7 @@
 |     Reserved for      ║ row   ║   $breg   ║ 1 | 0 | 1 | 0 | 0 ║ OP_SCAN | Scan for $breg; rowType: 0=PAGE,1=INDX     |   |
 |  multi-key support    ║  type ║           ╟───┼───┼───┼───┼───╫─────────┼────────────────────────────────────────────┤(2)|
 |                       ║       ║           ║ 1 | 1 | 1 | 0 | 0 ║ OP_SCIN | Scan and insert $breg into rowType         |   |
-└───────────────────────╨───┴───╨───────────╨───┴───┴───┴───┴───╨─────────┴────────────────────────────────────────────┴───┘
+└───┴───┴───┴───┴───┴───╨───┴───╨───┴───┴───╨───┴───┴───┴───┴───╨─────────┴────────────────────────────────────────────┴───┘
  Blank and x fields are not assigned, but should be set to zero; 
  NOTE (1): Address needs to be large enough to address each word in a DRAM row.
     For targetBus == 8 bytes (word size = 64-bits) and rowSize = 256 bytes each row contains 256/8 = 32 words;
@@ -85,12 +95,12 @@
  NOTE (4): subOp: 0x00=ADD, 1=ADC, 2=SUB, 3=SBB, 4=CMP, 5=XOR, 6=OR, 7=AND, 0x08=XSUB, 9=XSBB; operators in samArithmetic.sv
                   0x0A=INC, B=DEC, C=SHL, D=SHR, E=RCL, F=RCR;                                 operators        "
                   0x10=R2R, 11=XCHG, 12=OPS_XTOS, 13=POP, 14=PUSH, 15=PUSH_CURROW;             operators in samControls.sv 
-                  0x16=STC, 17=CLC, 18=STZ, 19=CLZ, 1A thru 1F                                                  "
+                  0x16=STC, 17=CLC, 18=STZ, 19=CLZ, CMPS=1A, 1B thru 1F unused                                  "
  NOTE (5): field number defines the size and location of a specific field in the 
            hINDX, hPAGE, or hBOOK structure addressed by regD.
  NOTE (6): flags: f2     == 1 sets buglevel to [i4:i0]
                               Refer to ERR_2727 in (c3_errors.cpp) for an explanation of bug levels.
- NOTE (7): variant {v2:v0} : 0 = print, 1=$expect, 2=$actual. 3-7= not used   
+ NOTE (7): variant {v2:v0} : 1=print, 2=$expect, 3=$actual, 4=nu, 5=nu, 6=end $expect, 7=end $actual
                  {f1:f0} == 0 stop
                             1 dump BRAM rows hPAGE[] format
                             2 dump BRAM rows in raw
@@ -131,15 +141,18 @@ FILE *g_printFileP;
          m_continuesP= NULL;         m_continues = 0; 
 #define FixBreaks(pc)    FixThese(pc, true, breaksP,    breaks)                 //patch up current breaks;    pop previous breaks
 #define FixContinues(pc) FixThese(pc, false,continuesP, continues)              //patch up current continues; pop previous continues
-#define UNRESOLVED 0 // 0xD0D0                                                  //the DODO bird
+ #define UNRESOLVED 0xD0D0                                                       //the DODO bird
 #define REG0       0
 #define REG1       1
+#define REG7       7
 #define STEPR      1
 #define STEPA      1
 
+#define GenerateR2R(pc, sreg, dreg) GenerateOp(pc, OP_ARITH, OPS_R2R, sreg, dreg) //$dreg = $sreg
+
 //Opcode bits for OPCODE_TBL: A_ = allow this subfield, X_ = expect this subfield
 enum
-   {X_ENVIRONMENT=1, //
+   {X_ENV=1,         //
     X_DO,            //
     X_IF,            //
     X_FOR,           //
@@ -163,78 +176,88 @@ enum
     X_XTOS,          //XTOS $reg                                            eg xtos $1
     X_STORE,         //expect [row:word] possibly with .fileName = $reg/lit see AssignMem for details
     A_PAIR,          //allow adr pair [wordStart:wordEnd] addresses,        eg write[15:17] = 99;
-    X_ALLOC,         //
-    X_VBL_ASSIGN,    //
+    X_ALLOC,         //                                                     eg allocate  [row#] = {.....}
+    X_VBL,           //                                                     eg foo = 3 (foo declared in allocate stmt)
+    X_OVLY,          //                                                     eg $overlay 3;
+    X_EXPECT,        //                                                     eg $expect{"results=3";}
+    X_ACTUAL,        //                                                     eg $actual{"results=$0";}
     X_COMPILE_STOP,  //
    };
     
 static OPCODE_TBL  
   OpcodeTbl[] =                                                                 //
-      {//name           act                    ctrl         },                  //
-       {"$0",     OP_ARITH+(OPS_R2R<<8),       X_REG        },                  //$0 = reg or lit
-       {"$1",     OP_ARITH+(OPS_R2R<<8)+0x100, X_REG        },                  //$1 = reg or lit (reg1 is pc)
-       {"$2",     OP_ARITH+(OPS_R2R<<8)+0x200, X_REG        },                  //$2 = reg or lit
-       {"$3",     OP_ARITH+(OPS_R2R<<8)+0x300, X_REG        },                  //$3 = reg or lit
-       {"$4",     OP_ARITH+(OPS_R2R<<8)+0x400, X_REG        },                  //$4 = reg or lit
-       {"$5",     OP_ARITH+(OPS_R2R<<8)+0x500, X_REG        },                  //$5 = reg or lit
-       {"$6",     OP_ARITH+(OPS_R2R<<8)+0x600, X_REG        },                  //$6 = reg or lit
-       {"$7",     OP_ARITH+(OPS_R2R<<8)+0x700, X_REG        },                  //$7 = reg or lit
-       {"$CURROW",      OP_CROW,               X_REG        },                  //$curRow = reg or literal
-       {"$SHOCODE",     0,                     X_PSEUDO     },                  //debugging
-       {"$SAFEREG0",    1,                     X_PSEUDO     },                  //
-       {"EXEC",         1,                     X_PSEUDO     },                  //
-       {"$BUG",         OP_BUG+0x8000,         X_BUG        },                  //set bug level (f2==1)
-       {"$StopCompile", 0,                     X_COMPILE_STOP},
-       {"$BUG_PAGE",    OP_BUG+0x2000,         X_ONE        },                  //f2 == 0, f1:f0 = 1
-       {"$BUG_RAW",     OP_BUG+0x4000,         X_ONE        },                  //f2 == 0, f1:f0 = 2
-       {"$BUG_INDX",    OP_BUG+0x6000,         X_ONE        },                  //f2 == 0, f1:f0 = 3
-       {"ALLOCATE",     0,                     X_ALLOC      },                  //
-       {"BREAK",        1,                     X_BRAKE      },                  //break from for, while, or do loop
-       {"CONTINUE",     0,                     X_BRAKE      },                  //continue   for, while, or do loop
-       {"NOOP",         OP_NOOP,               X_ONE        },                  //
-       {"CFG",          OP_CFG_G,              X_CFG        },                  //(cell) or (group)
-       {"SCIN",         OP_SCIN,               X_SCAN       },                  //(indx), (page), or (book)
-       {"SCAN",         OP_SCAN,               X_SCAN       },                  //         "
-       {"STOP",         OP_STOP,               X_ONE        },                  //
-       {"GOTO",         OP_GO_T,               X_GOTO       },                  //
-       {"GO",           OP_GO_T,               X_GOTO       },                  //
-       {"CALL",         OP_CALL,               X_GOTO       },                  //
-       {"[",            OP_WRYT,               X_STORE      },                  //
-       {"$ENVIRONMENT", 0,                     X_ENVIRONMENT},                  //
-       {"DO",           0,                     X_DO,        },                  //
-       {"IF",           0,                     X_IF,        },                  //
-       {"FOR",          0,                     X_FOR,       },                  //0 = standard for
-       {"FORZ",         1,                     X_FORZ,      },                  //1 = non-std  for
-       {"PRINT",        0,                     X_PRINT,     },                  //
-       {"$EXPECT",      1,                     X_PRINT      },                  //
-       {"$ACTUAL",      2,                     X_PRINT      },                  //
-       {"$STRING",      3,                     X_PRINT,     },                  //
-       {"RET",          OP_RET,                X_ONE,       },                  //
-       {"WHILE",        0,                     X_WHILE,     },                  //
-       {"DW",           0,                     X_DW,        },                  //      "
-       {"ADD",          OPS_ADD,               X_ARITH      },                  //binary opcodes
-       {"ADC",          OPS_ADC,               X_ARITH      },                  //      "
-       {"SUB",          OPS_SUB,               X_ARITH      },                  //      "
-       {"SBB",          OPS_SBB,               X_ARITH      },                  //      "
-       {"CMP",          OPS_CMP,               X_ARITH      },                  //      "
-       {"XOR",          OPS_XOR,               X_ARITH      },                  //      "
-       {"OR",           OPS_OR,                X_ARITH      },                  //      "
-       {"AND",          OPS_AND,               X_ARITH      },                  //      "
-       {"INC",          OPS_INC,               X_UNOP       },                  //unary opcodes
-       {"DEC",          OPS_DEC,               X_UNOP       },                  //      "
-       {"SHL",          OPS_SHL,               X_SHIFT      },                  //      "
-       {"SHR",          OPS_SHR,               X_SHIFT      },                  //      "
-       {"RCL",          OPS_RCL,               X_SHIFT      },                  //      "
-       {"RCR",          OPS_RCR,               X_SHIFT      },                  //      "
-       {"STC",  OP_ARITH + (OPS_STC<<8),       X_ONE        },
-       {"CLC",  OP_ARITH + (OPS_CLC<<8),       X_ONE        },
-       {"STZ",  OP_ARITH + (OPS_STZ<<8),       X_ONE        },
-       {"CLZ",  OP_ARITH + (OPS_CLZ<<8),       X_ONE        },
-       {"PUSH",         OPS_PUSH,              X_REG_LIST   },                  //inline opcodes
-       {"POP",          OPS_POP,               X_REG_LIST   },                  //      "
-       {"XCHG",         OP_ARITH,              X_XCHG       },                  //      "
-       {"XTOS",         OP_ARITH,              X_XTOS       },                  //      "
-       {NULL,           0,                     0,           }                   //stopper
+      {//name                act                    ctrl         },             //
+       {"PRINT",             OPV_PRINT,             X_PRINT,     },             //must be first
+       {"$EXPECT",           OPV_EXPECT,            X_EXPECT     },             //
+       {"$ACTUAL",           OPV_ACTUAL,            X_ACTUAL     },             //
+     //{"$STRING",           OPV_STRING,            X_PRINT,     },             //
+       {"$0",     OP_ARITH+(OPS_R2R<<8),            X_REG        },             //$0 = reg or lit
+       {"$1",     OP_ARITH+(OPS_R2R<<8)+0x100,      X_REG        },             //$1 = reg or lit (reg1 is pc)
+       {"$2",     OP_ARITH+(OPS_R2R<<8)+0x200,      X_REG        },             //$2 = reg or lit
+       {"$3",     OP_ARITH+(OPS_R2R<<8)+0x300,      X_REG        },             //$3 = reg or lit
+       {"$4",     OP_ARITH+(OPS_R2R<<8)+0x400,      X_REG        },             //$4 = reg or lit
+       {"$5",     OP_ARITH+(OPS_R2R<<8)+0x500,      X_REG        },             //$5 = reg or lit
+       {"$6",     OP_ARITH+(OPS_R2R<<8)+0x600,      X_REG        },             //$6 = reg or lit
+       {"$7",     OP_ARITH+(OPS_R2R<<8)+0x700,      X_REG        },             //$7 = reg or lit
+       {"$CURROW",           OP_CROW,               X_REG        },             //$curRow = reg or literal
+       {"$SHOCODE",          0,                     X_PSEUDO     },             //debugging
+       {"$SAFEREG",          1,                     X_PSEUDO     },             //
+       {"$alwaysMessageBox", 2,                     X_PSEUDO     },             //
+       {"$ORIGIN",           3,                     X_PSEUDO     },             //
+       {"$OVERLAYSIZE",      4,                     X_PSEUDO     },             //
+       {"$OVERLAYBASE",      5,                     X_PSEUDO     },             //
+       {"$OVERLAYSOURCE",    6,                     X_PSEUDO     },             //
+       {"$OVERLAY",          0,                     X_OVLY       },             //
+       {"$BUG",              OP_BUG+0x8000,         X_BUG        },             //set bug level (f2==1)
+       {"$StopCompile",      0,                     X_COMPILE_STOP},            //debugging aid
+       {"$BUG_PAGE",         OP_BUG+0x2000,         X_ONE        },             //f2 == 0, f1:f0 = 1
+       {"$BUG_BOOK",         OP_BUG+0x2000,         X_ONE        },             //f2 == 0, f1:f0 = 1
+       {"$BUG_RAW",          OP_BUG+0x4000,         X_ONE        },             //f2 == 0, f1:f0 = 2
+       {"$BUG_INDX",         OP_BUG+0x6000,         X_ONE        },             //f2 == 0, f1:f0 = 3
+       {"ALLOCATE",          0,                     X_ALLOC      },             //
+       {"BREAK",             1,                     X_BRAKE      },             //break from for, while, or do loop
+       {"CONTINUE",          0,                     X_BRAKE      },             //continue   for, while, or do loop
+       {"NOOP",              OP_NOOP,               X_ONE        },             //
+       {"CFG",               OP_CFG_G,              X_CFG        },             //(cell) or (group)
+       {"SCIN",              OP_SCIN,               X_SCAN       },             //(indx), (page), or (book)
+       {"SCAN",              OP_SCAN,               X_SCAN       },             //         "
+       {"STOP",              OP_STOP,               X_ONE        },             //
+       {"GOTO",              OP_GO_T,               X_GOTO       },             //
+       {"GO",                OP_GO_T,               X_GOTO       },             //
+       {"CALL",              OP_CALL,               X_GOTO       },             //
+       {"[",                 OP_WRYT,               X_STORE      },             //
+       {"$ENVIRONMENT",      0,                     X_ENV        },             //
+       {"DO",                0,                     X_DO,        },             //
+       {"IF",                0,                     X_IF,        },             //
+       {"FOR",               0,                     X_FOR,       },             //0 = standard for  stmt
+       {"FORZ",              1,                     X_FORZ,      },             //1 = non-std  forz stmt
+       {"RET",               OP_RET,                X_ONE,       },             //
+       {"WHILE",             0,                     X_WHILE,     },             //
+       {"DW",                0,                     X_DW,        },             //
+       {"ADD",               OPS_ADD,               X_ARITH      },             //binary opcodes
+       {"ADC",               OPS_ADC,               X_ARITH      },             //      "
+       {"SUB",               OPS_SUB,               X_ARITH      },             //      "
+       {"SBB",               OPS_SBB,               X_ARITH      },             //      "
+       {"CMP",               OPS_CMP,               X_ARITH      },             //      "
+       {"CMPS",              OPS_CMPS,              X_ARITH      },             //      "
+       {"XOR",               OPS_XOR,               X_ARITH      },             //      "
+       {"OR",                OPS_OR,                X_ARITH      },             //      "
+       {"AND",               OPS_AND,               X_ARITH      },             //      "
+       {"INC",               OPS_INC,               X_UNOP       },             //unary opcodes
+       {"DEC",               OPS_DEC,               X_UNOP       },             //      "
+       {"SHL",               OPS_SHL,               X_SHIFT      },             //      "
+       {"SHR",               OPS_SHR,               X_SHIFT      },             //      "
+       {"RCL",               OPS_RCL,               X_SHIFT      },             //      "
+       {"RCR",               OPS_RCR,               X_SHIFT      },             //      "
+       {"STC",  OP_ARITH + (OPS_STC<<8),            X_ONE        },             //nonary opcodes
+       {"CLC",  OP_ARITH + (OPS_CLC<<8),            X_ONE        },             //      "
+       {"STZ",  OP_ARITH + (OPS_STZ<<8),            X_ONE        },             //      "
+       {"CLZ",  OP_ARITH + (OPS_CLZ<<8),            X_ONE        },             //      "
+       {"PUSH",              OPS_PUSH,              X_REG_LIST   },             //inline opcodes
+       {"POP",               OPS_POP,               X_REG_LIST   },             //      "
+       {"XCHG",              OP_ARITH,              X_XCHG       },             //      "
+       {"XTOS",              OP_ARITH,              X_XTOS       },             //      "
+       {NULL,                0,                     0,           }              //stopper
       }; //OpcodeTbl...              
 
 inline bool IsOp(const char *nameP, IATOM aa) 
@@ -256,12 +279,17 @@ char *cCompile::strdupl(const char *srcP, int len) //== -1
 //cCompile class contructor
 cCompile::cCompile(CC srcNameP, CC includeDirP, bool bugEmitB, bool patchDrvB)  //input files/dir
    {m_errCount     = 0;                                                         //
+    m_origin       = 0;                                                         //
+    m_overlaySize  = 0;                                                         //
+    m_printVariants= 1;                                                         //PrintStmt default
+    m_startErrorLine=0;                                                         //
     m_alwaysMessageBoxB = true;                                                 //for errors
     m_bugEmitB     = bugEmitB;                                                  //
     m_patchDrvB    = patchDrvB;                                                 //
     m_environment  = ENV_NOT_SET;                                               //
     BuildFileNames((char*)srcNameP);                                            //
     m_objFileP     = m_microcode;                                               //
+    m_binFileNameP = m_binFile;                                                 //
     m_msgFileP     = m_msgFile;                                                 //
     m_lineMapP     = m_lineMap;                                                 //
     m_symbolTblP   = m_symbolTbl;                                               //
@@ -274,9 +302,9 @@ cCompile::cCompile(CC srcNameP, CC includeDirP, bool bugEmitB, bool patchDrvB)  
     m_vblsP        = NULL;                                                      //variables introduces with allocate statement
     m_vblCount     = 0;                                                         //count of same
     m_max.u16      = -1;                                                        //max of opcode fields
+    m_opNameP      = new cOpName(&g_err, NULL, 0);                              //starting new messages block
     m_pgmSize      = m_pgmAvail = 0;                                            //
     m_codeP        = NULL;                                                      //
-    m_opNameP      = new cOpName(&g_err, NULL, 0);                              //starting new messages block
    } //cCompile::cCompile...
 
 //Class destructor
@@ -301,7 +329,7 @@ int cCompile::CompileProgram(void)
        {//routines below the level of cAtomize do not publish errors - they     //
         //only call LogError(). Must call Error(0) to publicize.                //
         Error(0, ""); return erC;                                               //not 'return Error(0)'
-       }                                                                        //  (if user says no
+       }                                                                        //  (if user says no; what then ?)
 
     if ((m_pgmSize=StatementList  (0, ';'))        < 0) return m_pgmSize;       //pass1 of compiler
     if ((erC=ResolveGotos         ())              < 0) return erC;             //insert proper addresses for jumps
@@ -317,45 +345,49 @@ int cCompile::CompileProgram(void)
 //stopper  = ';' typically, but '}', ',' and ')' are also possible.
 //oneShotB = true to compile a single statement as called from ForStmt or IfStmt.
 int cCompile::StatementList(int pc, char stopper, bool oneShotB)
-   {int           erC=0, ii, startPc, reg, pcPlz=130, linePlz=-7;               //
-    int64_t       result=0;                                                     //
+   {int           erC=0, ii=0, startPc, reg, pcPlz=-15, linePlz=-16;            //
+    int64_t       i64=0;                                                        //
     uint32_t      u32, rhsVal=99;                                               //
     IATOM         aa;                                                           //
     char         *pp, *labelP=NULL;                                             //
     bool          bugEmitB, bb;                                                 //
+    sSRC_REF      startRef;                                                     //
     OPCODE_TBL   *otP=NULL, vbl;                                                //
     sCODE_BLOB   *bP, blob;                                                     //
                                                                                 //
-    vbl.act = 0; vbl.ctrl = X_VBL_ASSIGN; vbl.nameP = NULL;                     //
-    while ((aa=Get()).type != GC_NULL)                                          //repeat to end of file
-       {m_pgmSize = startPc = pc; reg = -1; m_stepRegB = m_rowOvrB = false;     //
-        m_ref     = m_a.ref;                                                    //prevails thru this opcode generation
+    vbl.act = 0; vbl.ctrl = X_VBL; vbl.nameP = NULL;                            //
+    while ((aa=Get()).type != GC_NULL)                                          //repeat to end of file or to stopper
+       {m_pgmSize  = startPc = pc; reg = -1; m_stepRegB = m_rowOvrB = false;    //
+        startRef   = m_ref   = m_a.ref;                                         //prevails thru this opcode generation
+        m_regsUsed = 0;                                                         //
         #ifdef _DEBUG                                                           //
 //          _CrtCheckMemory();                                                  //
+        assert(stricmp(OpcodeTbl[0].nameP, "print") == 0);                      //used for "string"; meaning print "string"
         #endif                                                                  //
         if (IsChar(';'))     continue;                                          //ignore repeated ';'
         if (IsChar(stopper)) return pc;                                         //StatementList eats up stopper
         CheckCodeSize(pc);                                                      //
-        if (aa.type != GC_NAME && !IsChar('['))    return ErrorA(ERR_3000, aa); //3000 = must be label or opcode
         bP = &m_codeP[pc];                                                      //
-        if (Is(':') && stopper > 0 && !IsRegister(aa))                          //opcode is labelled, ie <name>:
-            {pp = strdupl(aa.textP, aa.len);                                    //
-             if (WhereisLabel(pp) >= 0)            return ErrorA(ERR_3001, aa); //3001 = duplicate label
-             bP->hereP = pp;                                                    //
-             m_longestLabel = Max(m_longestLabel, aa.len);                      //for listing
-             if ((aa=Get()).type != GC_NAME && !IsChar('['))                    //
+        if (aa.type == GC_STRING) {Backup(m_a); otP = OpcodeTbl;} else          //plain "string" is equivalent to print "string"
+           {if (aa.type != GC_NAME && !IsChar('['))return ErrorA(ERR_3000, aa); //3000 = must be label or opcode
+            if (Is(':') && stopper > 0 && !IsRegister(aa))                      //opcode is labelled, ie <name>:
+                {pp = strdupl(aa.textP, aa.len);                                //
+                 if (WhereisLabel(pp) >= 0)        return ErrorA(ERR_3001, aa); //3001 = duplicate label
+                 bP->hereP = pp;                                                //
+                 m_longestLabel = Max(m_longestLabel, aa.len);                  //for listing
+                 if ((aa=Get()).type != GC_NAME && !IsChar('['))                //
                                                    return ErrorA(ERR_3000, aa); //3000 = missing name
-             m_lastCurRow = -1;                                                 //
-            }                                                                   //
-        else Backup(m_a);                                                       //no label
-        //lookup opcode                                                         //
-        for (otP=OpcodeTbl; otP->nameP; otP++) if (IsOp(otP->nameP, aa)) break; //
-        if  (otP->nameP == NULL)                                                //
-            {if ((ii=LookupVbl(aa.textP, aa.len)) < 0)                          //
-                return ErrorA(ERR_2522, aa);                                    //2522 = Unknown opcode in asm stmt
-             otP = &vbl;                                                        //
-            }                                                                   //
-        bP->ref      = m_ref   = aa.ref;                                        //
+                 m_lastCurRow = -1; startRef = m_a.ref;                         //re-adjust source file starting position
+                }                                                               //   to reflect start of actual code
+            else Backup(m_a);                                                   //no label
+            //lookup opcode                                                     //
+            for (otP=OpcodeTbl; otP->nameP; otP++)if (IsOp(otP->nameP,aa))break;//
+            if  (otP->nameP == NULL)                                            //
+                {if ((ii=LookupVbl(aa.textP, aa.len)) < 0)                      //
+                    return ErrorA(ERR_2522, aa);                                //2522 = Unknown opcode in asm stmt
+                 otP = &vbl;                                                    //
+            }   }                                                               //
+        bP->ref      = startRef;                                                //
         bP->ref.pc   = pc;                                                      //
         bP->op.u16   = otP->act;                                                //initial setting, tweaked as we move along
         bP->isBreakB = bP->isCodeAdrB  = bP->isDwB = bP->isPcB =                //
@@ -367,29 +399,41 @@ int cCompile::StatementList(int pc, char stopper, bool oneShotB)
         if (pc == pcPlz || m_ref.lineNum == linePlz)                            //stop on this pc/line
             bugEmitB = true;                                                    //<<< debugging point <<<
         switch (otP->ctrl)                                                      //
-          {case X_COMPILE_STOP: if (!Is(';')) Backup(m_a);            continue; //<--- debugging break point <<---
-           case 0:                                  return ErrorA(ERR_2522, aa);//
-           case X_ONE: pc++;                                          break;    //opcode from table is complete
-           case X_ENVIRONMENT:                                                  //
-            if ((erC=SetEnvironment())                < 0) return erC;continue; //
-           case X_ARITH: case X_UNOP:                                           //arithmetics except inline ops (pop, push, xchg) or shifts
-            if ((pc=Arithmetic(pc, otP))              < 0) return pc; break;    //
-           case X_SHIFT:                                                        //shift opcodes
-            if ((pc=ShiftStmt(pc, (uint8_t)otP->act)) < 0) return pc; break;    //
-           case X_VBL_ASSIGN: if((pc=AssignMem(pc,ii))< 0) return pc; break;    //
-           case X_STORE:if((pc=AssignMem(pc, -1))     < 0) return pc; break;    //[adr] = reg
-           case X_REG:  if((pc=RegAssign(pc, aa, otP->act))< 0)return pc;break; //$reg = something 
-           case X_CFG:  if((pc=OpCfg(pc))             < 0) return pc; break;    //expecting (cell) or (group)
-           case X_DW:   if((pc=DwStmt(pc))            < 0) return pc; break;    //
-           case X_DO:   if((pc=DoStmt(pc))            < 0) return pc; continue; //
-           case X_IF:   if((pc=IfStmt(pc))            < 0) return pc; continue; //
+          {case X_COMPILE_STOP: if (!Is(';')) Backup(m_a);             continue;//<--- debugging break point <<---
+           case 0:                                  return ErrorA(ERR_2522, aa);//2522 = not a valid opcode.
+           case X_ONE: pc++;                                           break;   //opcode from table says it all.
+           case X_ENV:  if((erC=SetEnvironment())      < 0) return erC;continue;//
+           case X_ARITH:                                                        //
+           case X_UNOP: if((pc=Arithmetic(pc, otP))    < 0) return pc; break;   //
+           case X_SHIFT:if((pc=ShiftStmt(pc, otP))     < 0) return pc; break;   //shift opcodes
+           case X_VBL:  if((pc=AssignMem(pc, ii))      < 0) return pc; break;   //vbl = value
+           case X_STORE:if((pc=AssignMem(pc, -1))      < 0) return pc; break;   //[adr] = reg
+           case X_REG:  if((pc=WrapAssignReg(pc,aa,otP))<0) return pc; break;   //$reg = something 
+           case X_CFG:  if((pc=OpCfg(pc))              < 0) return pc; break;   //expecting (cell) or (group)
+           case X_DW:   if((pc=DwStmt(pc))             < 0) return pc; break;   //
+           case X_DO:   if((pc=DoStmt(pc))             < 0) return pc; continue;//
+           case X_IF:   if((pc=IfStmt(pc))             < 0) return pc; continue;//
            case X_FORZ:                                                         //
-           case X_FOR:  if((pc=ForStmt(pc, aa))       < 0) return pc; continue; //
-           case X_WHILE:if((pc=WhileStmt(pc))         < 0) return pc; continue; //
-           case X_PRINT:if((pc=PrintStmt(pc,otP->act))< 0) return pc; break;    //
-           case X_ALLOC:if((erC=AllocateBram())       < 0) return erC;break;    //
-           case X_BRAKE:if((pc=BreakStmt(pc, otP->act, &labelP)) < 0)           //
-                                                           return pc; break;    //
+           case X_FOR:  if((pc=ForStmt(pc, aa))        < 0) return pc; continue;//
+           case X_GOTO: if((pc=GotoStmt(pc, &labelP))  < 0) return pc; break;   //
+           case X_WHILE:if((pc=WhileStmt(pc))          < 0) return pc; continue;//
+           case X_PRINT:if((pc=PrintStmt(pc, otP))     < 0) return pc; break;   //
+           case X_ALLOC:if((erC=AllocateBram())        < 0) return erC;break;   //
+           case X_BRAKE:if((pc=BreakStmt(pc,otP,&labelP))<0)return pc; break;   //
+           case X_OVLY: if ((pc=OverlayStmt(pc))       < 0) return erC;continue;//
+           case X_PSEUDO:if((erC=PseudoOpcode(otP))    < 0) return erC;         //
+                                                bugEmitB = m_bugEmitB; break;   //may be changed by PseudoOp()
+           case X_ACTUAL:                                                       //
+           case X_EXPECT:Get();                                                 //
+                        if (m_printVariants != 1) return ErrorA(ERR_2715, m_a); //2715 = $expect/$actual recursive
+                        m_printVariants = otP->act;                             //changes generated OP_PRINT
+                        if ((pc=CompoundStatement(pc)) < 0) return erC;         //$expect{statementlist} or $actual{...}                
+                        if (bugEmitB) startPc = pc;                             //
+                        pc = GenerateOp(pc, OP_PRINT, 0, m_printVariants+4);    //end of $expect/$actual
+                        if (m_bugEmitB=bugEmitB)                                //
+                             BugEmit(startPc, pc-1, NULL, labelP);              //
+                        m_printVariants = 1;                                    //restore default
+                        continue;                                               //
            case X_SCAN:                                                         //expecting (rowType)
             //scin and scan allow target operand, eg. scan(indx) "abcdefgh"     //
             //plain 'scan(indx)' will use $reg0 as target                       // 
@@ -403,42 +447,14 @@ int cCompile::StatementList(int pc, char stopper, bool oneShotB)
             break;                                                              //
            case X_BUG:                                                          //
             if (Is('='))                                                        //
-               {if ((erC=ConstantExpression(&result)) < 0) return erC;          //$bug = constant
-                bP->op.bug.level = result;                                      //  sets debug level
-                pc++;                                                           //
+               {if ((erC=ConstantExpression(&i64))    < 0) return erC;          //$bug = constant
+                bP->op.bug.level = i64; bP->op.bug.nu = 0; pc++;                //  sets de.bUg. level
                }                                                                //
             else                                                                //
                {if (!IsWord("break")) Backup(m_a);                              //$bug or $bug break;
                 pc = GenerateOp(pc, OP_BUG, 0, 1, 3);                           //   is just a software break point
                }                                                                //
             break;                                                              //       
-           case X_PSEUDO:                                                       //
-            switch (otP->act)                                                   //
-               {case 0: case 1:                                                 //
-                  bb = true;                                                    //$showCode;
-                  if (Is('='))                                                  //$shoCode <number>;
-                     {if (!IsNumber(&u32))    return ErrorA(ERR_1002, m_a);     //1002 = invalid number
-                      bb = (u32 != 0);                                          //
-                     }                                                          //
-                  else Backup(m_a);                                             //
-                  if (otP->act ==0)  m_bugEmitB = bugEmitB = bb;                //$shoCode or $shoCode = t/f
-                  else               m_safeRegDefaultB     = bb;                //
-                  break;                                                        //
-               } //switch (op.u16)...                                           //
-            continue;                                                           //
-           case X_GOTO:                                                         //
-            pc++;                                                               //
-            if (Is('('))                                                        //
-                {if (!Is("long") || !Is(')')) return ErrorA(ERR_3000, m_a);     //3000 = missing name
-                 pc = GenerateOp(pc, UNRESOLVED);                               //
-                 bP->isLongJmpB = true;                                         //modify properties of jmp instruction
-                 (bP+1)->isCodeAdrB = (bP+1)->isDwB = true; (bP+1)->isLongJmpB; //modify properties of adr word
-                 Get();                                                         //now the target label
-                }                                                               //
-            if (m_a.type != GC_NAME)         return ErrorA(ERR_3000, m_a);      //goto: analyze label
-            m_longestLabel = Max(m_longestLabel, m_a.len);                      //for listing
-            bP->tgtLabelP  = labelP = strdupl(m_a.textP, m_a.len);              //save label name for BugEmit()
-            break;                                                              //
                                                                                 //
            case X_REG_LIST:                                                     //expecting a register list
              if (Is("$currow") && IsOp("push", aa))                             //
@@ -467,9 +483,10 @@ int cCompile::StatementList(int pc, char stopper, bool oneShotB)
              bP->op.arith.subOp = OPS_XTOS; bP->op.arith.areg = reg;            //
              pc++; break;                                                       //
         } //switch (otP->ctrl)...                                               //
-        m_codeP[startPc].ref.srcOffset = m_ref.srcOffset;                       //always point to initial src address
-        m_bugEmitB = bugEmitB;                                                  //restore after possible screwup by one of the routines
-        BugEmit(startPc, pc-1, NULL, labelP);                                   //
+        if (m_safeRegB && m_regsUsed != 0) pc = SafeReg(startPc, pc-1);         //                    
+        m_codeP[startPc].ref.lineOffset = startRef.lineOffset;                  //always point to initial src address
+        if (m_bugEmitB=bugEmitB)                                                //restore after possible screwup by one of the routines
+            BugEmit(startPc, pc-1, NULL, labelP);                               //
         //check for closing semicolon                                           //
         if (Is(','))         continue;                                          //eg, for ($0=1, $1=2;...
         if (IsChar(';'))    {if (oneShotB) break; continue;}                    //
@@ -480,30 +497,53 @@ int cCompile::StatementList(int pc, char stopper, bool oneShotB)
    } //cCompile::StatementList...
 
 //statement; or {statementlist}
-int cCompile::CompoundStatement(int pc)
-   {if (IsChar('{')) return StatementList(pc, '}', false);
-    Backup(m_a);     return StatementList(pc, ';', true);
+int cCompile::CompoundStatement(int pc)                                         //
+   {int erC, startLine=m_ref.lineNum; char ch;                                  //
+    if (IsChar('{'))   erC = StatementList(pc, ch='}', false);                  //
+    else {Backup(m_a); erC = StatementList(pc, ch=';', true);}                  //
+    if (erC >= 0 && (m_a.type != GC_GETX || m_a.textP[0] != ch))                //missing close }
+       {m_startErrorLine = startLine; erC = ErrorA(ERR_3005, m_a);}             //
+    return erC;                                                                 //
    } //cCompile::CompoundStatement...
 
 //arithmetics except inline ops (pop, push, xchg) or shifts
 int cCompile::Arithmetic(int pc, OPCODE_TBL *otP)
-   {int reg; sCODE_BLOB blob, *bP=&m_codeP[pc];                         //
-    //expecting 'dec/inc $reg', '$reg, $reg' or '$reg, literal'         //
-    if (!IsRegister(Get(), &reg))          return ErrorA(ERR_2738, m_a);//2738= Register not found following arithmetic opcode
-    bP->op.u16         = OP_ARITH;                                      //
-    bP->op.arith.subOp = otP->act;                                      //add, adc, sub, etc
-    bP->op.arith.areg  = reg;                                           //destination register
-    if (otP->ctrl == X_UNOP) {bP->op.arith.breg = reg; return pc+1;}    //unary operator: sreg == dreg
-    if (!Is(','))                          return ErrorA(ERR_3017, m_a);//3007 = Missing comma 
-    if (IsRegister(Get(), &reg)) {bP->op.arith.breg = reg; return pc+1;}//<arith> $rega, $regb
-    if (reg == 0)                          return ErrorA(ERR_7359, m_a);//7359 = reg$0 invalid in this context
-    Backup(m_a); blob = *bP;                                            //
-    pc = SafeReg(pc, OPS_PUSH, REG0);                                   //
-    if ((pc=BuildLiteral(pc, false, REG0)) < 0) return pc;              //$0 used to build literal
-    m_codeP[pc++] = blob;                                               //restore opcode with $0 as $sreg
-    pc = SafeReg(pc, OPS_POP, REG0);                                    //
-    return pc;
+   {int reg; sCODE_BLOB blob, *bP=&m_codeP[pc];                                 //
+    //expecting 'dec/inc $reg', '$reg, $reg' or '$reg, literal'                 //
+    if (!IsRegister(Get(), &reg))          return ErrorA(ERR_2738, m_a);        //2738= Register not found following arithmetic opcode
+    bP->op.u16         = OP_ARITH;                                              //
+    bP->op.arith.subOp = otP->act;                                              //add, adc, sub, etc
+    bP->op.arith.areg  = reg;                                                   //destination register
+    if (otP->ctrl == X_UNOP) {bP->op.arith.breg = reg; return pc+1;}            //unary operator: sreg == dreg
+    if (!Is(','))                          return ErrorA(ERR_3017, m_a);        //3007 = Missing comma 
+    if (IsRegister(Get(), &reg)) {bP->op.arith.breg = reg; return pc+1;}        //<arith> $rega, $regb
+    if (reg == REG0)                       return ErrorA(ERR_7359, m_a);        //7359 = reg$0 invalid in this context
+    Backup(m_a); blob = *bP;                                                    //
+    if ((pc=BuildLiteral(pc, false, REG0)) < 0) return pc;                      //$0 used to build literal
+    m_regsUsed |= (1 << REG0);                                                  //
+    m_codeP[pc++] = blob;                                                       //restore opcode with $0 as $sreg
+    return pc;                                                                  //
    } //cCompile::Arithmetic...
+
+//Various control statements $this $that. Generate no code
+int cCompile::PseudoOpcode(OPCODE_TBL *otP)
+   {bool bb = true; uint32_t u32;                                       //$showCode, $safeReg, $origin;
+    if (Is('='))                                                        //$shoCode = <number>;
+       {if (!IsNumber(&u32))    return ErrorA(ERR_1002, m_a);           //1002 = invalid number
+        bb = (u32 != 0);                                                //
+       }                                                                //
+    else Backup(m_a);                                                   //
+    switch (otP->act)                                                   //
+       {case 0: m_bugEmitB            = bb;  break;                     //$shoCode or $shoCode = t/f
+        case 1: m_safeRegDefaultB     = bb;  break;                     //$safeReg = t/f
+        case 2: m_alwaysMessageBoxB   = bb;  break;                     //$alwaysMessageBox = t/f
+        case 3: m_origin              = u32; break;                     //$origin  = value
+        case 4: m_overlaySize         = u32; break;                     //$overlaySize  = value
+        case 5: m_overlayBase         = u32; break;                     //
+        case 6: m_overlaySource       = u32; break;                     //
+       } //switch (otP->act)...                                         //
+    return 0;                                                           //
+   } //cCompile::PseudoOpcode...
 
 /*Analyse literal expression between '[' and ']'. Variants include:
  On entry m_codeP[pc] has a valid opcode; the .adr field is completed, 
@@ -582,7 +622,7 @@ int cCompile::DwStmt(int pc)
         dw = Anumber(pp, &qq, &bits);                                           //
         if ((bits != 64 && (1ull << bits) < dw) || *qq) goto err;               //declared size is too small for value
         do {blob.op.u16   = (uint16_t) dw;                                      //
-            blob.isDwB    = true;                                               //prvents ResolveGotos getting too excited
+            blob.isDwB    = true;                                               //prevents ResolveGotos getting too excited
             m_codeP[pc++] = blob;                                               //
             blob.tgtLabelP= blob.hereP = NULL;                                  //only first opcode is labelled
             dw          >>= 16;                                                 //
@@ -597,8 +637,9 @@ err:free(pp); return ErrorA(ERR_1002, m_a);                                     
 //Syntax is [SHL | SHR | RCL | RCR] $reg [,number | $register]
 //if ',number' is specified generate OP_REPEAT <number>; OP_<shift> 
 //otherwise                 generate OP_REPREG $breg;    OP_<shift>
-int cCompile::ShiftStmt(int pc, uint8_t shiftOp)
-    {int         reg, breg;                                                     //
+int cCompile::ShiftStmt(int pc, OPCODE_TBL *otP)
+    {uint8_t     shiftOp = (uint8_t)otP->act;                                   //
+     int         reg, breg;                                                     //
      sCODE_BLOB *bP, blob=m_codeP[pc];                                          //set fields of blob like hereP, etc
      uint32_t    u32;                                                           //
      if (!IsRegister(Get(), &reg))          return ErrorA(ERR_2738, m_a);       //2738= Register not found following arithmetic opcode
@@ -622,11 +663,16 @@ int cCompile::ShiftStmt(int pc, uint8_t shiftOp)
          *(++bP) = blob; bP->hereP = NULL; pc++;                                //SHL ==2, just repeat opcode
         }                                                                       //
      return pc+1;                                                               //
-    } //cCompile::Shifter...
+    } //cCompile::ShiftStmt...
 
 int cCompile::_ErrorA(int erC, IATOM aa, const char *fileP, int line, const char *fncP)
-   {char context[256], *pp=LOCAL_COPY(aa);                                      //
-    SNPRINTF(context), "line %03d:", m_ref.lineNum);                            //
+   {char       context[256];                                                    //
+    const char *pp=aa.type == GC_NULL ? "<end of file>" : LOCAL_COPY(aa);       //
+    if (aa.type == GC_NULL) {SNPRINTF(context), "<end of file>");            }  //
+    else                    {SNPRINTF(context), "line %03d:", m_ref.lineNum);}  //
+    if (iabs(erC) == ERR_3005)                                                  //unbalanced    
+        snprintf(context, sizeof(context) - strlen(context)-1,                  //
+                    "\nStarting line num=%04d\n", m_startErrorLine);            //
     CopySource(&context[strlen(context)], sizeof(context)-istrlen(context));    //
     return _Error(erC, context, pp, fileP, line, fncP);                         //
    } //cCompile::ErrorA...
@@ -647,7 +693,7 @@ int cCompile::_ErrorA(int erC, IATOM aa, const char *fileP, int line, const char
 * do {<statement list>} (expression) generates an OP_GO_T(condition) (jmp on true).
 * The compiler optimizes if() goto.
 */
-//Following are used by test condition in ForStmt for $loopReg <relop> <limit>.
+//Following are used by test condition in ForStmt for $reg <relop> <limit>.
 //Code generated is $reg0 <= limit; cmp $reg0 $loopReg
 typedef struct {const char *txtP, *wordP; int op, cond;} sRELOP;
 
@@ -692,6 +738,29 @@ int cCompile::Conditional(int pc, bool *ifTruP)
     if (!Is(')'))                                 return ErrorA(ERR_7184, m_a); //7184 = missing or unbalanced parentheses
     return pc;                                                                  //
    } //cCompile::Conditional
+
+int cCompile::GotoStmt(int pc, char **labelPP)
+    {int         erC; int64_t i64;                                              //
+     sCODE_BLOB *bP=&m_codeP[pc++];                                             //
+     if (Is('('))                                                               //
+         {if (Is("ovly"))                                                       //syntax is go(ovly,ovly#) labelInOverlay
+             {if (!Is(','))                     return ErrorA(ERR_3000, m_a);   //3000 = missing name
+              if ((erC=ConstantExpression(&i64)) < 0) return erC;               //
+              bP->op.g.act = OP_GOVLY; bP->op.g.adr =(int)i64;                  //
+             }                                                                  //
+          else                                                                  //
+          if (!IsWord("long"))                  return ErrorA(ERR_3000, m_a);   //syntax is go(long)label
+          pc                 = GenerateOp(pc, UNRESOLVED);                      //address word following OP_GO/OP_GOVLY
+          bP->isLongJmpB     = true;                                            //property   of jmp instruction
+          (bP+1)->isCodeAdrB = (bP+1)->isDwB = true;                            //properties of address word
+          if (!Is(')'))                     return ErrorA(ERR_7184, m_a);       //7184 = Missing or unbalanced paren
+          Get();                                                                //get target labelName
+         }                                                                      //
+     if (m_a.type != GC_NAME)                   return ErrorA(ERR_3000, m_a);   //goto: analyze label
+     m_longestLabel = Max(m_longestLabel, m_a.len);                             //for listing
+     bP->tgtLabelP  = *labelPP = strdupl(m_a.textP, m_a.len);                   //save label name for BugEmit()
+     return pc;                                                                 //
+    } //cCompile::GotoStmt...
 
 int cCompile::IfStmt(int pc)
    {int erC, jIf, jElse; bool ifTruB;                                           //ie., if (true)
@@ -798,7 +867,7 @@ int cCompile::ForStmt(int pc, IATOM aa)
        {Backup(m_a);                                                            //
         if ((pc=StatementList(pc, ';', true)) < 0) return pc;                   //true = one statement only
        }                                                                        //   (possibly with commas)
-    m_bugEmitB = false;                                                         //supress during test and step
+    m_bugEmitB = false;                                                         //supress until optimization is done
 //test condition: expression                                                    //
     if (Is(';')) {testCodeP = NULL; testCnt = 0;}                               //empty test, eg. for($1=0;;$1++)
     else {Backup(m_a); start = pc;                                              //
@@ -816,14 +885,13 @@ int cCompile::ForStmt(int pc, IATOM aa)
         memmove(incCodeP, &m_codeP[pc=start], incCnt * szBlob);                 //save and back out increment code
        }                                                                        //
     if (forz &&                                                                 //
-        (jj=SimplifiedForz(testCodeP,testCnt,incCodeP,incCnt)) > 0)testCnt = jj;//
+       (jj=SimplifiedForz(testCodeP,testCnt,incCodeP,incCnt)) > 0) testCnt = jj;//
     m_bugEmitB = bugEmitB;                                                      //
 //body of for statement, ie {statementList}                                     //
-    if (!Is('{'))                                return ErrorA(ERR_2520, m_a);  //2520 = missing '{'
     forzAdr = pc;                                                               //
     if (!forz) pc = GenerateOp(pc, OP_GO_T, 0);                                 //initial jump around {body} to conditional
-    start = pc;                                                                 //start of looped code
-    if ((pc=StatementList(pc, '}')) < 0)         return pc;                     //
+    start = pc;  Get();                                                         //start of looped code
+    if ((pc=CompoundStatement(pc))  < 0)         return pc;                     //
 //end of loop processing                                                        //
     if ((jj=FixContinues(pc)) < 0) return jj;                                   //
     memmove(&m_codeP[pc], incCodeP, incCnt * szBlob);                           //emit increment code
@@ -834,51 +902,87 @@ int cCompile::ForStmt(int pc, IATOM aa)
        {if (IsGoOp((m_codeP[pc]=testCodeP[jj]).op))                             //
                                         m_codeP[pc].op.go.relAdr = start-(pc+1);//
        }                                                                        //
-    BugEmit(forzAdr, pc-1);                                                     //
+    BugEmit(forzAdr, pc-1, NULL, NULL, true);                                   //commentP=NULL, labelP=NULL, knownB=true
     if ((jj=FixBreaks(pc)) < 0) return jj;                                      //
     m_loopDepth--;                                                              //
     return pc;                                                                  //
    } //cCompile::ForStmt...
 
-int cCompile::SimplifiedForz(sCODE_BLOB *testCodeP, int testCnt, sCODE_BLOB *incCodeP, int incCnt) 
 /*The source statements:
    'forz($reg=value; $reg >= 0; $reg--) {....} would normally generate:
- initialization:
-    001:02B6 $reg5 <= value
-loopcode:
-    002:ABB8       OP_DEC $reg5                     //incCodeP[0]
-    003:0006       $reg0 <= 0x0                     //testCodeP[0]
-    004:04B8       OP_CMP $reg5                     //testCodeP[1]
-    005:FC11       OP_GO_T(C) loop                  //testCodeP[2] $reg >= 0;
-or      FC81       OP_GO_T(~Z)loop                  //testCodeP[2] $reg != 0;
+            $reg <= value                   |  initialization:
+loopcode: +--------- m_safeRegB ------------+---------------------
+          | m_safeRegB=false|m_safeRegB=true|
+----------+-----------------+---------------+--------------------
+inc code  | OP_DEC $reg     |               | incCodeP[0]    
+test code |                 | PUSH $0       | testCodeP
+          | $reg0 = 0x0     | $reg0 = 0x0   |     "
+          | OP_CMP $reg     | OP_CMP $reg   |     "
+          |                 | POP $0        |     "
+          | OP_GO_T(C) loop |               |     "
+or        | OP_GO_T(~Z)loop |               |     "
 The loop code can be improved to:
-    002:ABB8 loop: OP_DEC $reg5                     //incCodeP[0]
-    003:0111       OP_GO_T(~Z) loop                 //testCodeP[0]
-a net saving of two instructions and leaving reg$0 unchanged.
-NOTE: If this optimization technique becomes widely used, then it
-      will be converted to a table driven function :)
-*/
-   {OPCODE op=incCodeP[0].op; int sreg=op.arith.breg, dreg=op.arith.areg, adr;
-    if (incCnt != 1 || testCnt != 3) return 0;                                  //
-    if (!IsArithOp(op, OPS_DEC) || sreg != dreg)           return 0;            //
-    op = testCodeP[0].op; adr = op.ri.imm;                                      //
-    if (!IsRegImmOp(op) || op.arith.breg != 0 || adr != 0) return 0;            //$reg0 <= 0x0
-    op = testCodeP[1].op;                                                       //
-    if (!IsArithOp(op, OPS_CMP) ||                                              //
-        op.arith.breg  != sreg  || op.arith.areg != 0)     return 0;            //
-    op = testCodeP[2].op;                                                       //
-    if (!IsGoOp(op) || (op.go.cond != COND_CC &&                                //$reg >= 0;
-                        op.go.cond != COND_NZ))            return 0;            //$reg != 0;
-    //ok recook that testCode                                                   //
-    op.go.cond      = COND_NZ;                                                  //
-    testCodeP[0].op = op;                                                       //
-    return 1;                                                                   //size of improved code
+          OP_DEC $reg5                      | incCodeP[0]
+          OP_GO_T(~Z) loop                  | testCodeP[0]
+a net saving of two instructions and leaving reg$0 unchanged.*/
+#define FORZ_REG0      0
+int cCompile::SimplifiedForz(sCODE_BLOB *testCodeP, int testCnt, sCODE_BLOB *incCodeP, int incCnt) 
+   {OPCODE          op=incCodeP[0].op;                                              //
+    sCODE_BLOB     *tP=testCodeP;                                                   //
+    int             breg=op.arith.breg,                                             //control register
+                    areg=op.arith.areg, adr, ci, n=0;                               //
+    CONDITION_CODES cond;                                                           //
+    #define IsP(a, r)  (IsArithOp(op=tP++->op, a) && op.arith.breg  == r)                        //is push or pop
+    #define IsA(o,a,b) (IsArithOp(op=tP++->op, o) && op.arith.areg  == a && op.arith.breg == b)  //is arithmetic with specified $regs
+    #define IsR(r,i)   (IsRegImmOp(op=tP++->op)   && op.ri.breg     == r && op.ri.imm     == i)  //is OP_RI with specified $reg and immediate
+    do{if (incCnt != 1 || !IsArithOp(op, OPS_DEC) || breg != areg) break;          //is incCode 'dec $reg' ?
+       if (false)                                                                  //debugging crutch
+           BugLoopCode(incCodeP, testCodeP, testCnt);                              //
+       if (breg == 0)                                                              //
+          {if (m_safeRegB)                                                         //
+              {if (testCnt != 5)                            break;                 //
+               if (!IsP(OPS_PUSH, REG1))                    break;                 //push $0
+               if (!IsR(REG1, 0))                           break;                 //$0 = 0x0
+               if (!IsA(OPS_CMPS, breg, REG1))              break;                 //cmp $breg,$0 
+               if (!IsP(OPS_POP, REG1))                     break;                 //pop $0
+              }                                                                    //
+           else                                                                    //
+             {if (testCnt != 3)                             break;                 //
+              if (!IsR(REG1, 0))                            break;                 //$0 = 0x0
+              if (!IsA(OPS_CMPS, REG1, breg))               break;                 //cmp $breg, $0 
+          }  }                                                                     //
+       else                                                                        //
+          {if (m_safeRegB)                                                         //
+              {if (testCnt != 5)                            break;                 //
+               if (!IsP(OPS_PUSH, REG0))                    break;                 //push $0
+               if (!IsR(REG0, 0))                           break;                 //$0 = 0x0
+               if (!IsA(OPS_CMPS, breg, REG0))              break;                 //cmp $breg,$0 
+               if (!IsP(OPS_POP, REG0))                     break;                 //pop $0
+              }                                                                    //
+           else                                                                    //
+             {if (testCnt != 3)                             break;                 //
+              if (!IsR(REG0, 0))                            break;                 //$0 = 0x0
+              if (!IsA(OPS_CMPS, REG0, breg))               break;                 //cmp $breg, $0 
+          }  }                                                                     //
+       ci   = (op=tP->op).go.cond;                                                 //
+       cond = *(CONDITION_CODES*)&ci;                                              //
+       if (!IsGoOp(op) || cond.nc == 0 || cond.nz == 0)     break;                 //  
+       //replace testCode                                                          //
+       testCodeP[0].op.go.act  = OP_GO_T;                                          //
+       testCodeP[0].op.go.cond = COND_NZ;                                          //
+       return 1;                                                                   //size of new code
+      } while (false);                                                             //
+    return 0;                                                                      //match not found
+    #undef IsA                                                                     //
+    #undef IsP                                                                     //
+    #undef IsR                                                                     //
    } //SimplifiedForz...
-
+    
 //Break or continue statements; generate jump out from loop and log address in
 //m_breaksP or m_continuesP. These are cleaned up on exit from loop stmt.
-int cCompile::BreakStmt(int pc, int isBreak, char **labelPP)                    //
-   {int  *listP=isBreak ? m_breaksP : m_continuesP,                             //
+int cCompile::BreakStmt(int pc, OPCODE_TBL *otP, char **labelPP)                //
+   {int   isBreak=otP->act,                                                     //
+         *listP=isBreak ? m_breaksP : m_continuesP,                             //
           count=isBreak ? m_breaks  : m_continues;                              //
     if (m_loopDepth == 0) return ErrorA(ERR_2737, m_a);                         //2737 Illegal placement of break/continue.
     *labelPP                  = strdupl(isBreak ? "break" : "continue");        //save label for BugEmit()
@@ -932,18 +1036,18 @@ int cCompile::ResolveNasties(void)
 
 //Allocate various variables in specified row; syntax is:
 //allocate [row#] = 
-//   {uint64_t vbl1,
+//   {uint64_t vbl1,        //also int64_t is allowed
 //             vbl2,
 //             vbl3,...
 //   };
 //Only 64 bit variables are supported at the moment.
 int cCompile::AllocateBram(void)
-   {int64_t row, wordAdr; int erC;
+   {int64_t row, wordAdr; int erC; bool signedB;
     if (!Is('[')) return ErrorA(ERR_0001,m_a);
     if ((erC=ConstantExpression(&row)) < 0) return erC;
     if (!Is(']') || !Is('=') || !Is('{'))   return ErrorA(ERR_0001, m_a);
     for (wordAdr=0; !Is('}'); wordAdr++)
-        {if (IsWord("uint64_t")) Get();
+        {if ((signedB=IsWord("int64_t")) || IsWord("uint64_t")) Get();
          if (m_a.type != GC_NAME)           return ErrorA(ERR_0001, m_a);
          m_vblsP = (sVARIABLE*)realloc(m_vblsP, (m_vblCount+1)*sizeof(sVARIABLE));
          m_vblsP[m_vblCount  ].nameP   = strdupl(m_a.textP, m_a.len);
@@ -964,30 +1068,20 @@ int cCompile::LookupVbl(const char *nameP, int nameLen)
     
 //print   "string1" "string1" "string3" ...
 //string  "string1" "string1" "string3" ...
-//$expect zero of more "strings". Generate "#expect:" "string1" "string2" ... and append \n
-//$actual zero of more "strings". Generate "#actual:" "string1" "string2" ... and append \n
-//If no string parameters are provided in the $expect/$actual cases then no \n
-//is appended and a print "\n" must be used to terminate the $actual/$expect.
-//   (this allows multiple print statements within the $expect/$actual ..... \n code
-int cCompile::PrintStmt(int pc, int caze) 
+int cCompile::PrintStmt(int pc, OPCODE_TBL *otP)
    {int msgnum, len=8; char *stringP; bool catB=false;                          //
-    if (caze == 2) stringP = (char*)"#actual:"; else                            //$actual "..."
-    if (caze == 1) stringP = (char*)"#expect:"; else                            //$expect "...."
-       {if (Get().type != GC_STRING) return ErrorA(ERR_7180, m_a);              //0 & 3 print and string
-        stringP = (char*)m_a.textP; len = m_a.len;                              //
-       }
+    if (Get().type != GC_STRING) return ErrorA(ERR_7180, m_a);                  //
+    stringP = (char*)m_a.textP; len = m_a.len;                                  //
     //concatenate multiple strings                                              //
     for (; Get().type == GC_STRING; catB=true)                                  //
         {if (!catB) stringP = strdupl(stringP, len);                            //first time
-         stringP = (char*)realloc(stringP, 2+(len+=m_a.len));                   //make space; 2 eh !
+         stringP = (char*)realloc(stringP, 1+(len+=m_a.len));                   //make space
          strncat(stringP, m_a.textP, m_a.len);                                  //append next string
         }                                                                       //
     Backup(m_a);                                                                //
-    if ((caze == 1 || caze == 2) && catB) {strcat(stringP, "\n"); len++;}       //$expect/$actual; ok: 2+(len... :)        
     msgnum = m_opNameP->StoreMessage(stringP, len);                             //
     if (catB) free(stringP);                                                    //
-    if (caze != 3) pc = GenerateOp(pc, OP_PRINT+(caze << 5), msgnum);           //3 == $string
-    return pc;                                                                  //
+    return GenerateOp(pc, OP_PRINT, msgnum, m_printVariants);                   //
    } //cCompile::PrintStmt...
 
 //OP_CFG(cell) or OP_CFG(group)
@@ -1015,12 +1109,26 @@ int cCompile::OpScan(int pc)
     return pc+1;
    } //cCompile::OpScan...
 
-IATOM cCompile::Get(bool probeB) 
-   {while ((m_a=m_azP->GetAtom(probeB)).type == GC_COMMENT) {}
-    return m_a;
-   } //cCompile::Get...
-
-void cCompile::Backup(IATOM aa) {m_azP->Backup(aa);}
+//$overlay #; Adjust pc to the base of the specified overlay.
+//Overlays are layed out in memory following the main part of the code
+//at address = base + overlaySize * (overlayNum-1)
+//Overlays are invoked with goto (ovlyNum) label which causes the
+//microcode to copy the overlay from the objectfile into the overlay area
+//and then jump to the specified label. If a call is issued the overlay
+//number is stored in the return word and the proper overlay is reloaded
+//when the return opcode is executed.
+int cCompile::OverlayStmt(int pc)
+   {int erC, base; int64_t ovlyNum; sCODE_BLOB blob={0};
+    if ((erC=ConstantExpression(&ovlyNum)) < 0) return erC;
+    if (ovlyNum == 0)                           return pc;
+    base       = (int)((ovlyNum-1) * m_overlaySize + m_overlayBase);
+    m_pgmAvail = max(base+m_overlaySize, m_pgmAvail);
+    m_codeP    = (sCODE_BLOB*)realloc(m_codeP, (m_pgmAvail+=1024) * sizeof(sCODE_BLOB));
+    m_codeP[pc].op.u16  = OP_STOP;
+    for (blob=m_codeP[pc]; pc < base;) m_codeP[pc++] = blob;
+    memset(&m_codeP[pc], 0, m_overlaySize * sizeof(sCODE_BLOB));
+    return pc;
+   } //cCompile::OverlayStmt...
 
 //build name of microcode, message, linemap, and capture files.
 //NOTE: this fully qualified name is not what is stored in samControl.sv
@@ -1028,20 +1136,22 @@ void cCompile::Backup(IATOM aa) {m_azP->Backup(aa);}
 //  file be in the 'current directory', ie., genenv("VerilogSimulationDir")
 int cCompile::BuildFileNames(char *srcFileNameP)
    {const char *pp, *qq; 
-    int         ii;                                                             //
-    #define CreateSubordinateFileName(name, first)                              \
-        if (!first) strncpy(m_##name, m_microcode, sizeof(m_##name) - 1);       \
-        strncpy(&m_##name[ii], "." #name, sizeof(m_##name) - ii-1);             //
+    int         where;                                                          //
+    bool        firstB=true;
+    #define CreateSubordinateFileName(name)                                      \
+        if (!firstB) strncpy(m_##name, m_microcode, sizeof(m_##name) - 1);       \
+        strncpy(&m_##name[where], "." #name, sizeof(m_##name) - where-1);       //
                                                                                 //
     m_srcFileNameP = srcFileNameP;                                              //
     for (pp=qq=m_srcFileNameP; pp=strpbrk(qq, "\\/");) qq=pp+1;                 //find last '\' or '/'
     SNPRINTF(m_microcode),"%s\\%s", getenv("VerilogSimulationDir"), qq);        //
     if (!(pp=strrchr(m_microcode, '.')))return Error(ERR_7296, m_microcode);    //7296 = Invalid filename '%s'
-    ii = (int)(pp - m_microcode);                                               //
-    CreateSubordinateFileName(microcode,   true);                               //
-    CreateSubordinateFileName(msgFile,     false);                              //
-    CreateSubordinateFileName(lineMap,     false);                              //
-    CreateSubordinateFileName(symbolTbl,   false);                              //
+    where = (int)(pp - m_microcode);                                            //
+    CreateSubordinateFileName(microcode); firstB = false;                       //
+    CreateSubordinateFileName(binFile  ); m_binFile[strlen(m_binFile)-4]=0;     //just .bin thank you
+    CreateSubordinateFileName(msgFile  );                                       //
+    CreateSubordinateFileName(lineMap  );                                       //
+    CreateSubordinateFileName(symbolTbl);                                       //
 //  if (g_printFileP == NULL)                                                   //user has overriden cap file name
 //     {CreateSubordinateFileName(capFile, false); g_printFileP = m_capFile;}   //
 #undef CreateSubordinateFileName
@@ -1136,6 +1246,13 @@ int cCompile::CollapsePops(int startPc, int pc)
     return startPc+2;                                                           //ie op_repeat, op_push/pop
    } //cCompile::CollapsePops...
 
+IATOM cCompile::Get(bool probeB) 
+   {while ((m_a=m_azP->GetAtom(probeB)).type == GC_COMMENT) {}
+    m_ref = m_a.ref;
+    return m_a;
+   } //cCompile::Get...
+
+void cCompile::Backup(IATOM aa) {m_azP->Backup(aa);}
 //is next atom == ch
 bool cCompile::Is(char ch)
    {bool bb = Get().type == GC_GETX && m_a.textP[0] == ch; return bb;}
@@ -1181,25 +1298,31 @@ bool cCompile::IsNumber(uint32_t *valP)
 
 //Generate one opcode; p2 various secondary field, sreg & dreg as expected.
 //adr field is not provided and is set to zero. Caller must patch up adr field if reqd.
-int cCompile::GenerateOp(int pc, int opcode, int p2, int sreg, int dreg)
+int cCompile::GenerateOp(int pc, int opcode, int p2, int breg, int dreg)
    {sCODE_BLOB *bP=&m_codeP[pc]; OPCODE *opP=&bP->op;                           //
     bP->ref = m_ref;                                                            //
     switch ((opP->u16=opcode) & 31)                                             //
         {case OP_ARITH:                                                         //
              opP->arith.subOp = p2;                                             //p2 = subOp: OPS_ADD, ADC, etc
-             opP->arith.breg  = sreg;                                           //
+             opP->arith.breg  = breg;                                           //
              opP->arith.areg  = dreg;                                           //
              break;                                                             //
-         case OP_BUG:                                                           //
+         case OP_BUG: //OP_PRINT:                                               //
+             if (breg != 0)                                                     //
+                {//case OP_PRINT:                                               //
+                 opP->g.adr   = p2;                                             //p2 = msg #
+                 opP->g.breg  = breg;                                           //breg = variant (always != 0)
+                 break;                                                         //
+                }                                                               //
              opP->bug.level   = p2;                                             //
-             opP->bug.set     = sreg;                                           //
-             opP->bug.sho     = dreg;                                           //
+             opP->bug.nu      = 0;                                              //
+             opP->bug.fnc     = breg*4+dreg;                                    //breg always == 0
              break;                                                             //
          case OP_CROW:                                                          //
              opP->ind.areg    = p2;                                             //
              break;                                                             //
+         case OP_GOVLY:                                                         //
          case OP_CROWI:                                                         //p2 = literal cur row
-         case OP_PRINT:                                                         //
              opP->g.adr       = p2;                                             //p2 = msg #
              break;                                                             //
          case OP_GO_T: case OP_GO_F:                                            //
@@ -1210,18 +1333,18 @@ int cCompile::GenerateOp(int pc, int opcode, int p2, int sreg, int dreg)
              break;                                                             //
          case OP_REPEAT:                                                        //%
              opP->rpt.count   = p2 - 1;                                         //repeat count
-             opP->rpt.stepA   = sreg;                                           //inc address
+             opP->rpt.stepA   = breg;                                           //inc address
              opP->rpt.stepR   = dreg;                                           //int register
-             opP->rpt.bkwd    = sreg < 0 || dreg < 0;                           //direction
+             opP->rpt.bkwd    = breg < 0 || dreg < 0;                           //direction
              break;                                                             //
           case OP_REPREG:                                                       //
              opP->rptR.breg   = p2;                                             //repeat $reg
-             opP->rptR.stepA  = sreg;                                           //inc address
+             opP->rptR.stepA  = breg;                                           //inc address
              opP->rptR.stepR  = dreg;                                           //int register
-             opP->rptR.bkwd   = sreg < 0 || dreg < 0;                           //direction
+             opP->rptR.bkwd   = breg < 0 || dreg < 0;                           //direction
              break;                                                             //
          case OP_RI:                                                            //
-             opP->ri.breg     = sreg;                                           //
+             opP->ri.breg     = breg;                                           //
              opP->ri.imm      = p2;                                             //R2R as $reg = literal
              break;                                                             //
         }                                                                       //
@@ -1233,9 +1356,7 @@ int cCompile::GenerateOp(int pc, int opcode, int p2, int sreg, int dreg)
 void cCompile::EmitOp(int pc, uint16_t superOp, uint32_t adr, bool knownB)
    {sCODE_BLOB *bP=&m_codeP[pc];                                                //
     bP->op.u16    = superOp;                                                    //
-    bP->ref.lineNum   = m_ref.lineNum;                                          //
-    bP->ref.fileNum   = m_ref.fileNum;                                          //
-    bP->ref.srcOffset = m_ref.srcOffset;                                        //
+    bP->ref       = m_ref;                                                      //
     bP->op.g.adr  = IsGoOp(bP->op) ? adr - (pc+1) : adr;                        //goto's expect relative adr
     BugEmit(pc, pc, NULL, NULL, true);                                          //
    } //cCompile::EmitOp...
@@ -1266,10 +1387,28 @@ void cCompile::BugEmit(int startPc, int endPc, const char *commentP, const char 
             if (lastWasLongJmpB)Bugout(" (address of %s)", labelP);             //
            }                                                                    //
         else                   Bugout("%s", OPNAME(pc, labelP, knownB));        //
-        if (!(lastWasLongJmpB=IsLongJmp(m_codeP[pc].op) && labelP != NULL))     //
+        if (!(lastWasLongJmpB=op.g.act == OP_GOVLY                              //
+            && labelP != NULL))                                                 //
              labelP = NULL;                                                     //
         if (commentP) Bugout(" (%s)\n", commentP); else Bugout("\n");           //
    }   } //cCompile::BugEmit...
+
+//for (initial; test; increment): incP = increment code, test = test code.
+void cCompile::BugLoopCode(sCODE_BLOB *incP, sCODE_BLOB *testP, int testCnt)
+#ifdef _DEBUG
+    {int    pc=0;                                                               //
+     OPCODE op=incP[0].op, nxt=incP[1].op;                                      //
+     for (pc=-1; pc < testCnt; )                                                //
+        {Bugout("%04X: %-20s ", op.u16, m_opNameP->Show(pc, op, nxt));             //
+         if (op.arith.act == OP_ARITH) Bugout("\t{areg=%d,subOp=%d,breg=%d,act=%d}\n", op.arith.areg, op.arith.subOp, op.arith.breg, op.arith.act); else
+         if (op.arith.act == OP_RI)    Bugout("\t{imm=%d,breg=%d,act=%d}\n",           op.ri.imm,     op.ri.breg,     op.ri.act); else
+         if (IsGoOp(op))               Bugout("\t{reladr=%d,cond=%d,act=%d}\n",        op.go.relAdr,  op.go.cond,     op.go.act);       
+         op = testP[++pc].op; nxt = testP[pc+1].op;
+        }
+    } //cCompile::BugLoopCode...
+#else
+    {return;}
+#endif
 
 void cCompile::Bugout(char const *fmtP,...)
     {va_list arg;                                                               //
@@ -1301,7 +1440,7 @@ ret:return pc;                                                          //
 //Scan program stored in m_codeP for goto or cjmp codes and search
 //replace the address field with the actual location of the label.
 int cCompile::ResolveGotos(void)
-   {int         startPc, pc, jj;                                                //
+   {int         startPc, pc, jj, pcPlz=-5;                                      //
     sCODE_BLOB *frP;                                                            //goto opcode
     OPCODE      op, max;                                                        //
     bool        callB;                                                          //
@@ -1310,18 +1449,23 @@ int cCompile::ResolveGotos(void)
     max.u16 = -1;                                                               //
     for (pc=0, frP=m_codeP; pc < m_pgmSize; pc++, frP++)                        //
         {startPc = pc; labelP = frP->tgtLabelP;                                 //
+         if (pc == pcPlz)                                                       //
+            pc = pc;                                                            //software breakpoint
          if (frP->isDwB || frP->isBreakB || frP->isContinueB || labelP == NULL) //
                                                 continue;                       // DW <value> - nothing further to do
-         if (((callB=(op=frP->op).call.act == OP_CALL) || IsGoOp(op)) && labelP)//
+         if (((callB=(op=frP->op).call.act == OP_CALL) ||                       //
+             IsGoOp(op)                                ||                       //
+             op.g.act == OP_GOVLY) && labelP)                                   //
             {if ((jj=WhereisLabel(labelP)) < 0) return Error(jj,      labelP);  //jj == 2602 = label not found
              commentP = "*resolve goto";                                        //
              if (callB)                                                         //
-                 {if (jj > max.call.callAdr)    return Error(ERR_2740,labelP);  //call address too lage for OP_CALL
+                 {if (jj > max.call.callAdr)    return Error(ERR_2740,labelP);  //call address too large for OP_CALL
                   frP->op.call.callAdr = jj;                                    //abs address in OP_CALL 
                   commentP             = "*resolve call";                       //
                  }                                                              //
              else                                                               //
-             if (frP->isLongJmpB) {(++frP)->op.u16 = jj; pc++;}                 //OP_GO_L abs address lives in next word
+             if (frP->isLongJmpB)                                               //OP_GO_L abs address lives in next word
+                {frP->op.g.act = OP_GOVLY; (++frP)->op.u16 = jj; pc++;}         //use OP_GOVLY(0) for long jump.
              else{if (jj <= (pc+0x80) && jj >= (pc-0x7F))                       //relative to pc+1, eh !
                      {if ((frP->op.go.relAdr=jj-(pc+1)) == 0 && op.go.act == OP_GO_T)//within range of relative jump
                          {//prevent go_t(+0) because it conflicts with long jmps//
@@ -1341,10 +1485,11 @@ int cCompile::ResolveGotos(void)
                   else                                                          //
                      {StretchOp(pc+1);                                          //insert space for long jump
                       frP               = &m_codeP[pc++];                       //m_codeP could be relocated by StretchOp
-                      frP->op.go.relAdr = 0;                                    //signals absolute jump
+                      frP->op.u16       = OP_GOVLY;                             //long jump uses GOVLY(0)
                       (++frP)->op.u16   = jj + (jj > pc ? 1 : 0);               //
                       frP->tgtLabelP    = frP->hereP = NULL;                    //
                       frP->isDwB        = frP->isCodeAdrB = true;               //
+                      frP->ref.lineNum  = m_codeP[pc-1].ref.lineNum;            //
                       commentP          = "*stretch goto";                      //
                   }  }                                                          //
              BugEmit(startPc, pc, commentP, labelP, true);                      //
@@ -1353,9 +1498,9 @@ int cCompile::ResolveGotos(void)
     return 0;                                                                   //
    } //cCompile::ResolveGotos...
 
-//Insert an opcode at the specified address.
+//Insert an opcode at the specified address (pc).
 //All ops above this address will be moved. Then the entire codestream is
-//scanned to increment any goto/call/dw addresses into the moved area.
+//scanned to increment any goto/goto(long)/call/dw addresses into the moved area.
 //DWs referring to the code space are marked with the flags isCodeAdrB.
 void cCompile::StretchOp(int pc)
    {int ii, tgt, adr; bool changesB; sCODE_BLOB *bP;                        //
@@ -1368,12 +1513,12 @@ void cCompile::StretchOp(int pc)
          if ((bP=&m_codeP[ii])->isDwB && !bP->isCodeAdrB) continue;         //nothing-to-do
          if (bP->isCodeAdrB && bP->isPcB)                                   //$pc
             {adr = (bP->op.ri.imm << 14) + (bP+1)->op.ldi.imm +1;           //address smeared over OP_RIMM and OP_LDI) 
-             (bP+0)->op.ri.imm = adr >> 14;                                 //reconstruct OP_RIMM
+             (bP+0)->op.ri.imm  = adr >> 14;                                //reconstruct OP_RIMM
              (bP+1)->op.ldi.imm = adr & ((2<<14)-1);                        //reconstruct OP_LDI
-             ii++; changesB = true;                                         //
+             ii++; changesB     = true;                                     //
             }                                                               //
          else                                                               //
-         if (bP->isCodeAdrB)                                                //DW or long jump
+         if (bP->isCodeAdrB)                                                //DW or goto(long) or goto (ovly)
             {if ((tgt=bP->op.u16) < pc) continue;                           //
              bP->op.u16++;       changesB = true;                           //
             }                                                               //
@@ -1470,30 +1615,26 @@ void cCompile::CopySource(char *bufP, int bufSize)
 
 //Generate the raw hex output for Verilog $readmemh()
 //Format is: <hex target>_<hex opcode>  //pc: <opcode explanation> #<source line>
-int cCompile::GenerateMicrocodeFile(const char *objNameP)
+int cCompile::GenerateMicrocodeFile(const char *nuP)
    {int           erC=0, width, fileN=-1, len, lastLineNum=-1, lastOffset=-1,   //
                   pc, pcPlz=-7, badBongoes=-1, badLine;                         // 
     bool          lastWasLongJmpB=false;                                        //
-    char          buf[125];                                                     //
+    char          buf[150];                                                     //
     const char   *pp, *qq, *labelP=NULL;                                        //
     sCODE_BLOB   *bP;                                                           //
     cTIMEVALUE    tv;                                                           //
     OPCODE        op;                                                           //
-    FILE         *fileP;                                                        //
+    FILE         *fileP, *binflP;                                               //
     #define gen   if ((len=istrlen(buf)) > sizeof(buf)-25)                      \
                      return Error(ERR_1566, "len > sizeof(buf)-25");            \
                   snprintf(&buf[len], sizeof(buf) - len,                        //
                                                                                 //
-    if (!(fileP=fopen(objNameP, "wb"))) return Error(ERR_7147, objNameP);       //7147 = unable to create <file>
-   //1D05 //008 wrBingo : OP_PRINT "case 0:\n#expect:0x7" line 10 source        //example format
-    width = 5 // |      |     |          |       |      |        |              //len _hexOpcode
-                 + 5 // |     |          |       |      |        |              //len /pc:"000"
-                        + m_longestLabel//|      |      |        |              //elementary my dear Sherlock
-                                     + 13 //     |      |        |              //OP_abcde_wxyz
-                                          + 40 //       |        |              //[000]
-                                             + 2 + TARGETBUS_SIZE;              // quotes + key
+    if (!(fileP=fopen(m_objFileP, "wb"))) return Error(ERR_7147, m_objFileP);   //7147 = unable to create <file>
+    if (!(binflP=fopen(m_binFile, "wb"))) return Error(ERR_7147, m_binFile);    //7147 = unable to create <file>
+   //1D05 //008 (line ####) wrBingo : OP_PRINT "case 0:\n#expect:0x7" [+offset] source        //example format
+    width = 80;                                                                 //
     tv.GetGmtv();                                                               //line# text
-    fprintf(fileP, "//File %s created %s.\n", objNameP,                         //
+    fprintf(fileP, "//File %s created %s.\n", m_objFileP,                         //
                                 tv.Format(buf, sizeof(buf), "%d/%m/%4y@%h:%m"));//
     for (pc=0; pc < m_pgmSize; pc++)                                            //
         {op  = (bP = &m_codeP[pc])->op;                                         //
@@ -1503,15 +1644,20 @@ int cCompile::GenerateMicrocodeFile(const char *objNameP)
           //_CrtCheckMemory();                                                  //
          #endif                                                                 //
          if (op.u16 == 0 && !bP->isDwB && badBongoes < 0)                       //0x0000 - most unlikely instruction 
-            {badBongoes = pc; badLine = bP->ref.lineNum;}                           //
-         if (bP->ref.lineNum == 0) {bP->ref.lineNum = lastLineNum; bP->ref.fileNum = fileN; bP->ref.srcOffset = lastOffset;}//
-         if (fileN != bP->ref.fileNum && bP->ref.lineNum != 0)                          //
+            {badBongoes = pc; badLine = bP->ref.lineNum;}                       //
+         if (bP->ref.lineNum == 0)                                              //should never happen
+            {bP->ref.lineNum   = lastLineNum;                                   //         "					  
+             bP->ref.fileNum   = fileN;                                         //         "
+             bP->ref.lineOffset= lastOffset;                                    //         "
+            }                                                                   //
+         if (fileN != bP->ref.fileNum && bP->ref.lineNum != 0)                  //
              fprintf(fileP, "//op //pc  label     : interpretation    line# and"//
                   " source. Source file=%s\n", FileNameOnly(fileN=bP->ref.fileNum));//
          else                                                                   //
-         if (lastLineNum != bP->ref.lineNum) fprintf(fileP, "\n");                  //
+         if (lastLineNum != bP->ref.lineNum) fprintf(fileP, "\n");              //
          memset(buf, ' ', sizeof(buf)); buf[0] = buf[sizeof(buf)-1] = 0;        //
-         gen "%04X //%03d ", op.u16, pc);                                       // 
+         gen "%04X //%03d (line %04d) ", op.u16, pc, bP->ref.lineNum);          // 
+         fwrite(&op.u16, 1, sizeof(op.u16), binflP);                            //
          len = istrlen(buf);                                                    //
          if (bP->hereP) {gen "%s", bP->hereP);}                                 //
          buf[strlen(buf)] = ' '; buf[len+m_longestLabel] = 0;                   //nice if %*s worked eh ?
@@ -1524,10 +1670,9 @@ int cCompile::GenerateMicrocodeFile(const char *objNameP)
             {gen ": %s ", OPNAME(pc, labelP=bP->tgtLabelP, true));              // 
              lastWasLongJmpB = IsLongJmp(bP->op) && labelP != NULL;             //
             }                                                                   //
-         buf[len=istrlen(buf)] = ' '; width = max(width, len+1);                //step ww(dont wipe out anything)
-         snprintf(&buf[width], sizeof(buf)-width," line %d  ", bP->ref.lineNum);//
          buf[sizeof(buf)-1] = 0;                                                //bullet proofing  
-         fwrite(buf, 1, strlen(buf), fileP);                                    //
+         buf[len=istrlen(buf)] = ' '; width = len = max(width, len+1);          //step width(dont wipe out anything)
+         fwrite(buf, 1, len, fileP);                                            //
          if (bP->ref.lineNum != lastLineNum)                                    //
             {for (qq=GetSourceLineP(bP), pp=&qq[strlen(qq)]; *(--pp)==' ';){}   //
              for (len=min(64, 1+(int)(pp-qq)); --len >= 0; qq++)                //
@@ -1537,10 +1682,11 @@ int cCompile::GenerateMicrocodeFile(const char *objNameP)
                                                fprintf(fileP, "%c", *qq);       //
             }   }                                                               //
          fprintf(fileP, "\n");                                                  //
-         lastLineNum = bP->ref.lineNum; lastOffset = bP->ref.srcOffset;         //
-         width = min(width,100);                                                //
+         lastLineNum = bP->ref.lineNum; lastOffset = bP->ref.lineOffset;        //
+         width       = 80; //min(width, 80);                                    //
         }                                                                       //
     fclose(fileP);                                                              //
+    fclose(binflP);                                                             //
     if (badBongoes >= 0)                                                        //
        {SNPRINTF(buf), "pc=%03d, line=%04d. For context refer to\n%s",          //
                             badBongoes, badLine, m_objFileP);                   //
@@ -1549,7 +1695,7 @@ int cCompile::GenerateMicrocodeFile(const char *objNameP)
        }                                                                        //
     return 0;                                                                   //
     #undef gen                                                                  //
-    } //cCompile::GenerateMicrocodeFile...
+   } //cCompile::GenerateMicrocodeFile...
 
 //mesages file is just a list of strings. SAM generates OP_PRINT.adr == msgNum
 int cCompile::GenerateMsgFile(const char *msgFileP)
@@ -1560,25 +1706,19 @@ int cCompile::GenerateMsgFile(const char *msgFileP)
     } //cCompile::GenerateMsgFile...
 
 //Line map comprises series of 6 byte entries:
-//pc, file, line, offset. Duplicates are supressed.
-int cCompile::GenerateLinemapFile(const char *mapFileP)
-    {FILE *fileP=fopen(mapFileP, "wb");                                         //
-     int   lastLine=-1, lastFile=-1;                                            //
-     char  buf[50];                                                             //
+//pc, file, line, offset. The source may not always have incrementing line #s.
+//eg., for (...)\n {stmt} generates loop code after the {stmt} with the line
+//number of the for().
+int cCompile::GenerateLinemapFile(const char *mapNameP)
+    {FILE    *fileP=fopen(mapNameP, "wb");                                      //
+     int      lastLine=-1, lastFile=-1, pc;                                     //
      sSRC_REF ref;                                                              //
-     if (m_bugEmitB)OutputDebugStringA("Line map (pc, file#, line#, offset)\n");//
-     for (int pc=0; pc < m_pgmSize; pc++)                                       //
-         {ref.fileNum   = m_codeP[pc].ref.fileNum;                              //
-          ref.lineNum   = m_codeP[pc].ref.lineNum;                              //
-          ref.srcOffset = m_codeP[pc].ref.srcOffset;                            //
-          ref.pc        = pc;                                                   //
-          if (lastLine != ref.lineNum || lastFile != ref.fileNum)               //
-             {fwrite(&ref, 1,sizeof(ref), fileP);                               //
-              if (m_bugEmitB)                                                   //
-                 {SNPRINTF(buf), "%03d: %02d, %04d, %d\n",                      //
-                               ref.pc, ref.fileNum, ref.lineNum, ref.srcOffset);//
-                  OutputDebugStringA(buf);                                      //
-             }   }                                                              //
+     if (fileP == NULL) return ErrorS(ERR_7147, "", mapNameP);                  //7147 = Unable to create file
+     for (pc=0; pc < m_pgmSize; pc++)                                           //
+         {ref    = m_codeP[pc].ref;                                             //
+          ref.pc = pc;                                                          //
+          if (lastFile != ref.fileNum) lastLine = 0;                            //
+          if (lastLine != ref.lineNum) fwrite(&ref, 1,sizeof(ref), fileP);      //
           lastLine = ref.lineNum; lastFile = ref.fileNum;                       //
          }                                                                      //
      fclose(fileP);                                                             //
@@ -1630,8 +1770,8 @@ int cCompile::PatchSamDefines(const char *microCodeNameP)
     SNPRINTF(buf),  "`define NAMEOF_MICROCODE \"%s\" %s",               //
                              FileNameOnly(microCodeNameP), whoMe);      //
     if (memcmp(codeP, buf, (len=istrlen(buf))) != 0)                    //file is up-to-date
-       {memmove(codeP, buf, len); changesB = true;}                     //file needs an attitude adjustment
-    if (changesB)                                                       //
+       {memmove(codeP, buf, len); changesB = true;}                     //   (not now!)
+    if (changesB)                                                       //file needs an attitude adjustment
        {fileP = fopen(fileName, "wb");                                  //           "
         fwrite(bufP, sz,1, fileP);                                      //           "
         fclose(fileP);                                                  //           "
@@ -1641,19 +1781,19 @@ xit:free(bufP);                                                         //      
    } //cCompile::PatchSamDefines...
 
 //Wrapper for AssignReg to handle $reg:$reg and redirect $reg++ etc
-int cCompile::RegAssign(int pc, IATOM lhs, int act)
-   {int        regRange= 0, baseReg=0, reg;                                     //
+int cCompile::WrapAssignReg(int pc, IATOM lhs, OPCODE_TBL *otP)
+   {int        regRange= 0, baseReg=0, reg, act=otP->act;                       //
     bool       curRowB = (act == OP_CROW);                                      //
-                                                                                //
+    IATOM      aa;                                                              //
     if (!curRowB && !IsRegister(lhs, &baseReg)) {m_a = lhs; goto err;}          //
-    if (Is(':') && !curRowB)                                                    //
+    if (Is(':') && !curRowB)                                                    //$reg:$reg
        {if (IsRegister(Get(), &regRange))                                       //
              {regRange = regRange - baseReg; Get();}                            //
         else {Backup(m_a); regRange = 0;}                                       //
        }                                                                        //
-    reg = baseReg;
+    reg = baseReg;                                                              //
     if (IsChar('='))                                                            //
-       {if ((pc=AssignReg(pc, lhs)) < 0 || curRowB) return pc;                  //error or $curRow = value
+       {if ((pc=AssignReg(pc, lhs, curRowB)) < 0 || curRowB) return pc;         //error or $curRow = value
         if (iabs(regRange) >= 2)                                                //
            {//generate repeat $r<i> = $baseReg, ii == baseReg +/- 1             //
             pc   = GenerateOp(pc, OP_REPEAT, iabs(regRange), 0, STEPR);         //
@@ -1663,11 +1803,15 @@ int cCompile::RegAssign(int pc, IATOM lhs, int act)
            {if (regRange < 0) reg = baseReg-1; else reg = baseReg+1;            //
             pc   = GenerateOp(pc, OP_ARITH, OPS_R2R, reg, baseReg);             //$base+i = $reg
            }                                                                    //
-        return pc;                                                              //
+       } //char == '='...                                                       //
+    else                                                                        //
+       {if (regRange == 0 && m_a.type == GC_GETX)                               //
+           pc = RegisterPostOp(pc, lhs,m_a); else goto err;                     //
        }                                                                        //
-    if (regRange == 0 && m_a.type == GC_GETX)return RegisterPostOp(pc, lhs,m_a);//
+    aa = m_a;                                                                   //
+    if (Is(';') || IsChar(')')) {Backup(m_a); return pc;}                       //
 err:return ErrorA(ERR_2736, m_a);                                               //2736 = Invalid register
-   } //cCompile::RegAssign...
+   } //cCompile::WrapAssignReg...
 
 /*$<reg> = expression; assign value to register. 
  RHS may be another register (OPS_R2R), a literal, or a memory reference [adr].
@@ -1677,6 +1821,9 @@ err:return ErrorA(ERR_2736, m_a);                                               
      $0   = large literal  uses InsertLongLiteral to generate multiple OP_LDI's
      $reg = large literal  if $reg == 0 generate $0 = InsertLongLiteral()
                            otherwise generate xchg $reg, $0 = InsertLongLiteral(), xchg $reg, $0
+     $reg = $pc            generate literal with bP->isCodeAdrB = true
+     $reg = $reg [+ | - | & | |] $reg
+     $reg = $reg [+ | - | & | |] constant expression
  Variants of memory reference:
      $reg = [$reg]         generates OP_RDF
      $reg = [adr]          generates OP_READ
@@ -1685,33 +1832,59 @@ err:return ErrorA(ERR_2736, m_a);                                               
      $reg = [row@adr:adr]  generates OPS_R2R(literal), OP_REPEAT, OP_READ 
    $curRow= [$reg | literal] if (curRowB==true)
  Upon entry: bP->op.u16 = OP_ARITH+OPS_R2R; meaning that op.sreg == op.adr == 0 */
-int cCompile::AssignReg(int pc, IATOM dstnAtom)
-   {int         dstnReg=0, sReg=-1, fieldNum, vbl;                      //
+int cCompile::AssignReg(int pc, IATOM dstnAtom, bool curRowB)
+   {int         regX=0, regY=-1, regZ, fieldNum, vbl, ii, opcode;       //
     sCODE_BLOB *bP=&m_codeP[pc];                                        //
-    bool        curRowB=bP->op.u16 == OP_CROW;                          //dstn reg is $curRow
                                                                         //
     m_stepRegB = false;                                                 //
-    if (!curRowB && !IsRegister(dstnAtom, &dstnReg)) goto err;          //LHS = $curRow or dReg
+    if (!curRowB && !IsRegister(dstnAtom, &regX)) goto err;             //LHS = $curRow or regX
     //Now process RHS                                                   //
     if (Is("$pc"))                                                      //generates $reg = long literal (always)
-       {GenerateOp(pc,   OP_RI,  (pc+2) >> 14, dstnReg, dstnReg);       //bits[22:14]
+       {GenerateOp(pc,   OP_RI,  (pc+2) >> 14, regX, regX);             //bits[22:14]
         GenerateOp(pc+1, OP_LDI, (pc+2) & ((2<<14)-1));                 //bits[13:0]
         m_codeP[pc].isPcB = m_codeP[pc].isCodeAdrB = true;              //OP_LDI is a code reference
         return pc+2;                                                    //
        }                                                                //
-    if (IsRegister(m_a, &sReg))                                         //
+    if (IsRegister(m_a, &regY))                                         //
        {//= $reg                                                        //
-        if (curRowB) return GenerateOp(pc, OP_CROW, sReg);              //$curRow = $sreg
-        return GenerateOp(pc, OP_ARITH, OPS_R2R, dstnReg, sReg);        //
-      //bP->op.r2r.areg = sReg; bP->op.r2r.breg = dstnReg; return pc+1; //$breg   = $areg
+        if (curRowB) return GenerateOp(pc, OP_CROW, regY);              //$curRow = $sreg
+        if (Is(';'))                                                    //
+           {Backup(m_a); return GenerateR2R(pc, regX, regY);}           //
+        //only other optins is $regA = $regA <op> $regZ;                //
+        static const char *o[] = {"+", "-", "&", "|", "^"};             //valid ops
+        static int u[] ={OPS_ADD, OPS_SUB, OPS_AND, OPS_OR, OPS_XOR};   //
+        if (m_a.type != GC_GETX)                              goto err; //
+        for (ii=HOWMANY(o); --ii >= 0;)                                 //lookup opcode
+            if (strncmp(m_a.textP, o[ii], strlen(o[ii])) == 0)break;    //
+        if (ii < 0)                                           goto err; //
+        if (IsRegister(Get(), &regZ))                                   //
+           {opcode = u[ii];                                             //
+            if (Is('+')     && opcode == OPS_ADD ||                     //$reg = $reg + $reg + C
+                IsChar('-') && opcode == OPS_SUB)                       //$reg = $reg - $reg - C
+               {if (!Is("C"))                                 goto err; //
+                opcode++;                                               //add -> adc, sub -> sbb
+               }                                                        //
+            else Backup(m_a);                                           //
+            pc = GenerateOp(pc, OP_ARITH, opcode, regZ, regY);          //$regA = $regA <op> $regZ
+            if (regX == regY) return pc;                                //
+            //A three register affair: $dreg = $regY <op> $regZ         //
+            //Generate sreg <op>= regZ; $dreg = sreg;                   //
+            m_regsUsed |= (1 << regY);                                  //
+            return GenerateR2R(pc, regX, regY);                         // 
+           }                                                            //
+        Backup(m_a);                                                    //
+        if (regX != regY) pc = GenerateR2R(pc, regX, regY);             //$regY = $regX
+        m_regsUsed |= (1 << REG0);                                      //
+        if ((pc=BuildLiteral(pc, false, REG0)) < 0) return pc;          //
+        return GenerateOp(pc, OP_ARITH, u[ii], REG0, regX);             //$regA = $regA <op> $REG0 (has literal)
        }                                                                //
     else                                                                //
     if (IsChar('['))                                                    //$reg = [adr] (memory reference)
        {if (curRowB) goto err;                                          //$curRow = [memory] is a not allowed
-        if (IsRegister(Get(), &sReg))                                   //$reg = [$reg]
+        if (IsRegister(Get(), &regY))                                   //$reg = [$reg]
            {//= [$reg]                                                  //
             bP->op.u16 = OP_RDF;                                        //
-            bP->op.ind.breg = dstnReg; bP->op.ind.areg = sReg;          //
+            bP->op.ind.breg = regX; bP->op.ind.areg = regY;             //
        //   if ((erC=SignedOffset(&bP->op)) < 0) return erC;            //obsolete; was [$reg+offset]
             if (!Is(']')) goto err;                                     //
             if (!Is('.')) {Backup(m_a); fieldNum = FLD_RAW;} else       //
@@ -1722,22 +1895,22 @@ int cCompile::AssignReg(int pc, IATOM dstnAtom)
         else                                                            //
            {//= [adr]                                                   //
             bP->op.u16   = OP_READ;                                     //replace OP_ARITH with OP_READ
-            bP->op.g.breg= dstnReg;                                     //
+            bP->op.g.breg= regX;                                        //
             if ((pc=Address(pc)) < 0) return pc;                        //
-            m_stepRegB  = true;                                        //
+            m_stepRegB  = true;                                         //
             if (!Is(']')) goto err;                                     //
        }   }                                                            //
     else
     if (m_a.type == GC_NAME && (vbl=LookupVbl(m_a.textP, m_a.len)) >= 0)//
        {m_loAdr = m_hiAdr = (int) m_vblsP[vbl].wordAdr;                 //
         bP->op.u16   = OP_READ;                                         //replace OP_ARITH with OP_READ
-        bP->op.g.breg= dstnReg;                                         //
+        bP->op.g.breg= regX;                                            //
         bP->op.g.adr = m_loAdr;                                         //
        }                                                                //
     else {//= literal                                                   //
           Backup(m_a);                                                  //
-          pc = BuildLiteral(pc, curRowB, dstnReg) - 1;                  //MultiOp will step pc
-          m_stepRegB = true;                                           //
+          pc = BuildLiteral(pc, curRowB, regX) - 1;                     //MultiOp will step pc
+          m_stepRegB = true;                                            //
          }                                                              //
     return MultiOp(pc, bP->op);                                         //
 err:return ErrorA(ERR_2736, m_a);                                       //2736 = Expecting a register. 
@@ -1813,6 +1986,7 @@ int cCompile::AssignMem(int pc, int vbl)
 int cCompile::BuildLiteral(int pc, bool curRowB, int dReg)
    {int         erC; 
     int64_t     i64;
+    uint32_t    saveRegsUsed=m_regsUsed;
     sCODE_BLOB *bP=&m_codeP[pc], blob;                                  //
     if ((erC=ConstantExpression(&i64)) < 0) return erC;                 //$dreg = literal
     if (i64 >= 0 && i64 <= m_max.g.adr)                                 //
@@ -1830,11 +2004,13 @@ int cCompile::BuildLiteral(int pc, bool curRowB, int dReg)
         if ((pc=InsertLongLiteral(++pc, i64)) < 0) return pc;          //$0 = long literal
         blob.tgtLabelP     = blob.hereP = NULL;                         //
         m_codeP[pc]        = blob;                                      //output xchg $0, $dreg
+        m_regsUsed         = saveRegsUsed;                              //XCHG restores $0
         return pc+1;                                                    //voila - load literal to other than $0
        }                                                                //
     if (i64 <= m_max.g.adr && curRowB)                                  //
                           return GenerateOp(pc, OP_CROWI, (int)i64);    //
-    if ((pc=InsertLongLiteral(pc, i64)) < 0) return pc;                //$dreg0 = long literal
+    if ((pc=InsertLongLiteral(pc, i64)) < 0) return pc;                 //$dreg0 = long literal
+    if (dReg == 0) m_regsUsed = (m_regsUsed & ~1) | saveRegsUsed;       //$0 = value; don't care if it gets clobbered
     if (!curRowB) return pc;                                            //
     return GenerateOp(pc, OP_CROW, dReg);                               //
    } //cCompile::BuildLiteral...
@@ -1843,7 +2019,7 @@ int cCompile::BuildLiteral(int pc, bool curRowB, int dReg)
 //  $reg++, $reg--, reg+=rhs, reg-=rhs, reg&=rhs, reg |=rhs, reg^=rhs
 int cCompile::RegisterPostOp(int pc, IATOM aa, IATOM postOp)
    {int         reg, ii;                                                //
-    uint32_t    rhs=1;                                                  //
+    uint32_t    rhs=1, saveRegsUsed=m_regsUsed;                         //
     const char *pp=postOp.textP;                                        //
     static const char *o[] = //2       3        4       5       6       //
              {"++",   "--",   "+=",   "-=",    "&=",   "|=",  "^="};    //valid post ops
@@ -1860,7 +2036,7 @@ int cCompile::RegisterPostOp(int pc, IATOM aa, IATOM postOp)
     if (!IsNumber(&rhs)) goto err;                                      //
     if (ii >= 4) //&=, |=, and ^= variants------------------------------//
        {if (reg == REG0)                                                //
-            {pc   = GenerateOp(pc, OP_ARITH, OPS_PUSH, REG1);           //push $1
+            {saveRegsUsed |= 1 << REG1;                                 //mark $1 as used
              if (rhs < m_max.g.adr)                                     //
                  pc = GenerateOp(pc, OP_RI, rhs, REG1);                 //$1 = rhs (where rhs < 256)
              else                                                       //
@@ -1868,13 +2044,14 @@ int cCompile::RegisterPostOp(int pc, IATOM aa, IATOM postOp)
                  pc = IntegerLiteral(pc, rhs, REG0);                    //$0 = longLiteral
                 }                                                       //
              pc   = GenerateOp(pc, OP_ARITH, b[ii], REG1, REG0);        //$0 = $0 <op> $1
-             return GenerateOp(pc, OP_ARITH, OPS_POP, REG1);            //pop $1
+             m_regsUsed = saveRegsUsed;                                 //target is $0, no push/pop required
+             return pc;                                                 //
             }                                                           //
       //if (reg != REG0)                                                //
-            {pc   = GenerateOp(pc, OP_ARITH, OPS_PUSH, REG0);           //push $0
-             pc   = IntegerLiteral(pc, rhs, REG0);                      //$0 = literal (short or long)
+            {pc   = IntegerLiteral(pc, rhs, REG0);                      //$0 = literal (short or long)
              pc   = GenerateOp(pc, OP_ARITH, b[ii], REG0, reg);         //$reg = $0 <op> $reg
-             return GenerateOp(pc, OP_ARITH, OPS_POP, REG0);            //pop $0
+             m_regsUsed |= 1 << REG0;                                   //
+             return pc;                                                 //pop $0
        }    }                                                           //
     //+=, and -= variants ----------------------------------------------//
     switch(rhs)                                                         //
@@ -1892,14 +2069,14 @@ int cCompile::RegisterPostOp(int pc, IATOM aa, IATOM postOp)
                     return GenerateOp(pc, OP_ARITH, OPS_POP, REG1);     //pop $1
                    }                                                    //
               //if (reg != REG0)                                        //
-                   {pc   = GenerateOp(pc, OP_ARITH, OPS_PUSH, REG0);    //push $0
-                    pc   = IntegerLiteral(pc, rhs, REG0);               //$reg0 = literal
+                   {pc   = IntegerLiteral(pc, rhs, REG0);               //$reg0 = literal
+                    m_regsUsed |= 1 << REG0;                            //used for that literal rhs
                     if (ii == 3) //-=                                   //operands in reverse order: ha ha
                        {pc=GenerateOp(pc, OP_ARITH, b[ii], reg, REG0);  //$0 = $0 <op> $reg
                         pc=GenerateOp(pc, OP_ARITH, OPS_R2R, reg, REG0);//$reg = $0 <op> $reg
                        }
                     else pc=GenerateOp(pc,OP_ARITH, b[ii], REG0, reg);  //$reg = $0 <op> $reg
-                    return GenerateOp(pc, OP_ARITH, OPS_POP, REG0);     //pop $0
+                    return pc;                                          //
                    }                                                    //
        }                                                                //
 err:return Error(ERR_2736, "");                                         //2736 = register expected 
@@ -1928,26 +2105,29 @@ int cCompile::SimpleCondition(IATOM aa)
 //These must be completed by the caller when the actual addresses are known. 
 //The sense of these generated goto's is: if (expression == true) goto.
 int cCompile::CompileExpression(int pc, bool safeReg0B)
-   {int rel, reg, erC, startPc=pc; int64_t result;                              //
+   {int rInx, reg, erC, startPc=pc, treg=REG0; int64_t result;                  //
     if (!IsRegister(Get(), &reg))                goto err2733;                  //
-    if ((rel=SimpleCondition(Get()))      < 0)   goto err2733;                  //rel = relational operator
+    if (reg == 0) treg = REG1;                                                  //
+    if ((rInx=SimpleCondition(Get()))     < 0)   goto err2733;                  //rInx = index of relational operator in Relop[]
     if ((erC=ConstantExpression(&result)) < 0)   return erC;                    //
-    if (safeReg0B) pc = GenerateOp(pc, OP_ARITH, OPS_PUSH, 0);                  //save $reg0
-    pc      = IntegerLiteral(pc, result, 0);                                    //result in $reg0
-    pc      = GenerateOp(pc, OP_ARITH, OPS_CMP, reg, 0);                        //
-    if (safeReg0B) pc = GenerateOp(pc, OP_ARITH, OPS_POP,  0);                  //restore $reg0
-    pc      = GenerateOp(pc, Relops[rel].op, Relops[rel].cond);                 //conditional goto: address unknown
+    if (safeReg0B) pc = GenerateOp(pc, OP_ARITH, OPS_PUSH, treg);               //save $treg
+    pc      = IntegerLiteral(pc, result, treg);                                 //result in $treg
+    if (reg == 0)  pc = GenerateOp(pc, OP_ARITH, OPS_CMPS, reg, treg);          //signed CMP
+    else           pc = GenerateOp(pc, OP_ARITH, OPS_CMPS, reg, treg);          //signed CMP
+    if (safeReg0B) pc = GenerateOp(pc, OP_ARITH, OPS_POP, treg);                //restore $treg
+    pc      = GenerateOp(pc, Relops[rInx].op, Relops[rInx].cond);               //conditional goto: address unknown
     if (m_bugEmitB) BugEmit(startPc, pc-1);                                     //
     return pc;                                                                  //
 err2733: return ErrorA(ERR_2733, m_a);                                          //2733 = Invalid element in an expression (%s).
    } //cCompile::CompileExpression...
 
 /*Set test environment
-    $environment software emulation;   0   emulated in software only
-    $environment Xilinx simulation;    1   calls xsim.exe; sim.exe monitors results
-    $environment FPGA;                 2   load FPGA and monitor execution
-    $environment hardware;             3   load hardware 
-    $environment compile only;         4   emulated in software only
+typedef enum {ENV_NOT_SET=0, ENV_SW, ENV_XSIM, ENV_FPGA, ENV_HW, ENV_COMPILE} eENVIRONMENT;
+    $environment software emulation;   ENV_SW      == 0   emulated in software only
+    $environment Xilinx simulation;    ENV_XSIM    == 1   calls xsim.exe; sim.exe monitors results
+    $environment FPGA;                 ENV_FPGA    == 2   load FPGA and monitor execution
+    $environment hardware;             ENV_HWLOAD  == 3   load hardware only
+    $environment compile only;         ENV_COMPILE == 4   emulated in software only
     $environment macro only;           5   expand macros only
 Only one instance of an $environment statement is expected
 $environment is ignored when g_skipXsimB=true (a cranky debugging trick) 
@@ -1957,7 +2137,7 @@ int cCompile::SetEnvironment(void)
     #define cmp(w,t)  stricmp(w, t) == 0                                        //
     if (Get().type != GC_NAME)                return Error(ERR_3000, "");       //missing name
     n1P = LOCAL_COPY(m_a);                                                      //
-    if (cmp(n1P, "hardware")                             )env = ENV_HW;     else//
+    if (cmp(n1P, "hardware")                             )env = ENV_HWLOAD; else//
     if (cmp(n1P, "FPGA")                                 )env = ENV_FPGA;   else//
        {Get(); n2P = LOCAL_COPY(m_a);                                           //not 'LOCAL_COPY(Get())' please
         if (cmp(n1P, "Xilinx")  && cmp(n2P, "simulation"))env = ENV_XSIM;   else//rest are twofers
@@ -1970,11 +2150,25 @@ int cCompile::SetEnvironment(void)
     return (int)env;                                                            //
    } //cCompile::SetEnvironment...
 
-//Generate a push/pop around emerging opcodes to safeguard $reg
-int cCompile::SafeReg(int pc, int pushPop, int reg)
-    {if (m_safeRegB) 
-        pc = GenerateOp(pc, OP_ARITH, pushPop, reg); 
-     return pc;
+//Generate a push/pop around block of code between startPc and pc 
+//This is activated if $safeReg = true and protects registers appropriated for
+//various purposes from being permanently corrupted.
+int cCompile::SafeReg(int startPc, int pc)
+    {int count, savePc=pc, p[8]={0}, reg; uint32_t u32;                         //
+     char *hereP = m_codeP[startPc].hereP, *tgtP = m_codeP[startPc].tgtLabelP;  //
+     for (count=0, u32=m_regsUsed; u32 != 0; u32 >>= 1) count+=(u32 & 1);       //number of registers clobbered
+     if (count == 0) return pc;                                                 //nuthing todo
+     CheckCodeSize(pc);                                                         //
+     for (; pc >= startPc; pc--) m_codeP[pc+count] = m_codeP[pc];               //insert space for pushes
+     for (reg=REG0, u32=m_regsUsed, pc=startPc; u32 != 0; u32 >>= 1, reg++)     //insert pushes
+        if (u32 & 1)                                                            //
+           {m_codeP[pc].hereP = hereP; m_codeP[pc].tgtLabelP = tgtP;            //
+            hereP = tgtP = NULL;                                                //
+            pc    = GenerateOp(pc, OP_ARITH, OPS_PUSH, reg); p[reg] = 1;        //
+           }                                                                    //
+     for (pc=savePc+count+1; --reg >= 0;)                                       //append pops
+         if (p[reg]) pc = GenerateOp(pc, OP_ARITH, OPS_POP, reg);               //
+     return pc;                                                                 //
     } //cCompile::SafeReg...
 
 /*Generate a long literal, ie one larger than the 8 bits allocated in OPS_R2R
@@ -2012,9 +2206,7 @@ int cCompile::IntegerLiteral(int pc, uint64_t u64, int regN)
     opP->u16             = OP_RI;                                               //sreg = dreg means $reg = literal
     opP->ri.breg         = regN;                                                //
     opP->ri.imm          = (uint16_t)u64;                                       //
-    m_codeP[pc].ref.lineNum  = m_ref.lineNum;                                   //
-    m_codeP[pc].ref.fileNum  = m_ref.fileNum;                                   //
-    m_codeP[pc].ref.srcOffset= m_ref.srcOffset;                                 //
+    m_codeP[pc].ref      = m_ref;                                               //
     return pc+1;                                                                //
    } //cCompile::IntegerLiteral...
 
@@ -2025,12 +2217,13 @@ int cCompile::InsertLongLiteral(int pc, uint64_t u64)
    {int         ii, cc;                                                         //
     uint64_t    a[5], one=1, mask=0x3FFF, b[5];                                 //
     sCODE_BLOB  blob=m_codeP[pc];                                               //capture line, file and label
+    m_regsUsed |= (1 << REG0);                                                  //
     b[4] = (u64 >>  0) & mask; b[3] = (u64 >> 14) & mask;                       //break up u64 into 14 bit pieces
     b[2] = (u64 >> 28) & mask; b[1] = (u64 >> 42) & mask;                       //
     b[0] = (u64 >> 56) & 0xFF;                                                  //high 8 bits
     if (u64 >= 256 && b[1] == b[2] && b[3] == b[2] && b[4] == b[2])             //trivial optimization
-       {pc          = GenerateOp(pc, OP_RI, (int)b[0]);                         //  (if 14 bit chunks are identical)
-        pc          = GenerateOp(pc, OP_REPEAT, 4);                                //
+       {pc          = GenerateOp(pc, OP_RI, (int)b[0], REG0);                   //  (if 14 bit chunks are identical)
+        pc          = GenerateOp(pc, OP_REPEAT, 4);                             //
         pc          = GenerateOp(pc, OP_LDI, (int)b[1]);                        //
        }                                                                        //
     else
@@ -2233,11 +2426,11 @@ int cCompile::_Error(int erC, CC contextP, CC paramsP, CC fileNameP, int line, c
         Printf("%s\x07", erBuf);                                                //beep :(
         strncat(erBuf,"\n\tPress Yes for more information\n"                    //
                         "\tPress No  to ignore error and continue\n"            //
-                        "\tPress Cancel to abort further processing",           //
+                        "\tPress Cancel to abort compiler",                     //
                sizeof(erBuf)-len-1);                                            //
         switch (MessageBoxA(NULL, erBuf, fn,MB_YESNOCANCEL))                    //
              {case IDNO:     return 0;                                          //
-              case IDCANCEL: return erC;                                        //
+              case IDCANCEL: exit(1);                                           //
              }                                                                  //
         erBuf[len] = 0;                                                         //strip 'Press yes...'
         g_err.AddContext(fn);                                                   //
@@ -2317,13 +2510,19 @@ int main(int argc, char **argv)
     compilerP            = new cCompile(srcName, incDirP, bugEmitB, patchDrvB); //input files/dir
     if (expandOnlyB) erC = compilerP->PrintProgram();                           //expand macros only
     else             erC = compilerP->CompileProgram();                         //Compile microcode to objFile
-    Printf("%s Compiled, error=%d, environment=%d\n",                           //
-                           srcName, erC < 0 ? erC : 0, erC);                    //
+    if (erC < 0)                                                                //
+       {char buf[256];                                                          //
+        Printf("%s, %s\n", srcName, g_err.ShortError(erC, buf, sizeof(buf)));   //
+       }                                                                        //
+    else                                                                        //
+       {const char *environmentNames[] = {ENVIRONMENT_NAMES};                   //
+        Printf("%s Compiled, environment=%s\n", srcName, environmentNames[erC]);//
+       }                                                                        //
     delete compilerP;                                                           //
     return erC < 0 ? 255 : erC;                                                 //
     #undef ARG_IS                                                               //
 err:cCompile::_Error(erC, NULL, argv[ii], __FILE__, __LINE__, "main");          //
-    return 1;                                                                   //
+    return 255;                                                                 //
    } //main...
 
 //end of file

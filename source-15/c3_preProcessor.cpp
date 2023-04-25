@@ -285,14 +285,14 @@ int cPreProcessor::BuildLineMap(char *textP, cLINE_MAP *mapcP, int depth)
     mapcP->Add(count+1);                                  //over allocated by one element
     //build line map                                      //
     for (ii=0, pp=textP; *pp; ii = nextii)                //
-       {mapP               = mapcP->P(m_line=ii);         //save m_line for errors
-        mapP->originalP    = (char*)pp;                   //
-        mapP->expandedP    = rr = pp + strspn(pp, " \t"); //remove leading spaces
-        mapP->ref.lineNum  = ii+1;                        //line number starts at one
-        mapP->ref.fileNum  = m_fileNum;                   //
-        mapP->ref.srcOffset=(int)(rr - textP);            //offset within source file
-        mapP->depth        = depth;                       //
-        mapP->reallocatedB = false;                       //
+       {mapP                = mapcP->P(m_line=ii);        //save m_line for errors
+        mapP->originalP     = (char*)pp;                  //
+        mapP->expandedP     = rr = pp + strspn(pp, " \t");//remove leading spaces
+        mapP->ref.lineNum   = ii+1;                       //line number starts at one
+        mapP->ref.fileNum   = m_fileNum;                  //
+        mapP->ref.lineOffset=(int)(pp - textP);           //offset within source file
+        mapP->depth         = depth;                      //
+        mapP->reallocatedB  = false;                      //
         if (*rr != '#') goto notDirective;                //
         //Scan # line and store mac_inx in line_map. Match up #if, #else, & #endif, #for & #endfor, #define & #endef.
         for (kk=1; kk < HOWMANY(KeyWords); kk++)
@@ -2015,13 +2015,15 @@ int cPreProcessor::PrintProgram(void)
                 Printf("%s\n", mapP->expandedP);                    //
                 blankB = mapP->expandedP[0] == 0;                   //
        }       }                                                    //
-    fclose(g_printFileP); g_printFileP = NULL;                      //
-    Printf("Expanded file written to %s\n", m_captureFileP);        //
-#ifdef _DEBUG                                                       //
-    OutputDebugStringA("Expanded file written to ");                //
-    OutputDebugStringA(m_captureFileP);                             //
-    OutputDebugStringA("\n");                                       //
-#endif                                                              //
+    if (g_printFileP)                                               //
+       {fclose(g_printFileP); g_printFileP = NULL;                  //
+        Printf("Expanded file written to %s\n", m_captureFileP);    //
+        #ifdef _DEBUG                                               //
+        OutputDebugStringA("Expanded file written to ");            //
+        OutputDebugStringA(m_captureFileP);                         //
+        OutputDebugStringA("\n");                                   //
+        #endif                                                      //
+       }                                                            //
     return end;                                                     //
    } //cPreProcessor::_PrintProgram...
 

@@ -13,7 +13,8 @@ typedef struct                                                                  
    } CONDITION_CODES;                                                           //
 
 #define OP_CALL       0x00                                                      //set pc <= target+1
-#define OP_BUG        0x18                                                      //output bug info, set bugLevel
+#define OP_BUG        0x18                                                      //g.bReg == 0, output bug info, set bugLevel
+#define OP_PRINT      0x18                                                      //g.breg != 0
 #define OP_ARITH      0x02                                                      //
 #define OP_RI         0x06                                                      //+dst*32 + src*4
 #define OP_RET        0x0A                                                      //
@@ -21,13 +22,13 @@ typedef struct                                                                  
 #define OP_CFG_C      0xAA                                                      //configure cells
 #define OP_REPREG     0x0E                                                      //repeat, count = $preg
 #define OP_REPEAT     0x12                                                      //repeat fixed number of times
-#define OP_CROWI      0x16                                                      //set current row from op.s.adr bits
+#define OP_CROWI      0x16                                                      //set current row from op.g.adr bits
 #define OP_CROW       0x1A                                                      //set current row
-#define OP_PRINT      0x1E                                                      //
 #define OP_GO_T       0x01                                                      //set pc <= target+1
 #define OP_GO_F       0x05                                                      //set pc <= target+1
 #define OP_NOOP       0x05                                                      //
 #define OP_STOP     0x0018                                                      //
+#define OP_SET_BUG       4                                                      //bugFncs
 #define OP_RDF        0x08                                                      //
 #define OP_WRF        0x10                                                      //
 #define OP_LDI        0x03                                                      //
@@ -35,7 +36,16 @@ typedef struct                                                                  
 #define OP_WRYT       0x0C                                                      //write word at row[address]
 #define OP_SCAN       0x14                                                      //scan DRAM row
 #define OP_SCIN       0x1C                                                      //scan, right shift & insert DRAM row
-//Sub operations of OP_ARITH
+#define OP_GOVLY      0x1E                                                      //
+//Sub operations of OP_BUG or OP_PRINT                                          //
+  #define OPV_PRINT      1                                                      //
+  #define OPV_EXPECT     2                                                      //
+  #define OPV_ACTUAL     3                                                      //
+  #define OPV_STRING     4                                                      //
+  #define OPV_NU         5                                                      //
+  #define OPV_EXPECT_END 6                                                      //
+  #define OPV_ACTUAL_END 7                                                      //
+//Sub operations of OP_ARITH                                                    //
 #define OPS_ADD       0x00                         // binary ops                //-+
 #define OPS_ADC       0x01                         //     "                     //  \.
 #define OPS_SUB       0x02                         //     "                     //   \.
@@ -62,6 +72,7 @@ typedef struct                                                                  
 #define OPS_CLC       0x17                         //                           //  \.  Nonary Operators
 #define OPS_STZ       0x18                         //                           //  /.  (implemented inline)
 #define OPS_CLZ       0x19                         //                           //+/.
+#define OPS_CMPS      0x1A                         //
 
 //bits of goto(condition)
 #define COND_QRDY 0x01 //input que is ready
@@ -74,20 +85,14 @@ typedef struct                                                                  
 #define REG_ACCUM   0                                                           //
 #define MAX_REGS    8                                                           //$0 thru $7
 
-#define IsArithOp(op, sub)  ((op).arith.act == OP_ARITH && (op).arith.subOp == (sub))   //
-#define IsRegImmOp(op)      ((op).ri.act    == OP_RI)                           //
-#define IsBugOp(op)         ((op).bug.act   == OP_BUG)                          //
-#define IsCall(op)          (((op).call.act)== OP_CALL)                         //OP_CALL
-#define IsGoOp(op)          (((op).go.act&3)== OP_GO_T)                         //OP_GO_T or OP_GO_F
-#define IsShortJmp(op)      (IsGoOp(op) && (op).go.relAdr != 0)                 //short jump
-#define IsLongJmp(op)       ((op).go.act    == OP_GO_T && (op).go.relAdr == 0)  //long jump
-#define IsRdWrOp(op)        (op.s.act       == OP_READ || op.s.act == OP_WRYT)  //OP_READ or OP_WRYT
-#define IsScanOp(op)        (op.s.act       == OP_SCAN || op.s.act == OP_SCIN)  //OP_SCAN or OP_SCIN
-#define IsRdWrSc(op)        (((op).s.act & 7) == 4)                             //
-#define IsExtendedOp(op)    (((op).arith.subOp & 0x10) != 0)                    //
-#define IsWrField(op)       ((op).ind.act[4] == 1)                              //
-
-typedef enum {ENV_NOT_SET=0, ENV_SW, ENV_XSIM, ENV_FPGA, ENV_HW, ENV_COMPILE} eENVIRONMENT;
+typedef enum {ENV_NOT_SET=0, ENV_SW, ENV_XSIM, ENV_FPGA, ENV_HWLOAD, ENV_COMPILE} eENVIRONMENT;
+#define ENVIRONMENT_NAMES "not set", "software emulation", "xilinx simulation", \
+                          "fpga",    "hardware load",      "compile only"
+#define BUG_SHO_BOOK   0               //         0 = display curRow as hBOOK[]
+#define BUG_AUTODETECT 0               //         0 = automaticly detect row type
+#define BUG_SHO_PAGE   1               //         1 = display curRow as hPAGE[]
+#define BUG_SHO_RAW    2               //         2 = display curRow as raw hex   
+#define BUG_SHO_INDX   3               //         3 = display curRow as hINDX[]
 
 //Opcode implemented by samControl.sv
 typedef union
@@ -103,14 +108,14 @@ typedef union
                        areg    : 3;   //0xE000 address register (handle of structure)
             } ind;
      //OP_RPT;
-     struct {uint16_t  act     : 8, //0x00FF OP_RPT = 8'h90
+     struct {uint16_t  act     : 8, //0x00FF OP_REPEAT = 8'h09
                        count   : 5, //0x1F00 number of repititions
                        bkwd    : 1, //0x2000 decrement reg and/or address
                        stepA   : 1, //0x4000 step address on each iteration
                        stepR   : 1; //0x8000 step register on each iteration
             } rpt;    
      //OP_RPTR
-     struct {uint16_t  act     : 5, //0x001F OP_RPTR = 5'h0E
+     struct {uint16_t  act     : 5, //0x001F OP_REPREG = 5'h0E
                        breg    : 3, //0x00E0 (number of repititions-1) = $preg
                        z0      : 5, //0x1F00 number of repititions
                        bkwd    : 1, //0x2000 decrement reg and/or address
@@ -119,13 +124,14 @@ typedef union
             } rptR;    
      //OP_BUG;
      struct {uint16_t  act     : 8, //0x00FF OP_BUG = 5'h18
-                       level   : 5, //0x1F00 
-                       sho     : 2, //0x6000   0 = unused
+                       level   : 3, //0x0700   bug level
+                       nu      : 2, //0x1800   nu
+                       fnc     : 3; //0xE000   0 = stop
                                     //         1 = display curRow as hPAGE[]
                                     //         2 = display curRow as raw hex   
                                     //         3 = display curRow as hINDX[]
-                       set     : 1; //0x8000 1 = set bugLevel
-            } bug;
+                                    //         4 = set bugLevel
+            } bug;                  //     5,6,7 = unused 
      //OP_ADD, OP_ADC, etc;
      struct {uint16_t  act     : 5, //0x001F OP_ARITH == 0x18
                        breg    : 3, //0x00E0
@@ -159,6 +165,28 @@ typedef union
      uint16_t          u16;
      uint8_t           shortOp;
     } OPCODE;
+
+
+inline bool IsArithOp   (OPCODE op,int sub){return op.arith.act  == OP_ARITH && op.arith.subOp == (sub);}
+inline bool IsRegImmOp  (OPCODE op)        {return op.ri.act     == OP_RI;                             } //
+inline bool IsCall      (OPCODE op)        {return op.call.act   == OP_CALL;                           } //OP_CALL
+inline bool IsGoOp      (OPCODE op)        {return (op.go.act&3) == OP_GO_T;                           } //OP_GO_T or OP_GO_F
+inline bool IsShortJmp  (OPCODE op)        {return  IsGoOp(op);                                        } //short jump
+inline bool IsLongJmp   (OPCODE op)        {return  op.g.act     == OP_GOVLY;                          } //long jump
+inline bool IsRdWrOp    (OPCODE op)        {return  op.g.act     == OP_READ || op.g.act == OP_WRYT;    } //OP_READ or OP_WRYT
+inline bool IsScanOp    (OPCODE op)        {return  op.g.act     == OP_SCAN || op.g.act == OP_SCIN;    } //OP_SCAN or OP_SCIN
+inline bool IsBugOp     (OPCODE op)        {return  op.bug.act   == OP_BUG  && op.g.breg != 0;         } //
+inline bool IsPrintOp   (OPCODE op)        {return  op.g.act     == OP_PRINT&& op.g.breg == OPV_PRINT; } //
+inline bool IsRdWrSc    (OPCODE op)        {return (op.g.act & 7) == 4;                                } //
+inline bool IsExtendedOp(OPCODE op)        {return (op.arith.subOp & 0x10) != 0;                       } //
+inline bool IsWrField   (OPCODE op)        {return  op.ind.act    == OP_WRF;                           }//
+inline bool IsTwoWordOpCode(OPCODE op, OPCODE op1, OPCODE op2)
+   {return 
+       (IsLongJmp(op) ||                                                        //
+       (op.ri.act == OP_RI && op.ri.breg == 0 &&                                //
+           (op1.ldi.act == OP_LDI ||                                            //
+            op1.rpt.act == OP_REPEAT && op2.ldi.act == OP_LDI)));               //
+   } //IsTwoWordOpCode
 
 typedef struct 
     {uint64_t pc    :16,                    //0x00000000_0000FFFF
@@ -227,12 +255,13 @@ class cOpName
     int        m_messageSize, m_messageNum;                                     //
     cOpName (cSamError *errP, const char *messagesP, int messagesSize);         //
    ~cOpName ();                                                                 //
-    char       *ConditionNames(uint16_t cc);                                    //
+    char       *ConditionNames(uint16_t cc, bool gotT=true, bool skipOpB=false);//
     int         FieldName     (CC textP, int fldNum, CC *namePP);               //
     int         StoreMessage  (const char *msgP, int len);                      //
     const char *FindMessage   (int msgNum);                                     //
     const char *GetTgtLabel   (uint32_t adr) {return "";}                       //
-    char       *Show          (int pc, OPCODE op, OPCODE nxt, const char *labelP=NULL, bool knownB=false);
+    char       *Show          (int pc, OPCODE op, OPCODE nxt, CC labelP=NULL,   //
+                               bool knownB=false, OPCODE *nxtP=NULL);           //
    }; //class OpName...
 
 #endif //_OPCODE_H_INCLUDED...

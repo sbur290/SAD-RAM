@@ -56,7 +56,7 @@
 #define CONDITIONAL_CRLF "\x80"
 
 //Fundamental link between source and object code
-typedef struct {uint16_t pc, fileNum, lineNum, srcOffset;} sSRC_REF;
+typedef struct {uint16_t pc, fileNum, lineNum; uint32_t lineOffset;} sSRC_REF;
 
 //JET from always.h 1/10/12
 #if defined (_MSC_VER)

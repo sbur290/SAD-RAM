@@ -21,6 +21,7 @@ class cAtomize
    ~cAtomize                   ();
     IATOM  AtomErr             (int erC, char *pp) {IATOM vbl; vbl.type = GC_ERROR; vbl.textP = pp; vbl.len = -erC; return vbl;}
     void   Backup              (IATOM atom)        {m_backupAtom = atom;}
+    void   ComputeSourceffsets (sSRC_REF *refP, const char *hereP);                
     IATOM  GetAtom             (bool probeB=false);
     int    GetLineNumber       (int lineInx) {return m_prepP->GetLineNumber(lineInx);}
     char  *GetFileName         (int fileNum)       {return m_prepP->GetFileName(fileNum);}

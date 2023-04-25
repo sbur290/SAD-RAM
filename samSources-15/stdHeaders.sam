@@ -27,5 +27,7 @@
 
 // '$shocode = true' outputs intermediate op-codes as they are compiled
     $shocode = false;                                    //
-//saves reg0/1 when co-opted for arithmetic operations   //
-    $safeReg0= true;                                     //
+    $alwaysMessageBox = true;                            //errors always provoke MessageBox()
+    $safeReg = true;                                     //protect registers against hidden usage
+    $origin  = 0;                                        //location of first instruction
+    $overlaySize=16384;                                  //size of overlay

@@ -37,7 +37,7 @@ inline char Hex2(char **ppp)
     {char hex[3] = {(*ppp)[0], (*ppp)[1], 0}; *ppp = (*ppp)+2; return (char)strtol(hex, NULL, 16);}
  
 IATOM cAtomize::GetAtom(bool probeB) //=false (ie step posn)
-   {int     ii, jj, len, srcOffset;
+   {int     ii, jj, len;
     char   *pp =m_pp, *qq, ch;
     IATOM   vbl={NULL,0,0,0};
     if (m_backupAtom.type != GC_NULL)
@@ -53,8 +53,7 @@ IATOM cAtomize::GetAtom(bool probeB) //=false (ie step posn)
             else  vbl.index = LookupName(vbl.textP, vbl.len);                   //not used in samCompile
             m_backupAtom.index = vbl.index;                                     //
            }                                                                    //
-    vbl.ref.srcOffset = (int)(vbl.textP - m_lineMapP[m_lineInx].expandedP) +            //srcOffset in line
-                     m_lineMapP[m_lineInx].ref.srcOffset;                       //srcOffset of line
+        ComputeSourceffsets(&vbl.ref, vbl.textP);                               //
         return vbl;                                                             //
        }                                                                        //
     while (m_pp == NULL || *m_pp == 0 )                                         //end of line, get next line
@@ -72,8 +71,7 @@ IATOM cAtomize::GetAtom(bool probeB) //=false (ie step posn)
         else m_pp = m_lineMapP[m_lineInx].expandedP;                            //
        }                                                                        //
     vbl.textP = pp = (m_pp+= strspn(m_pp, " \t"));                              //
-    srcOffset = (int)(vbl.textP - m_lineMapP[m_lineInx].expandedP) +            //srcOffset in line
-                     m_lineMapP[m_lineInx].ref.srcOffset;                       //srcOffset of line
+    ComputeSourceffsets(&vbl.ref, pp);                                          //
     len       = (*pp == '$' && m_allowDollarVblsB) ||                           //
                 (*pp == '%' && m_allowPercentVblsB) ? 1 : 0;                    //
     if(*pp >= 'a' && *pp <= 'z' || *pp >= 'A' && *pp <= 'Z' || *pp == '_' || len)//alphabetics plus underscore
@@ -142,11 +140,14 @@ IATOM cAtomize::GetAtom(bool probeB) //=false (ie step posn)
             if (strncmp(pp, m_operators[ii], jj=istrlen(m_operators[ii])) == 0) {vbl.len = len = jj; break;}
        }                                                                        //
     m_pp             = pp + len + strspn(pp+len, "\t\r\n ");                    //how dem '\r\n' get there eh?
-    vbl.ref.fileNum  = m_lineMapP[m_lineInx].ref.fileNum;                       //
-    vbl.ref.lineNum  = GetLineNumber(m_lineInx);                                //
-    vbl.ref.srcOffset= srcOffset;                                               //
     return m_lastAtom=vbl;                                                      //
    } //cAtomize::GetAtom...
+
+void cAtomize::ComputeSourceffsets(sSRC_REF *refP, const char *hereP)
+   {refP->lineOffset = m_lineMapP[m_lineInx].ref.lineOffset;                    //adr ofline in file
+    refP->fileNum    = m_lineMapP[m_lineInx].ref.fileNum;                       //
+    refP->lineNum    = GetLineNumber(m_lineInx);                                //
+   } //cAtomize::ComputeSourceffsets..
 
 //Pack number in place with '_' removed.
 int cAtomize::RemoveUnderScore(char *numP, int len)

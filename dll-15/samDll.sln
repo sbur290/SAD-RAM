@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.30523.141
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "samDll", "samDll.vcxproj", "{8FA4E8E9-F7FE-4F38-AC17-63F37EF4AEB5}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "emu", "..\emu-15\emu.vcxproj", "{2DFC67DE-1028-4CBD-B78B-B7395C3836ED}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -23,19 +21,11 @@ Global
 		{8FA4E8E9-F7FE-4F38-AC17-63F37EF4AEB5}.Release|x64.Build.0 = Release|x64
 		{8FA4E8E9-F7FE-4F38-AC17-63F37EF4AEB5}.Release|x86.ActiveCfg = Release|Win32
 		{8FA4E8E9-F7FE-4F38-AC17-63F37EF4AEB5}.Release|x86.Build.0 = Release|Win32
-		{2DFC67DE-1028-4CBD-B78B-B7395C3836ED}.Debug|x64.ActiveCfg = Debug|x64
-		{2DFC67DE-1028-4CBD-B78B-B7395C3836ED}.Debug|x64.Build.0 = Debug|x64
-		{2DFC67DE-1028-4CBD-B78B-B7395C3836ED}.Debug|x86.ActiveCfg = Debug|Win32
-		{2DFC67DE-1028-4CBD-B78B-B7395C3836ED}.Debug|x86.Build.0 = Debug|Win32
-		{2DFC67DE-1028-4CBD-B78B-B7395C3836ED}.Release|x64.ActiveCfg = Release|x64
-		{2DFC67DE-1028-4CBD-B78B-B7395C3836ED}.Release|x64.Build.0 = Release|x64
-		{2DFC67DE-1028-4CBD-B78B-B7395C3836ED}.Release|x86.ActiveCfg = Release|Win32
-		{2DFC67DE-1028-4CBD-B78B-B7395C3836ED}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {50B4014A-429B-4472-87AD-EB904C999397}
+		SolutionGuid = {94ADD85F-CD52-448B-AA8D-B886E0866E6A}
 	EndGlobalSection
 EndGlobal

@@ -7,9 +7,8 @@ if /i [%1] ==  [/h] goto :help
 if /i [%1] NEQ [/?] goto :run
 
 :help
-echo --------------- Run various test scenarios -------------------------
-echo .bat file to run various .sam files, namely:
-echo     %tests%
+echo --------------- .bat file to Run various test scenarios -----------------
+echo runs sim against file %tests%
 type \svn\bin\crlf
 echo Output is compared to gold standard files saved in .\tests, namely:
 echo     *.goldCode,  *.goldMsg, *.goldCap against
@@ -27,31 +26,41 @@ echo    fileName      in combination with the above option, restricts the test t
 echo                  specified file. The aforesaid file is presumed to reside in .\tests
 type \svn\bin\crlf
 echo Output files are generated in directory %%VerilogSimulationDir%%, ie.
-set verilogSimulationDir
 goto :xit
 
 rem -----------------------------------------------------------
-rem options: fileName set specific file to test; eg.,
+rem splitup options and file names
 :run
-   if /i [%1] == [/xilinx]  set options=/xilinx&  shift
-   if /i [%1] == [/compile] set options=/compile& shift & goto :run
+   set oneFile=
    if    [%1] == []         goto cannedList
-   rem set list of files from command line
-   set tests=%1 %2 %3 %4 %5 %6 %7 %8
-   if [%2] == [] set oneFile=true
-:cannedList
+   set oneFile=true
+   set options=
+   set files=
+   set multiFile=
+   for %%f in (%*)      do call :options %%f
+   if [%multiFile%] == [] set files=%tests%
+   for %%f in (%files%) do call :oneTest %%f
+   goto :xit
+:cannedList --------
    for %%f in (%tests%) do call :oneTest %%f
    goto :xit
+
+:options -------- extract options
+   if /i [%1] == [/xilinx]  set options=%options% %1&  goto :ret
+   if /i [%1] == [/compile] set options=%options% %1&  goto :ret
+   if [%multifile%] NEQ [] set oneFile=
+   set multiFile=yes
+   if not exist %samSourceDir%\%1.sam echo %samSourceDir%\%1.sam does not exist&goto :crash
+   set files=%files% %1&                               goto :ret
 
 rem -----------------------------------------------------------------------
 :oneTest
    call cdsim > nul
-   if not exist %samSourceDir%\%1.sam echo %samSourceDir%\%1.sam does not exist&goto :xit
    set microCode=%verilogSimulationDir%\%1.microcode
    set   capture=%verilogSimulationDir%\%1.capFile
    set   msgFile=%verilogSimulationDir%\%1.msgFile
-   echo sim %samSourceDir%\%1.sam  /include "%samSourceDir%" %options%
-   sim      "%samSourceDir%\%1.sam"  /include "%samSourceDir%" %options% > nul
+   echo sim  %samSourceDir%\%1.sam  /include "%samSourceDir%" %options%
+        sim "%samSourceDir%\%1.sam" /include "%samSourceDir%" %options% > nul
    if errorlevel 1 goto err
    
    cd tests
@@ -66,10 +75,12 @@ if [%oneFile%] == [true] goto :xit
 set /p yesno=Press Y to continue N to stop testall:
 if /i [%yesno%] == [y] goto :ret
 call :restore
+:crash
 if [intentional-crash-of-this-bat-file
 
 :restore
 call cdsim > nul
+set files=
 set tests=
 set microCode=
 set capture=
@@ -77,6 +88,7 @@ set msgFile=
 set yesno=
 set options=
 set oneFile=
+set multiFile=
 goto :ret
 
 :xit

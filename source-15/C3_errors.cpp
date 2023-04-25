@@ -13,8 +13,6 @@
 #pragma warning(disable:4706) //assignment within an if ()
 #include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
-#include <stdio.h>
 #include <C3_always.h>
 #include <C3_string.h>
 #include <C3_errors.h>
@@ -1241,10 +1239,17 @@ static C3_ERROR_TABLE ErrorTable[] =
 //------------------------------------------------------------------------------------------
 
 //----Errors from sim.exe, sam.exe, or emu.exe ---------------------------------------------
-{ERR_2701, XSEVERITY_MESSAGEBOX, "m_params != Computed structure sizes", ""
+{ERR_2700, XSEVERITY_INFORMATION, "pause for output", ""
+ "The simulation has paused to allow the GUI to update the output messages.\n"
+ "This condition occurs when stepping into a subroutine (F-11 button)."
 },
 
-{ERR_2702, XSEVERITY_MESSAGEBOX, "Inconsistent setting for params.testAdr:%s", ""
+{ERR_2701, XSEVERITY_INFORMATION, "Simulation has stopped at the requested line or PC", ""
+},
+
+{ERR_2702, XSEVERITY_INFORMATION, "pause for output", ""
+ "The simulation has paused to allow the GUI to update the output messages.\n"
+ "This condition occurs when stepping over a subroutine (F-10 button)."
 },
 
 {ERR_2703, XSEVERITY_MESSAGEBOX, "Sequence error in BRAM dump used", "",
@@ -1252,7 +1257,8 @@ static C3_ERROR_TABLE ErrorTable[] =
  "were not in sequence. This is a failure in the dumpIndexes.sv."
 },
 
-{ERR_2704, XSEVERITY_MESSAGEBOX, "stopAtLine must not be zero in params.txt", ""
+{ERR_2704, XSEVERITY_MESSAGEBOX, "stop encountered during simulatioin/emulation", ""
+ "This is a normal shutdown of a SAM program ocassioned by the stop statement."
 },
 
 {ERR_2705, XSEVERITY_MESSAGEBOX, "target of opcode is invalid", "" //not used
@@ -1275,6 +1281,7 @@ static C3_ERROR_TABLE ErrorTable[] =
 },
 
 {ERR_2709, XSEVERITY_MESSAGEBOX, "Row[%sd] out of sequence"
+ "During a scan or scin operation the row being scanned is found to be out of sequence."
 },
 
 {ERR_2710, XSEVERITY_MESSAGEBOX, "Unknown #check number: %s"
@@ -1295,12 +1302,14 @@ static C3_ERROR_TABLE ErrorTable[] =
 },
 
 {ERR_2714, XSEVERITY_MESSAGEBOX, "Invalid command on command: %2", "offending command",
- "The command passed to this progam on the comman dline is not recognized.\n"
+ "The command passed to this progam on the command line is not recognized.\n"
  "Try <programName> /h for more information."
 },
 
-{ERR_2715, XSEVERITY_MESSAGEBOX, "the row is out of sequence", "",
- "The row being scanned is out of sequence."
+{ERR_2715, XSEVERITY_MESSAGEBOX, "$expect or $actual used recursively", "",
+ "An $expect or $actual command may not be used inside another %expect or $actual command."
+ "For example, the following code will provoke this error:\n"
+ "$expect{\"X=15\"; $actual{\"X=$0\";} will provoke this error."
 },
 
 {ERR_2716, XSEVERITY_MESSAGEBOX, "commands(=%s) in userCmds.data has invalid length", "line length",
@@ -1475,6 +1484,26 @@ static C3_ERROR_TABLE ErrorTable[] =
  " or\tsim yourfile.sam /buglevel=3\n\n"
  "For comprehensive option information refer to the Sam manual or\n"
  "enter 'sim.exe -h' or 'sim /h'."
+},
+
+{ERR_2742, XSEVERITY_MESSAGEBOX, "/run command must be invoked from cmd.exe.", "",
+ "The /run option must be invoked from cmd.exe; it cannot be invoked from a secondary\n"
+ "program (such as Visual Studio). If you must invoke from Visual Studio use the command:\n"
+ "    cmd /c samPgm /run samProgramName\n"
+ "The run option will execute the Sam Program and generate a log file of the activity.\n"
+ "The command $bug_indx, $bug_page, and $bug_book within the Sam Program will dump out the\n"
+ "current row with appropriate formatting.\n"
+ "The bugLevel should be set from within the Sam Program using $bug = value to specify\n"
+ "opcode-by-opcode, line-by-line, or print only tracing (see ERR_2727).\n"
+},
+{ERR_2743, XSEVERITY_WARNING, "Target Register not selected", "",
+ "When running a Sam program and an address is present in the 'Stop When' box, \n"
+ "(on the right side of the form), the ListBox to the immediate right of the 'Stop When'\n"
+ "label should specify a register to compare with the value in the box.\n"
+ "Possible choices are:\n"
+ "   $pc   - stop when the program counter equals the stop value.\n"
+ "   $reg  - stop when the specified register equals the stop value,\n"
+ "or $line - stop when the program starts executing the specified line." 
 },
 
 {ERR_3000, XSEVERITY_ERROR, "Missing name", "",

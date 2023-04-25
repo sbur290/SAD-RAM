@@ -45,20 +45,28 @@ int whatClass::ComputeGeometry(int keySize)
     //Calculate geometry of cINDX's (software simulation)                       //
     cINDX_size            = sizeof(cINDX) + keySize-1;                          //actual size of cINDX
     cINDX_padSz           = RoundupToTargetbus(cINDX_size);                     //
-    cINDX_perRow          = Min(hINDX_perRow, m_rowBytes / cINDX_size);          //minimum of hardware or software requirements
+    cINDX_perRow          = Min(cINDX_perRow, m_rowBytes / cINDX_size);          //minimum of hardware or software requirements
     //Calculate geometry of cPAGE's                                             //
     cPAGE_size            = sizeof(cPAGE) + keySize-1;                          //actual size of cPAGE;
     cPAGE_padSz           = RoundupToTargetbus(cPAGE_size);                     //
-    cPAGE_perRow          = Min(hPAGE_perRow, m_rowBytes / cPAGE_size);          //minimum of hardware or software requirements
+    cPAGE_perRow          = Min(cPAGE_perRow, m_rowBytes / cPAGE_size);          //minimum of hardware or software requirements
     //Calculate geometry of cBOOK's                                             //
     cBOOK_size            = (uint32_t)sizeof(cBOOK)-1 + keySize;                //sz including actual key; cBOOK_size for operator[]
     cBOOK_padSz           = RoundupToTargetbus(cBOOK_size);                     //
-    cBOOK_perRow          = Min(hBOOK_perRow, m_rowBytes / cBOOK_size);          //minimum of hardware or software requirements
+    cBOOK_perRow          = Min(cBOOK_perRow, m_rowBytes / cBOOK_size);          //minimum of hardware or software requirements
                                                                                 //
-    //Verify settings against structure of hITEMs                               //
-//  if (offsetof(hINDX, Key)   != hINDX_BASE) pp = "hINDX_BASE is incorrect";   //key deleted from hITEM structures
-//  if (offsetof(hPAGE, LoKey) != hPAGE_BASE) pp = "hPAGE_BASE is incorrect";   //              "
-//  if (offsetof(hBOOK, LoKey) != hBOOK_BASE) pp = "hBOOK_BASE is incorrect";   //              "
+    hINDX_size            = sizeof(cINDX) + keySize-1;                          //actual size of cINDX
+    hINDX_padSz           = RoundupToTargetbus(hINDX_size);                     //
+    hINDX_perRow          = Min(hINDX_perRow, m_rowBytes / hINDX_size);         //minimum of hardware or software requirements
+    //Calculate geometry of cPAGE's                                             //
+    hPAGE_size            = sizeof(cPAGE) + keySize-1;                          //actual size of cPAGE;
+    hPAGE_padSz           = RoundupToTargetbus(hPAGE_size);                     //
+    hPAGE_perRow          = Min(hPAGE_perRow, m_rowBytes / hPAGE_size);         //minimum of hardware or software requirements
+    //Calculate geometry of cBOOK's                                             //
+    hBOOK_size            = (uint32_t)sizeof(hBOOK)-1 + keySize;                //sz including actual key; cBOOK_size for operator[]
+    hBOOK_padSz           = RoundupToTargetbus(hBOOK_size);                     //
+    hBOOK_perRow          = Min(hBOOK_perRow, m_rowBytes / hBOOK_size);         //minimum of hardware or software requirements
+
     if (pp) return Error(ERR_9995, "", pp);                                     //
     return 0;                                                                   //
    } //whatClass::ComputeHbits...

@@ -148,7 +148,6 @@ inline int iabs(int val) {return val < 0 ? -val : val;}
 #else
    #define BUG_INDEXES {}/##/
 #endif
-typedef enum {ITEM_CFG=0, ITEM_INDX=1, ITEM_PAGE=2, ITEM_BOOK=3} eITEM_TYPE;
 
 #define BRAM_ADR_BITS 5
 

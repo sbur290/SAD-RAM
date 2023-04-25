@@ -11,13 +11,14 @@ jmpTable:                                                                       
 stringTable:                                                                    //
     $string "So what am i? chopped liver\n\n";                                  //early to make sure it is msg#0
 start:                                                                          //
-    $bug;//    = bug;                                                              //
+    $bug = bug;                                                                 //
     $curRow = 5;                                                                //
     $curRow = 0;                                                                //
     cfg(cell);                                                                  //[0] contains configuration vector
     cfg(group);                                                                 //
                                                                                 //
     print "---- Test Literals ----\n";                                          //
+    $safeReg = false;                                                           //
     [0] = 0x0;                                                                  //
     [1] = 0x11;                                                                 //
     [2] = 0x222;                                                                //
@@ -34,11 +35,12 @@ start:                                                                          
     [13]= 0xDDDDDDDDDDDDDD;                                                     //
     [14]= 0xEEEEEEEEEEEEEEE;                                                    //
     [15]= 0xFFFFFFFFFFFFFFFF;                                                   //
+    $safeReg = true;                                                            //
     $BUG_RAW;                                                                   //
                                                                                 //
     $curRow = 25;                                                               //first unused page
     call wr;                                                                    //
-    print "Exit from basic tests.\n";
+    print "Exit from basic tests.\n";                                           //
     stop;                                                                       //
 lup:goto lup;                                                                   //
 wr: $0         = 0x12345678;                                                    //

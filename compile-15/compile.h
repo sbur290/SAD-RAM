@@ -7,6 +7,10 @@
 #include <C3_atomize.h>
 #include <C3_errors.h>
 
+#pragma warning(disable C6255) //alloca	          //keep your ill informed opinion to yourself		
+#pragma warning(disable C6053) //0x00 terminated  //                "
+#pragma warning(disable C6308)                    //                "
+
 #pragma pack(push, 1)
 //External structure for opcode; represented as four hex digits in <program>.microcode.
 typedef struct                                                                  //Basic 16-bit opcode
@@ -25,13 +29,13 @@ typedef struct {OPCODE   op;                                                    
                } sCODE_BLOB;
 #pragma pack(pop)
 
-#define XCHG(a,b,t)         {t = a; a = b; b = t;}                          //exchange a & b using temporary t
+#define XCHG(a,b,t)         {t = a; a = b; b = t;}                              //exchange a & b using temporary t
 
 inline char *LocalCopy(void *vP, IATOM aa) 
     {char *dP=(char*)vP; memmove(dP, aa.textP, aa.len); dP[aa.len] = 0; return dP;}
-#define LOCAL_COPY(aa)  LocalCopy(alloca(aa.len+1), aa)                     //cleanup IATOM (watch side effects :)
+#define LOCAL_COPY(aa)  LocalCopy(alloca(aa.len+1), aa)                         //cleanup IATOM (watch side effects :)
 
-#define PRECEDENCE_LEVELS  12                                               // levels of operators as defined in C++
+#define PRECEDENCE_LEVELS  12                                                   // levels of operators as defined in C++
 #define MAX_LINE_LEN      512
 
 #define CC const char*
@@ -42,7 +46,8 @@ inline char *LocalCopy(void *vP, IATOM aa)
 
 //Variables declared in allocate statement.
 typedef struct
-   {uint64_t wordAdr, row, nameLen;
+   {uint64_t wordAdr, row, nameLen; 
+    bool     signedB;
     char    *nameP;
    } sVARIABLE;
 
@@ -57,18 +62,21 @@ class cCompile
   {public:                                                                   //
    cPreProcessor *m_prepP;                                                   //
    int            m_pgmSize,   m_pgmAvail, m_loAdr,          m_hiAdr,        //
-                  m_errCount, *m_nastiesP, m_nastyCnt,       m_rowOvr;       //
+                  m_errCount, *m_nastiesP, m_nastyCnt,       m_rowOvr,       //
+                  m_origin,    m_overlaySize, m_overlayBase, m_overlaySource,//
+                  m_printVariants, m_startErrorLine;                         //  
+   uint32_t       m_regsUsed;                                                //
    bool           m_bugEmitB,  m_rowOvrB,  m_unconditionalP, m_stepRegB,     //
                   m_badReg0B,  m_safeRegB, m_safeRegDefaultB,m_patchDrvB,    //
                   m_alwaysMessageBoxB,     m_nuB[3];                         //
    char           m_cleanSource[MAX_LINE_LEN+1];                             //
-   sSRC_REF       m_ref;
+   sSRC_REF       m_ref;                                                     //file, line, & offset
    OPCODE         m_max;                                                     //max field sizes
    cAtomize      *m_azP;                                                     //
    cCompile                    (CC srcNameP, CC incDirP, bool bugEmitB, bool patchDrvB);   //input file & dir
    ~cCompile                   ();                                           //
    int           CompileProgram(void);                                       //
-   int           PrintProgram  (void) {return m_azP->PrintProgram();}        //
+   int           PrintProgram  (void) {int erC=m_azP->PrintProgram(); return (erC >= 0) ? m_environment : erC;}        //
    const char   *GetTgtLabel   (uint32_t adr);                               //
    const char   *GetHereLabel  (uint32_t adr);                               //
    static int   _Error         (int erC, CC contextP, CC paramsP, CC fileNameP, int line, const char *fncP);
@@ -80,23 +88,25 @@ class cCompile
                  m_breaks, *m_breaksP, m_continues, *m_continuesP;           //list of break/continues in for, while, or do loops
    sCODE_BLOB   *m_codeP;                                                    //code emitted at each location
    IATOM         m_a;                                                        //
-   const char   *m_objFileP, *m_msgFileP, *m_lineMapP, *m_symbolTblP, *m_srcFileNameP;        //
+   const char   *m_objFileP,     *m_msgFileP, *m_lineMapP, *m_symbolTblP,    //
+                *m_srcFileNameP, *m_binFileNameP;                            //
    char          m_microcode[_MAX_PATH],   m_msgFile[_MAX_PATH],             //names of subordinate files
                  m_lineMap  [_MAX_PATH],   m_capFile[_MAX_PATH],             //            "
-                 m_symbolTbl[_MAX_PATH];                                     //
-   sVARIABLE    *m_vblsP;
-   int           m_vblCount;
+                 m_symbolTbl[_MAX_PATH],   m_binFile[_MAX_PATH];             //
+   sVARIABLE    *m_vblsP;                                                    //
+   int           m_vblCount;                                                 //
    class cOpName *m_opNameP;                                                 //
    int           Address       (int pc);                                     //
    int           AllocateBram  (void);                                       //
    uint64_t      Anumber       (CC pp, char **ppP=NULL, int *bitsP=NULL);    //
    int           Arithmetic    (int pc, OPCODE_TBL *otP);                    //
    int           AssignMem     (int pc, int vbl);                            //
-   int           AssignReg     (int pc, IATOM aa);                           //
+   int           AssignReg     (int pc, IATOM aa, bool curRowB);             //
    void          Backup        (IATOM aa);                                   //
-   int           BreakStmt     (int pc, int isBreak, char **labelPP);        //
+   int           BreakStmt     (int pc, OPCODE_TBL *otP, char **labelPP);    //
    void          BugEmit       (int startPc, int endPc, CC commentP=NULL,    //
                                 CC labelP=NULL, bool knownB=false);          //
+   void          BugLoopCode   (sCODE_BLOB *incP, sCODE_BLOB *testP,int cnt);//
    void          Bugout        (CC fmtP,...);                                //
    int           BuildFileNames(char *srcFileNameP);                         //
    void          CheckCodeSize(int pc);                                      //
@@ -131,6 +141,7 @@ class cCompile
    const char   *GetSourceLineP(int pc);                                     //
    int           GetSourceLineNum(int pc);                                   //
    IATOM         Get           (bool probeB=false);                          //
+   int           GotoStmt      (int pc, char **labelP);                      // 
    uint16_t HiLo16(uint16_t u16) {return ((u16 >> 8) & 0xFF) + ((u16 << 8) & 0xFF00);}
    uint32_t HiLo32(uint32_t u32) {return (u32 >> 24) + ((u32 >> 8) & 0xFF00) + ((u32 << 8) & 0xFF0000) + ((u32 <<24) & 0xFF000000);}
    uint64_t HiLo64(uint64_t u64) {return (((uint64_t)HiLo32((uint32_t)u64)) << 32) + HiLo32((uint32_t)(u64 >> 32));}
@@ -155,24 +166,27 @@ class cCompile
      m_opNameP->Show(pc, m_codeP[pc].op, m_codeP[(pc)+1].op, labelP, knownB) //
    int           OpCfg         (int pc);                                     //
    int           OpScan        (int pc);                                     //
+   int           OverlayStmt   (int pc);                                     //
    int           PatchSamDefines(CC samDefinesNameP);                        //
    int           Precedence    (uint32_t op);                                //
-   int           PrintStmt     (int pc, int caze);                           //
+   int           PrintStmt     (int pc, OPCODE_TBL *otP);                    //
+   int           PseudoOpcode  (OPCODE_TBL *otP);                            //
    int           StatementList (int pc,char stopper=';',bool oneShotB=false);//
+   int           ReplaceCode   (int fragID, sCODE_BLOB *codeP, int count);   //
    int           ResolveGotos  (void);                                       //
    int           ResolveNasties(void);                                       //
-   int           SafeReg       (int pc, int pushPop, int reg);               //
+   int           SafeReg       (int startPc, int pc);                        //
    int           SetEnvironment(void);                                       //
-   int           ShiftStmt     (int pc, uint8_t subOp);                      //
+   int           ShiftStmt     (int pc, OPCODE_TBL *otP);                    //
    int           SignedOffset  (OPCODE *opP);                                // 
    int           SimpleCondition(IATOM aa);                                  //
    int           SimplifiedForz(sCODE_BLOB *, int, sCODE_BLOB *, int);       //
-   char         *strdupl(const char *srcP, int len=-1);                      //
-   int           RegAssign     (int pc, IATOM aa, int act);                  //
+   char         *strdupl       (const char *srcP, int len=-1);               //
    int           RegisterPostOp(int pc, IATOM reg, IATOM postOp);            //
    void          StretchOp     (int pc);                                     //
    int           WhereisLabel  (const char *labelP);                         //
    int           WhileStmt     (int pc);                                     //
+   int           WrapAssignReg (int pc, IATOM aa, OPCODE_TBL *otP);          //
    friend class cEmulateMicrocode;
    friend class CompilerWrap;
   }; //class cCompile...
