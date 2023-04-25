@@ -3,27 +3,27 @@
 7-Zip 19.00 (x64) : Copyright (c) 1999-2018 Igor Pavlov : 2019-02-21
 
 Scanning the drive for archives:
-1 file, 180170 bytes (176 KiB)
+1 file, 180296 bytes (177 KiB)
 
 Listing archive: dll-15.7z
 
 --
 Path = dll-15.7z
 Type = 7z
-Physical Size = 180170
-Headers Size = 694
+Physical Size = 180296
+Headers Size = 692
 Method = LZMA2:768k 7zAES
 Solid = +
 Blocks = 2
 
    Date      Time    Attr         Size   Compressed  Name
 ------------------- ----- ------------ ------------  ------------------------
-2023-04-25 14:44:22 D...A            0            0  dll-15\Rich Text Format (RTF) Version 1.5 Specification_files
+2023-04-25 19:36:41 D...A            0            0  dll-15\Rich Text Format (RTF) Version 1.5 Specification_files
 2023-03-16 09:30:30 ....A         1086        47700  dll-15\compareWithBackup.bat
 2023-03-17 20:28:54 ....A          880               dll-15\Notes.cpp
 2023-03-14 19:49:26 ....A        52124               dll-15\Set-toolset.PNG
-2023-04-25 10:28:42 ....A          146       131776  dll-15\cdBackup.bat
-2023-04-25 14:07:00 ....A        10542               dll-15\dllXface.cpp
+2023-04-25 10:28:42 ....A          146       131904  dll-15\cdBackup.bat
+2023-04-25 18:47:22 ....A        10640               dll-15\dllXface.cpp
 2023-03-16 14:33:21 ....A          366               dll-15\dllXface.h
 2023-04-19 19:14:32 ....A          828               dll-15\Notes.txt
 2023-04-19 20:53:51 ....A          736               dll-15\postBuildEvent.bat
@@ -35,8 +35,8 @@ Blocks = 2
 2023-04-19 20:49:24 ....A        10457               dll-15\samDll.vcxproj
 2023-04-02 18:37:02 ....A         5686               dll-15\samDll.vcxproj.filters
 2023-04-24 13:47:40 ....A          465               dll-15\samDll.vcxproj.user
-2023-04-25 10:20:10 ....A       105127               dll-15\samEmulator.cpp
-2023-04-25 09:50:01 ....A        11750               dll-15\samEmulator.h
+2023-04-25 18:57:29 ....A       105442               dll-15\samEmulator.cpp
+2023-04-25 18:46:29 ....A        11834               dll-15\samEmulator.h
 2023-04-12 09:46:15 ....A        82048               dll-15\samEmulator.save
 ------------------- ----- ------------ ------------  ------------------------
-2023-04-25 14:44:22             694644       179476  19 files, 1 folders
+2023-04-25 19:36:41             695141       179604  19 files, 1 folders

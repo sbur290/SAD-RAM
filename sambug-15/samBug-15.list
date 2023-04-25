@@ -3,41 +3,43 @@
 7-Zip 19.00 (x64) : Copyright (c) 1999-2018 Igor Pavlov : 2019-02-21
 
 Scanning the drive for archives:
-1 file, 24396 bytes (24 KiB)
+1 file, 25224 bytes (25 KiB)
 
 Listing archive: samBug-15.7z
 
 --
 Path = samBug-15.7z
 Type = 7z
-Physical Size = 24396
-Headers Size = 780
+Physical Size = 25224
+Headers Size = 824
 Method = LZMA2:192k 7zAES
 Solid = +
 Blocks = 1
 
    Date      Time    Attr         Size   Compressed  Name
 ------------------- ----- ------------ ------------  ------------------------
-2023-04-24 16:43:11 ....A          189        23616  samBug-15\App.config
+2023-04-24 16:43:11 ....A          189        24400  samBug-15\App.config
 2023-04-08 07:21:32 ....A          149               samBug-15\cdBackup.bat
 2023-04-18 13:39:07 ....A           39               samBug-15\clean.bat
 2023-04-02 09:49:40 ....A           59               samBug-15\cmp.bat
 2023-04-06 23:25:48 ....A           91               samBug-15\comparewithbackup.bat
-2023-04-25 10:25:51 ....A        49737               samBug-15\DebugForm.cs
-2023-04-24 19:17:53 ....A        54117               samBug-15\DebugForm.Designer.cs
+2023-04-25 17:46:23 ....A           17               samBug-15\current.date
+2023-04-25 19:32:37 ....A        51667               samBug-15\DebugForm.cs
+2023-04-25 19:32:36 ....A        55814               samBug-15\DebugForm.Designer.cs
 2023-04-01 15:30:01 ....A        18315               samBug-15\DebugForm.Designer.txt
-2023-04-24 18:47:54 ....A         7519               samBug-15\DebugForm.resx
+2023-04-25 19:15:59 ....A         7519               samBug-15\DebugForm.resx
 2023-04-05 21:52:20 ....A         6518               samBug-15\emu.csproj
 2023-04-05 21:52:26 ....A          919               samBug-15\emu.csproj.user
 2023-04-02 16:23:35 ....A           10               samBug-15\emu.h
 2023-04-02 19:03:37 ....A         1465               samBug-15\emu.sln
 2023-04-19 21:15:24 ....A          185               samBug-15\go.bat
+2023-04-25 19:01:07 ....A          256               samBug-15\InsertCompileDate.bat
 2023-04-14 21:21:11 ....A          429               samBug-15\oldIcon.ico
 2023-04-19 20:12:32 ....A           83               samBug-15\postBuildStep.bat
 2023-04-06 14:53:12 ....A          294               samBug-15\prebuildStep.bat
-2023-04-24 19:36:54 ....A        11023               samBug-15\Program.cs
+2023-04-25 18:48:18 ....A        11135               samBug-15\Program.cs
 2023-04-25 10:47:30 ....A          422               samBug-15\runSambug.bat
-2023-04-24 16:43:18 ....A         7766               samBug-15\samBug.csproj
+2023-04-25 18:22:03 ....A         7800               samBug-15\samBug.csproj
 2023-04-24 14:21:41 ....A         1066               samBug-15\samBug.csproj.user
 2023-04-02 16:23:35 ....A           10               samBug-15\samBug.h
 2023-04-06 12:40:14 ....A         1468               samBug-15\samBug.sln
@@ -47,4 +49,4 @@ Blocks = 1
 2023-04-01 14:05:06 ....A         3730               samBug-15\WindowsFormsApp.csproj
 2023-04-01 09:32:09 ....A         1135               samBug-15\WindowsFormsApp.sln
 ------------------- ----- ------------ ------------  ------------------------
-2023-04-25 10:47:30             167349        23616  28 files
+2023-04-25 19:32:37             171395        24400  30 files
