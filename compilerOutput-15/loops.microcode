@@ -1,0 +1,391 @@
+//File \svn\sam\ver-15\sadram\sadram.sim\sim_1\behav\xsim\loops.microcode created 19/04/2023@19:28.
+//op //pc  label     : interpretation    line# and source. Source file=loops.sam
+001E //000 (line 0043)      : OP_GO(long) start                                 goto(long) start;
+0002 //001 (line 0043)      : DW 0x0002                                         
+
+8218 //002 (line 0046) start: $bugLevel=2                                       $bug = 2;
+
+8712 //003 (line 0047)      : OP_REPEAT 8, reg++: OP_PUSH $0                    PUSHALL;
+1402 //004 (line 0047)      : OP_PUSH $0                                        
+
+A712 //005 (line 0048)      : OP_REPEAT 8, reg--: OP_POP $7                     POPALL;
+13E2 //006 (line 0048)      : OP_POP $7                                         
+
+0038 //007 (line 0049)      : OP_PRINT "Start Loops testing\n"                  print "Start Loops testing\n" ;
+
+0158 //008 (line 0052)      : OP_EXPECT "7,"                                    $expect "7,";    $actual{for ($5=7; $5  < 8; $5++) {"$5, ";}}
+00D8 //009 (line 0052)      : OP_END_EXPECT                                     
+07A6 //010 (line 0052)      : $5 = 0x7                                          
+0201 //011 (line 0052)      : OP_GO  @(14)                                      
+0278 //012 (line 0052)      : OP_ACTUAL "$5, "                                  
+AAA2 //013 (line 0052)      : OP_INC $5                                         
+1402 //014 (line 0052)      : OP_PUSH $0                                        
+0806 //015 (line 0052)      : $0 = 0x8                                          
+1AA2 //016 (line 0052)      : $0 CMPS $5                                        
+1302 //017 (line 0052)      : OP_POP $0                                         
+F9A1 //018 (line 0052)      : OP_GO(~C && ~Z)  @(12)                            
+00F8 //019 (line 0052)      : OP_END_ACTUAL                                     
+
+0358 //020 (line 0053)      : OP_EXPECT "7, 8,"                                 $expect "7, 8,"; $actual{for ($5=7; $5 <= 8; $5++) {"$5, ";}}
+00D8 //021 (line 0053)      : OP_END_EXPECT                                     
+07A6 //022 (line 0053)      : $5 = 0x7                                          
+0201 //023 (line 0053)      : OP_GO  @(26)                                      
+0278 //024 (line 0053)      : OP_ACTUAL "$5, "                                  
+AAA2 //025 (line 0053)      : OP_INC $5                                         
+1402 //026 (line 0053)      : OP_PUSH $0                                        
+0806 //027 (line 0053)      : $0 = 0x8                                          
+1AA2 //028 (line 0053)      : $0 CMPS $5                                        
+1302 //029 (line 0053)      : OP_POP $0                                         
+F915 //030 (line 0053)      : OP_GO(~C)  @(24)                                  
+00F8 //031 (line 0053)      : OP_END_ACTUAL                                     
+
+0458 //032 (line 0054)      : OP_EXPECT "8, "                                   $expect "8, ";   $actual{for ($5=8; $5  > 7; $5--) {"$5, ";}}
+00D8 //033 (line 0054)      : OP_END_EXPECT                                     
+08A6 //034 (line 0054)      : $5 = 0x8                                          
+0201 //035 (line 0054)      : OP_GO  @(38)                                      
+0278 //036 (line 0054)      : OP_ACTUAL "$5, "                                  
+ABA2 //037 (line 0054)      : OP_DEC $5                                         
+1402 //038 (line 0054)      : OP_PUSH $0                                        
+0706 //039 (line 0054)      : $0 = 0x7                                          
+1AA2 //040 (line 0054)      : $0 CMPS $5                                        
+1302 //041 (line 0054)      : OP_POP $0                                         
+F911 //042 (line 0054)      : OP_GO(C)  @(36)                                   
+00F8 //043 (line 0054)      : OP_END_ACTUAL                                     
+
+0558 //044 (line 0055)      : OP_EXPECT "8, 7,"                                 $expect "8, 7,"; $actual{for ($5=8; $5 >= 7; $5--) {"$5, ";}}
+00D8 //045 (line 0055)      : OP_END_EXPECT                                     
+08A6 //046 (line 0055)      : $5 = 0x8                                          
+0201 //047 (line 0055)      : OP_GO  @(50)                                      
+0278 //048 (line 0055)      : OP_ACTUAL "$5, "                                  
+ABA2 //049 (line 0055)      : OP_DEC $5                                         
+1402 //050 (line 0055)      : OP_PUSH $0                                        
+0706 //051 (line 0055)      : $0 = 0x7                                          
+1AA2 //052 (line 0055)      : $0 CMPS $5                                        
+1302 //053 (line 0055)      : OP_POP $0                                         
+F9A5 //054 (line 0055)      : OP_GO(C || Z)  @(48)                              
+00F8 //055 (line 0055)      : OP_END_ACTUAL                                     
+
+0658 //056 (line 0056)      : OP_EXPECT ""                                      $expect "";      $actual{for ($5=6; $5 == 8; $5++) {"$5, ";}}
+00D8 //057 (line 0056)      : OP_END_EXPECT                                     
+06A6 //058 (line 0056)      : $5 = 0x6                                          
+0201 //059 (line 0056)      : OP_GO  @(62)                                      
+0278 //060 (line 0056)      : OP_ACTUAL "$5, "                                  
+AAA2 //061 (line 0056)      : OP_INC $5                                         
+1402 //062 (line 0056)      : OP_PUSH $0                                        
+0806 //063 (line 0056)      : $0 = 0x8                                          
+1AA2 //064 (line 0056)      : $0 CMPS $5                                        
+1302 //065 (line 0056)      : OP_POP $0                                         
+F941 //066 (line 0056)      : OP_GO(Z)  @(60)                                   
+00F8 //067 (line 0056)      : OP_END_ACTUAL                                     
+
+0558 //068 (line 0057)      : OP_EXPECT "8, 7,"                                 $expect "8, 7,"; $actual{for ($5=8; $5 != 6; $5--) {"$5, ";}}
+00D8 //069 (line 0057)      : OP_END_EXPECT                                     
+08A6 //070 (line 0057)      : $5 = 0x8                                          
+0201 //071 (line 0057)      : OP_GO  @(74)                                      
+0278 //072 (line 0057)      : OP_ACTUAL "$5, "                                  
+ABA2 //073 (line 0057)      : OP_DEC $5                                         
+1402 //074 (line 0057)      : OP_PUSH $0                                        
+0606 //075 (line 0057)      : $0 = 0x6                                          
+1AA2 //076 (line 0057)      : $0 CMPS $5                                        
+1302 //077 (line 0057)      : OP_POP $0                                         
+F981 //078 (line 0057)      : OP_GO(~Z)  @(72)                                  
+00F8 //079 (line 0057)      : OP_END_ACTUAL                                     
+
+0658 //080 (line 0059)      : OP_EXPECT ""                                      $expect"";       $actual{for ($5=9; $5  < 8; ) {print "bad $5, "
+00D8 //081 (line 0059)      : OP_END_EXPECT                                     
+09A6 //082 (line 0059)      : $5 = 0x9                                          
+0101 //083 (line 0059)      : OP_GO  @(85)                                      
+0778 //084 (line 0059)      : OP_ACTUAL "bad $5, "                              
+1402 //085 (line 0059)      : OP_PUSH $0                                        
+0806 //086 (line 0059)      : $0 = 0x8                                          
+1AA2 //087 (line 0059)      : $0 CMPS $5                                        
+1302 //088 (line 0059)      : OP_POP $0                                         
+FAA1 //089 (line 0059)      : OP_GO(~C && ~Z)  @(84)                            
+00F8 //090 (line 0059)      : OP_END_ACTUAL                                     
+
+0658 //091 (line 0060)      : OP_EXPECT ""                                      $expect"";       $actual{for ($5=3; $5  > 8; ) {print "bad $5, "
+00D8 //092 (line 0060)      : OP_END_EXPECT                                     
+03A6 //093 (line 0060)      : $5 = 0x3                                          
+0101 //094 (line 0060)      : OP_GO  @(96)                                      
+0778 //095 (line 0060)      : OP_ACTUAL "bad $5, "                              
+1402 //096 (line 0060)      : OP_PUSH $0                                        
+0806 //097 (line 0060)      : $0 = 0x8                                          
+1AA2 //098 (line 0060)      : $0 CMPS $5                                        
+1302 //099 (line 0060)      : OP_POP $0                                         
+FA11 //100 (line 0060)      : OP_GO(C)  @(95)                                   
+00F8 //101 (line 0060)      : OP_END_ACTUAL                                     
+
+0658 //102 (line 0061)      : OP_EXPECT ""                                      $expect"";       $actual{for ($5=0; $5 == 8; ) {print "bad $5, "
+00D8 //103 (line 0061)      : OP_END_EXPECT                                     
+00A6 //104 (line 0061)      : $5 = 0x0                                          
+0101 //105 (line 0061)      : OP_GO  @(107)                                     
+0778 //106 (line 0061)      : OP_ACTUAL "bad $5, "                              
+1402 //107 (line 0061)      : OP_PUSH $0                                        
+0806 //108 (line 0061)      : $0 = 0x8                                          
+1AA2 //109 (line 0061)      : $0 CMPS $5                                        
+1302 //110 (line 0061)      : OP_POP $0                                         
+FA41 //111 (line 0061)      : OP_GO(Z)  @(106)                                  
+00F8 //112 (line 0061)      : OP_END_ACTUAL                                     
+
+0658 //113 (line 0062)      : OP_EXPECT ""                                      $expect"";       $actual{for ($5=6; $5 != 6; ) {print "bad $5, "
+00D8 //114 (line 0062)      : OP_END_EXPECT                                     
+06A6 //115 (line 0062)      : $5 = 0x6                                          
+0101 //116 (line 0062)      : OP_GO  @(118)                                     
+0778 //117 (line 0062)      : OP_ACTUAL "bad $5, "                              
+1402 //118 (line 0062)      : OP_PUSH $0                                        
+0606 //119 (line 0062)      : $0 = 0x6                                          
+1AA2 //120 (line 0062)      : $0 CMPS $5                                        
+1302 //121 (line 0062)      : OP_POP $0                                         
+FA81 //122 (line 0062)      : OP_GO(~Z)  @(117)                                 
+00F8 //123 (line 0062)      : OP_END_ACTUAL                                     
+
+0858 //124 (line 0064)      : OP_EXPECT "2, 1,"                                 $expect "2, 1,"; $actual{ forz($5=2; $5 != 0; $5--) {print "$5, 
+00D8 //125 (line 0064)      : OP_END_EXPECT                                     
+02A6 //126 (line 0064)      : $5 = 0x2                                          
+0278 //127 (line 0064)      : OP_ACTUAL "$5, "                                  
+ABA2 //128 (line 0064)      : OP_DEC $5                                         
+1402 //129 (line 0064)      : OP_PUSH $0                                        
+0006 //130 (line 0064)      : $0 = 0x0                                          
+1AA2 //131 (line 0064)      : $0 CMPS $5                                        
+1302 //132 (line 0064)      : OP_POP $0                                         
+F981 //133 (line 0064)      : OP_GO(~Z)  @(127)                                 
+00F8 //134 (line 0064)      : OP_END_ACTUAL                                     
+
+0858 //135 (line 0065)      : OP_EXPECT "2, 1,"                                 $expect "2, 1,"; $actual{ forz($5=2; $5 >  0; $5--) {print "$5, 
+00D8 //136 (line 0065)      : OP_END_EXPECT                                     
+02A6 //137 (line 0065)      : $5 = 0x2                                          
+0278 //138 (line 0065)      : OP_ACTUAL "$5, "                                  
+ABA2 //139 (line 0065)      : OP_DEC $5                                         
+1402 //140 (line 0065)      : OP_PUSH $0                                        
+0006 //141 (line 0065)      : $0 = 0x0                                          
+1AA2 //142 (line 0065)      : $0 CMPS $5                                        
+1302 //143 (line 0065)      : OP_POP $0                                         
+F911 //144 (line 0065)      : OP_GO(C)  @(138)                                  
+00F8 //145 (line 0065)      : OP_END_ACTUAL                                     
+
+0958 //146 (line 0068)      : OP_EXPECT "20,"                                   $expect "20,";   $actual{ forz($5=32; $5 >  0; $5--){"$5, "; bre
+00D8 //147 (line 0068)      : OP_END_EXPECT                                     
+20A6 //148 (line 0068)      : $5 = 0x20                                         
+0278 //149 (line 0068)      : OP_ACTUAL "$5, "                                  
+0701 //150 (line 0068)      : OP_GO break @(158)                                
+0A78 //151 (line 0068)      : OP_ACTUAL "dead8"                                 
+ABA2 //152 (line 0068)      : OP_DEC $5                                         
+1402 //153 (line 0068)      : OP_PUSH $0                                        
+0006 //154 (line 0068)      : $0 = 0x0                                          
+1AA2 //155 (line 0068)      : $0 CMPS $5                                        
+1302 //156 (line 0068)      : OP_POP $0                                         
+F711 //157 (line 0068)      : OP_GO(C)  @(149)                                  
+00F8 //158 (line 0068)      : OP_END_ACTUAL                                     
+
+0B58 //159 (line 0069)      : OP_EXPECT "g9"                                    $expect "g9";    $actual{forz($5=0; $5 < 1; $5++)   {"g9"; conti
+00D8 //160 (line 0069)      : OP_END_EXPECT                                     
+00A6 //161 (line 0069)      : $5 = 0x0                                          
+0B78 //162 (line 0069)      : OP_ACTUAL "g9"                                    
+0101 //163 (line 0069)      : OP_GO continue @(165)                             
+0C78 //164 (line 0069)      : OP_ACTUAL "dead9"                                 
+AAA2 //165 (line 0069)      : OP_INC $5                                         
+1402 //166 (line 0069)      : OP_PUSH $0                                        
+0106 //167 (line 0069)      : $0 = 0x1                                          
+1AA2 //168 (line 0069)      : $0 CMPS $5                                        
+1302 //169 (line 0069)      : OP_POP $0                                         
+F7A1 //170 (line 0069)      : OP_GO(~C && ~Z)  @(162)                           
+00F8 //171 (line 0069)      : OP_END_ACTUAL                                     
+
+0D38 //172 (line 0070)      : OP_PRINT "For loops done\n"                       print "For loops done\n" ;
+
+0E38 //173 (line 0072)      : OP_PRINT "if () zero condition tests\n"           print "if () zero condition tests\n" ;
+
+0F58 //174 (line 0073)      : OP_EXPECT "iz1"                                   $expect "iz1"; stz;$actual{if (Z)  {"iz1";}}
+00D8 //175 (line 0073)      : OP_END_EXPECT                                     
+1802 //176 (line 0073)      : OP_STZ $0                                         
+0145 //177 (line 0073)      : OP_GO(~Z)  @(179)                                 
+0F78 //178 (line 0073)      : OP_ACTUAL "iz1"                                   
+00F8 //179 (line 0073) >    : OP_END_ACTUAL                                     
+
+0658 //180 (line 0074)      : OP_EXPECT ""                                      $expect "";        $actual{if (~Z) {"iz2";}}
+00D8 //181 (line 0074)      : OP_END_EXPECT                                     
+0185 //182 (line 0074)      : OP_GO(Z)  @(184)                                  
+1078 //183 (line 0074)      : OP_ACTUAL "iz2"                                   
+00F8 //184 (line 0074) >    : OP_END_ACTUAL                                     
+
+0658 //185 (line 0075)      : OP_EXPECT ""                                      $expect "";   clz; $actual{if (Z)  {"iz3";}}
+00D8 //186 (line 0075)      : OP_END_EXPECT                                     
+1902 //187 (line 0075)      : OP_CLZ $0                                         
+0145 //188 (line 0075)      : OP_GO(~Z)  @(190)                                 
+1178 //189 (line 0075)      : OP_ACTUAL "iz3"                                   
+00F8 //190 (line 0075) >    : OP_END_ACTUAL                                     
+
+1258 //191 (line 0076)      : OP_EXPECT "iz4"                                   $expect "iz4";     $actual{if (~Z) {"iz4";}}
+00D8 //192 (line 0076)      : OP_END_EXPECT                                     
+0185 //193 (line 0076)      : OP_GO(Z)  @(195)                                  
+1278 //194 (line 0076)      : OP_ACTUAL "iz4"                                   
+00F8 //195 (line 0076) >    : OP_END_ACTUAL                                     
+
+1338 //196 (line 0078)      : OP_PRINT "if() carry condition tests\n"           print "if() carry condition tests\n" ;
+
+0658 //197 (line 0079)      : OP_EXPECT ""                                      $expect "";   clc; $actual{if (C)  {"ic1";}}
+00D8 //198 (line 0079)      : OP_END_EXPECT                                     
+1702 //199 (line 0079)      : OP_CLC $0                                         
+0115 //200 (line 0079)      : OP_GO(~C)  @(202)                                 
+1478 //201 (line 0079)      : OP_ACTUAL "ic1"                                   
+00F8 //202 (line 0079) >    : OP_END_ACTUAL                                     
+
+1558 //203 (line 0080)      : OP_EXPECT "ic2"                                   $expect "ic2";     $actual{if (~C) {"ic2";}}
+00D8 //204 (line 0080)      : OP_END_EXPECT                                     
+0125 //205 (line 0080)      : OP_GO(C)  @(207)                                  
+1578 //206 (line 0080)      : OP_ACTUAL "ic2"                                   
+00F8 //207 (line 0080) >    : OP_END_ACTUAL                                     
+
+1558 //208 (line 0081)      : OP_EXPECT "ic2"                                   $expect "ic2"; stc;$actual{if (C)  {"ic2";}}
+00D8 //209 (line 0081)      : OP_END_EXPECT                                     
+1602 //210 (line 0081)      : OP_STC $0                                         
+0115 //211 (line 0081)      : OP_GO(~C)  @(213)                                 
+1578 //212 (line 0081)      : OP_ACTUAL "ic2"                                   
+00F8 //213 (line 0081) >    : OP_END_ACTUAL                                     
+
+0658 //214 (line 0082)      : OP_EXPECT ""                                      $expect "";        $actual{if (~C) {"ic4";}}
+00D8 //215 (line 0082)      : OP_END_EXPECT                                     
+0125 //216 (line 0082)      : OP_GO(C)  @(218)                                  
+1678 //217 (line 0082)      : OP_ACTUAL "ic4"                                   
+00F8 //218 (line 0082) >    : OP_END_ACTUAL                                     
+
+1738 //219 (line 0084)      : OP_PRINT "while () zero condition tests\n"        print "while () zero condition tests\n" ;
+
+1858 //220 (line 0085)      : OP_EXPECT "wz1"                                   $expect "wz1"; stz;    $actual{ while (Z)  {"wz1"; break;}}
+00D8 //221 (line 0085)      : OP_END_EXPECT                                     
+1802 //222 (line 0085)      : OP_STZ $0                                         
+0345 //223 (line 0085)      : OP_GO(~Z)  @(227)                                 
+1878 //224 (line 0085)      : OP_ACTUAL "wz1"                                   
+0101 //225 (line 0085)      : OP_GO break @(227)                                
+00F9 //226 (line 0085)      : OP_GO(qrdy full Z && ~Z)  @(227)                  
+00F8 //227 (line 0085) >    : OP_END_ACTUAL                                     
+
+0658 //228 (line 0086)      : OP_EXPECT ""                                      $expect "";            $actual{ while (~Z) {"wz2"; break;}}
+00D8 //229 (line 0086)      : OP_END_EXPECT                                     
+0385 //230 (line 0086)      : OP_GO(Z)  @(234)                                  
+1978 //231 (line 0086)      : OP_ACTUAL "wz2"                                   
+0101 //232 (line 0086)      : OP_GO break @(234)                                
+0031 //233 (line 0086)      : OP_GO(full)  @(234)                               
+00F8 //234 (line 0086) >    : OP_END_ACTUAL                                     
+
+0658 //235 (line 0087)      : OP_EXPECT ""                                      $expect "";   clz;     $actual{ while (Z)  {"wz3"; break;}}
+00D8 //236 (line 0087)      : OP_END_EXPECT                                     
+1902 //237 (line 0087)      : OP_CLZ $0                                         
+0345 //238 (line 0087)      : OP_GO(~Z)  @(242)                                 
+1A78 //239 (line 0087)      : OP_ACTUAL "wz3"                                   
+0101 //240 (line 0087)      : OP_GO break @(242)                                
+0071 //241 (line 0087)      : OP_GO(full Z)  @(242)                             
+00F8 //242 (line 0087) >    : OP_END_ACTUAL                                     
+
+1B58 //243 (line 0088)      : OP_EXPECT "wz4"                                   $expect "wz4";         $actual{ while (~Z) {"wz4"; break;}}
+00D8 //244 (line 0088)      : OP_END_EXPECT                                     
+0385 //245 (line 0088)      : OP_GO(Z)  @(249)                                  
+1B78 //246 (line 0088)      : OP_ACTUAL "wz4"                                   
+0101 //247 (line 0088)      : OP_GO break @(249)                                
+00A9 //248 (line 0088)      : OP_GO(qrdy ~C && ~Z)  @(249)                      
+00F8 //249 (line 0088) >    : OP_END_ACTUAL                                     
+
+1C58 //250 (line 0089)      : OP_EXPECT "wz5"                                   $expect "wz5"; $5 = 0; $actual{ while ($5 < 1) {"wz5"; $5++; con
+00D8 //251 (line 0089)      : OP_END_EXPECT                                     
+00A6 //252 (line 0089)      : $5 = 0x0                                          
+1402 //253 (line 0089)      : OP_PUSH $0                                        
+0106 //254 (line 0089)      : $0 = 0x1                                          
+1AA2 //255 (line 0089)      : $0 CMPS $5                                        
+1302 //256 (line 0089)      : OP_POP $0                                         
+05A5 //257 (line 0089)      : OP_GO(C || Z)  @(263)                             
+1C78 //258 (line 0089)      : OP_ACTUAL "wz5"                                   
+AAA2 //259 (line 0089)      : OP_INC $5                                         
+F801 //260 (line 0089)      : OP_GO continue @(253)                             
+1D78 //261 (line 0089)      : OP_ACTUAL "wzDead"                                
+00E9 //262 (line 0089)      : OP_GO(qrdy ~C && Z && ~Z)  @(263)                 
+00F8 //263 (line 0089) >    : OP_END_ACTUAL                                     
+
+1E58 //264 (line 0090)      : OP_EXPECT "wz6"                                   $expect "wz6";         $actual{ while(true) {"wz6"; break;}}
+00D8 //265 (line 0090)      : OP_END_EXPECT                                     
+1E78 //266 (line 0090) >    : OP_ACTUAL "wz6"                                   
+0101 //267 (line 0090)      : OP_GO break @(269)                                
+FD01 //268 (line 0090)      : OP_GO  @(266)                                     
+00F8 //269 (line 0090)      : OP_END_ACTUAL                                     
+
+FF0D //270 (line 0091)      : OP_GO(qrdy)  @(270)                               while(~qrdy){};
+
+1F38 //271 (line 0093)      : OP_PRINT "while() carry condition tests\n"        print "while() carry condition tests\n" ;
+
+2058 //272 (line 0094)      : OP_EXPECT "wc1"                                   $expect "wc1"; stc;    $actual{while (C)  {"wc1"; break;}}
+00D8 //273 (line 0094)      : OP_END_EXPECT                                     
+1602 //274 (line 0094)      : OP_STC $0                                         
+0315 //275 (line 0094)      : OP_GO(~C)  @(279)                                 
+2078 //276 (line 0094)      : OP_ACTUAL "wc1"                                   
+0101 //277 (line 0094)      : OP_GO break @(279)                                
+0099 //278 (line 0094)      : OP_GO(qrdy C && ~Z)  @(279)                       
+00F8 //279 (line 0094) >    : OP_END_ACTUAL                                     
+
+0658 //280 (line 0095)      : OP_EXPECT ""                                      $expect "";            $actual{while (~C) {"wc2"; break;}}
+00D8 //281 (line 0095)      : OP_END_EXPECT                                     
+0325 //282 (line 0095)      : OP_GO(C)  @(286)                                  
+2178 //283 (line 0095)      : OP_ACTUAL "wc2"                                   
+0101 //284 (line 0095)      : OP_GO break @(286)                                
+00D1 //285 (line 0095)      : OP_GO(C && Z && ~Z)  @(286)                       
+00F8 //286 (line 0095) >    : OP_END_ACTUAL                                     
+
+0658 //287 (line 0096)      : OP_EXPECT ""                                      $expect "";       clc; $actual{while (C)  {"wc3"; break;}}
+00D8 //288 (line 0096)      : OP_END_EXPECT                                     
+1702 //289 (line 0096)      : OP_CLC $0                                         
+0315 //290 (line 0096)      : OP_GO(~C)  @(294)                                 
+2278 //291 (line 0096)      : OP_ACTUAL "wc3"                                   
+0101 //292 (line 0096)      : OP_GO break @(294)                                
+0011 //293 (line 0096)      : OP_GO(C)  @(294)                                  
+00F8 //294 (line 0096) >    : OP_END_ACTUAL                                     
+
+2358 //295 (line 0097)      : OP_EXPECT "wc4"                                   $expect "wc4";         $actual{while (~C) {"wc4"; break;}}
+00D8 //296 (line 0097)      : OP_END_EXPECT                                     
+0325 //297 (line 0097)      : OP_GO(C)  @(301)                                  
+2378 //298 (line 0097)      : OP_ACTUAL "wc4"                                   
+0101 //299 (line 0097)      : OP_GO break @(301)                                
+0049 //300 (line 0097)      : OP_GO(qrdy Z)  @(301)                             
+00F8 //301 (line 0097) >    : OP_END_ACTUAL                                     
+
+2438 //302 (line 0099)      : OP_PRINT "do () condition tests\n"                print "do () condition tests\n" ;
+
+2558 //303 (line 0100)      : OP_EXPECT "do1do1"                                $expect "do1do1"; $0 = 1; $actual{ do {"do1"; dec $0;} while (Z)
+00D8 //304 (line 0100)      : OP_END_EXPECT                                     
+0106 //305 (line 0100)      : $0 = 0x1                                          
+2678 //306 (line 0100)      : OP_ACTUAL "do1"                                   
+0B02 //307 (line 0100)      : OP_DEC $0                                         
+FD41 //308 (line 0100)      : OP_GO(Z)  @(306)                                  
+00F8 //309 (line 0100)      : OP_END_ACTUAL                                     
+
+2758 //310 (line 0101)      : OP_EXPECT "do2"                                   $expect "do2";    $0 = 1; $actual{ do {"do2"; dec $0;} while (~Z
+00D8 //311 (line 0101)      : OP_END_EXPECT                                     
+0106 //312 (line 0101)      : $0 = 0x1                                          
+2778 //313 (line 0101)      : OP_ACTUAL "do2"                                   
+0B02 //314 (line 0101)      : OP_DEC $0                                         
+FD81 //315 (line 0101)      : OP_GO(~Z)  @(313)                                 
+00F8 //316 (line 0101)      : OP_END_ACTUAL                                     
+
+2858 //317 (line 0102)      : OP_EXPECT "do3do3"                                $expect "do3do3"; $0 = 1; $actual{ do {"do3"; shr $0;} while (C)
+00D8 //318 (line 0102)      : OP_END_EXPECT                                     
+0106 //319 (line 0102)      : $0 = 0x1                                          
+2978 //320 (line 0102)      : OP_ACTUAL "do3"                                   
+0D02 //321 (line 0102)      : OP_SHR $0                                         
+FD11 //322 (line 0102)      : OP_GO(C)  @(320)                                  
+00F8 //323 (line 0102)      : OP_END_ACTUAL                                     
+
+2A58 //324 (line 0103)      : OP_EXPECT "do4"                                   $expect "do4";    $0 = 1; $actual{ do {"do4"; stc;}    while (~C
+00D8 //325 (line 0103)      : OP_END_EXPECT                                     
+0106 //326 (line 0103)      : $0 = 0x1                                          
+2A78 //327 (line 0103)      : OP_ACTUAL "do4"                                   
+1602 //328 (line 0103)      : OP_STC $0                                         
+FD21 //329 (line 0103)      : OP_GO(~C)  @(327)                                 
+00F8 //330 (line 0103)      : OP_END_ACTUAL                                     
+
+2B58 //331 (line 0104)      : OP_EXPECT "do5"                                   $expect "do5"; $5 = 0;    $actual{ do {"do5"; continue; "d5dead"
+00D8 //332 (line 0104)      : OP_END_EXPECT                                     
+00A6 //333 (line 0104)      : $5 = 0x0                                          
+2B78 //334 (line 0104)      : OP_ACTUAL "do5"                                   
+0101 //335 (line 0104)      : OP_GO continue @(337)                             
+2C78 //336 (line 0104)      : OP_ACTUAL "d5dead"                                
+FC05 //337 (line 0104)      : OP_GO()  @(334)                                   
+00F8 //338 (line 0104)      : OP_END_ACTUAL                                     
+
+0018 //339 (line 0106)      : OP_STOP                                           stop;
