@@ -3,36 +3,38 @@
 7-Zip 19.00 (x64) : Copyright (c) 1999-2018 Igor Pavlov : 2019-02-21
 
 Scanning the drive for archives:
-1 file, 31778 bytes (32 KiB)
+1 file, 33712 bytes (33 KiB)
 
 Listing archive: include-15.7z
 
 --
 Path = include-15.7z
 Type = 7z
-Physical Size = 31778
-Headers Size = 578
-Method = LZMA2:17 7zAES
+Physical Size = 33712
+Headers Size = 624
+Method = LZMA2:192k 7zAES
 Solid = +
 Blocks = 1
 
    Date      Time    Attr         Size   Compressed  Name
 ------------------- ----- ------------ ------------  ------------------------
-2023-04-11 11:03:22 ....A         5760        31200  include-15\C3_always.h
+2023-04-29 13:35:27 ....A         5830        33088  include-15\C3_always.h
 2023-04-11 11:03:22 ....A         2112               include-15\C3_atomize.h
 2023-03-20 13:04:29 ....A         2840               include-15\C3_codeTimer.h
 2022-09-30 10:14:45 ....A          954               include-15\C3_commander.h
-2023-04-22 21:48:30 ....A        50607               include-15\c3_errors.h
+2023-05-01 13:22:02 ....A        50572               include-15\c3_errors.h
 2022-12-19 17:24:48 ....A         5902               include-15\C3_gstring.h
 2023-03-19 09:32:56 ....A        17796               include-15\c3_preProcessor.h
 2014-04-29 01:21:58 ....A         2929               include-15\C3_string.h
 2022-08-21 16:10:26 ....A         3656               include-15\C3_timeFncs.h
 2023-04-02 18:23:21 ....A         4037               include-15\C3_types.h
-2023-04-25 10:29:22 ....A          150               include-15\cdBackup.bat
+2023-04-27 22:10:17 ....A           80               include-15\cdBackup.bat
+2023-04-29 15:20:01 ....A         5654               include-15\elfHeader.h
 2023-04-07 16:59:46 ....A         6679               include-15\hStructures.h
-2023-04-24 20:06:12 ....A        17871               include-15\opName.h
+2023-04-27 21:15:20 ....A        17994               include-15\opName.h
+2023-05-01 14:35:57 ....A          978               include-15\readElf.h
 2023-03-19 16:23:42 ....A         3721               include-15\samOptions.h
 2023-02-20 14:48:00 ....A          948               include-15\samParams.h
-2023-03-20 06:49:07 ....A           29               include-15\samVersion.h
+2023-05-01 18:35:18 ....A          451               include-15\samVersion.h
 ------------------- ----- ------------ ------------  ------------------------
-2023-04-25 10:29:22             125991        31200  16 files
+2023-05-01 18:35:18             133133        33088  18 files

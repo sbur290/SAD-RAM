@@ -3,15 +3,15 @@
 7-Zip 19.00 (x64) : Copyright (c) 1999-2018 Igor Pavlov : 2019-02-21
 
 Scanning the drive for archives:
-1 file, 91466 bytes (90 KiB)
+1 file, 91394 bytes (90 KiB)
 
 Listing archive: sam-15.7z
 
 --
 Path = sam-15.7z
 Type = 7z
-Physical Size = 91466
-Headers Size = 1391
+Physical Size = 91394
+Headers Size = 1399
 Method = LZMA2:19 7zAES
 Solid = +
 Blocks = 2
@@ -19,9 +19,9 @@ Blocks = 2
    Date      Time    Attr         Size   Compressed  Name
 ------------------- ----- ------------ ------------  ------------------------
 2023-03-16 04:04:27 ....A         1359          539  sam-15\compareWithBackup.bat
-2023-03-15 17:15:30 ....A         1734        89536  sam-15\backup.bat
+2023-04-27 14:09:12 ....A         1353        89456  sam-15\backup.bat
 2023-03-15 17:15:30 ....A         1591               sam-15\C3_atomize.whatIsThis
-2023-04-08 07:26:44 ....A           76               sam-15\cdBackup.bat
+2023-04-27 22:10:19 ....A           76               sam-15\cdBackup.bat
 2022-08-30 01:09:50 ....A         2369               sam-15\cmdOptions.h
 2023-03-15 17:15:30 ....A           58               sam-15\cmpbad.bat
 2022-12-26 21:43:45 ....A         1824               sam-15\cmpDump.bat
@@ -80,4 +80,4 @@ Blocks = 2
 2022-09-11 16:12:22 ....A         1105               sam-15\wasted.csv
 2022-10-03 20:34:31 ....A         1241               sam-15\worksheet.cell
 ------------------- ----- ------------ ------------  ------------------------
-2023-04-25 14:07:00             439167        90075  61 files
+2023-04-27 22:10:19             438786        89995  61 files

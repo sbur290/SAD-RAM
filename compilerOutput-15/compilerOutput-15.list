@@ -3,18 +3,18 @@
 7-Zip 19.00 (x64) : Copyright (c) 1999-2018 Igor Pavlov : 2019-02-21
 
 Scanning the drive for archives:
-1 file, 16246 bytes (16 KiB)
+1 file, 18105 bytes (18 KiB)
 
 Listing archive: compilerOutput-15.7z
 
 --
 Path = compilerOutput-15.7z
 Type = 7z
-Physical Size = 16246
-Headers Size = 550
+Physical Size = 18105
+Headers Size = 633
 Method = LZMA2:17 7zAES
 Solid = +
-Blocks = 2
+Blocks = 3
 
    Date      Time    Attr         Size   Compressed  Name
 ------------------- ----- ------------ ------------  ------------------------
@@ -23,21 +23,25 @@ Blocks = 2
 2023-04-22 19:12:03 ....A          408               compilerOutput-15\gotos.bin
 2023-04-19 19:28:46 ....A          680               compilerOutput-15\loops.bin
 2023-04-20 11:36:20 ....A          108               compilerOutput-15\scin.bin
-2023-04-23 14:11:31 ....A         1030        12128  compilerOutput-15\basics.lineMap
-2023-04-23 14:11:31 ....A        49816               compilerOutput-15\basics.microcode
-2023-04-23 14:11:31 ....A          933               compilerOutput-15\basics.msgFile
-2023-04-23 14:11:31 ....A           40               compilerOutput-15\basics.symbolTbl
-2023-04-22 19:12:03 ....A          400               compilerOutput-15\gotos.lineMap
+2023-04-23 14:11:31 ....A        49816        10688  compilerOutput-15\basics.microcode
 2023-04-22 19:12:03 ....A        17944               compilerOutput-15\gotos.microcode
-2023-04-22 19:12:03 ....A           73               compilerOutput-15\gotos.msgFile
-2023-04-22 19:12:03 ....A          134               compilerOutput-15\gotos.symbolTbl
-2023-04-19 19:28:46 ....A          500               compilerOutput-15\loops.lineMap
 2023-04-19 19:28:46 ....A        30221               compilerOutput-15\loops.microcode
-2023-04-19 19:28:46 ....A          353               compilerOutput-15\loops.msgFile
-2023-04-19 19:28:46 ....A           10               compilerOutput-15\loops.symbolTbl
-2023-04-20 11:36:20 ....A          180               compilerOutput-15\scin.lineMap
 2023-04-20 11:36:20 ....A         4968               compilerOutput-15\scin.microcode
-2023-04-20 11:36:20 ....A           75               compilerOutput-15\scin.msgFile
-2023-04-20 11:36:20 ....A           23               compilerOutput-15\scin.symbolTbl
+2023-05-01 20:20:43 ....A         3456         3216  compilerOutput-15\basics.elf
+2023-05-01 20:20:43 ....A         1030               compilerOutput-15\basics.lineMap
+2023-05-01 20:20:43 ....A          933               compilerOutput-15\basics.msgFile
+2023-05-01 20:20:43 ....A           40               compilerOutput-15\basics.symbolTbl
+2023-05-01 20:20:43 ....A         1376               compilerOutput-15\gotos.elf
+2023-05-01 20:20:43 ....A          400               compilerOutput-15\gotos.lineMap
+2023-05-01 20:20:43 ....A           73               compilerOutput-15\gotos.msgFile
+2023-05-01 20:20:43 ....A          134               compilerOutput-15\gotos.symbolTbl
+2023-05-01 20:20:43 ....A         1904               compilerOutput-15\loops.elf
+2023-05-01 20:20:43 ....A          500               compilerOutput-15\loops.lineMap
+2023-05-01 20:20:43 ....A          352               compilerOutput-15\loops.msgFile
+2023-05-01 20:20:43 ....A           21               compilerOutput-15\loops.symbolTbl
+2023-05-01 20:20:44 ....A          656               compilerOutput-15\scin.elf
+2023-05-01 20:20:44 ....A          180               compilerOutput-15\scin.lineMap
+2023-05-01 20:20:44 ....A           75               compilerOutput-15\scin.msgFile
+2023-05-01 20:20:44 ....A           23               compilerOutput-15\scin.symbolTbl
 ------------------- ----- ------------ ------------  ------------------------
-2023-04-23 14:11:31             117226        15696  21 files
+2023-05-01 20:20:44             124628        17472  25 files
